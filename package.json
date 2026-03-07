@@ -1,0 +1,33 @@
+{
+  "name": "spesely-expense-tracker",
+  "version": "1.0.0",
+  "description": "expense-tracker app",
+  "main": "index.js",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "electron-dev": "npm run dev:electron --prefix apps/desktop",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pejaybro/spesely-expense-tracker.git"
+  },
+  "author": "prayas-jadli",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pejaybro/spesely-expense-tracker/issues"
+  },
+  "homepage": "https://github.com/pejaybro/spesely-expense-tracker#readme",
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  },
+  "dependencies": {
+    "better-sqlite3": "^12.6.2",
+    "dayjs": "^1.11.19",
+    "googleapis": "^171.4.0",
+    "zod": "^4.3.6"
+  }
+}
