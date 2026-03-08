@@ -1,3 +1,4 @@
+process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = "true";
 const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
 
@@ -8,16 +9,18 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
+    frame: false,
+    titleBarStyle: "hidden",
     webPreferences: {
-      nodeIntegration: false,
       contextIsolation: true,
+      nodeIntegration: false,
+      sandbox: true,
       preload: path.join(__dirname, "preload.cjs"),
     },
   });
 
   if (isDev) {
     mainWindow.loadURL("http://localhost:3000");
-    mainWindow.webContents.openDevTools();
   } else {
     mainWindow.loadFile(path.join(__dirname, "../dist/index.html"));
   }
@@ -41,5 +44,24 @@ app.on("activate", () => {
   }
 });
 
-// IPC handlers
+/**
+ *=================================================
+ * ? IPC Handlers
+ *=================================================
+ */
 ipcMain.handle("ping", () => "pong");
+ipcMain.on("window:minimize", () => {
+  mainWindow.minimize();
+});
+
+ipcMain.on("window:maximize", () => {
+  if (mainWindow.isMaximized()) {
+    mainWindow.unmaximize();
+  } else {
+    mainWindow.maximize();
+  }
+});
+
+ipcMain.on("window:close", () => {
+  mainWindow.close();
+});

@@ -1,0 +1,58 @@
+.titlebar {
+  height: 48px;
+  background: black;
+  color: white;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0 10px;
+
+  -webkit-app-region: drag;
+  user-select: none;
+}
+
+.titlebar-left,
+.titlebar-center,
+.titlebar-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo {
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+button {
+ 
+  border: none;
+  color: white;
+  cursor: pointer;
+
+  -webkit-app-region: no-drag;
+}
+
+.filter {
+  background: #111;
+  color: white;
+  border: 1px solid #333;
+  padding: 4px 8px;
+
+  -webkit-app-region: no-drag;
+}
+
+.win-btn {
+  width: 32px;
+  height: 28px;
+}
+
+.win-btn:hover {
+  background: #333;
+}
+
+.win-btn.close:hover {
+  background: red;
+}
