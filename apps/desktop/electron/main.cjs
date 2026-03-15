@@ -1,34 +1,52 @@
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = "true";
-const { app, BrowserWindow, ipcMain } = require("electron");
-const path = require("path");
+const { app, BrowserWindow } = require("electron");
+const CONFIG = require("./config.cjs");
+const { initIPC } = require("./ipc.cjs");
 
-const isDev = process.env.NODE_ENV === "development";
 let mainWindow = null;
+let splashWindow = null;
 
 function createWindow() {
-  mainWindow = new BrowserWindow({
-    width: 1200,
-    height: 800,
-    frame: false,
-    titleBarStyle: "hidden",
-    webPreferences: {
-      contextIsolation: true,
-      nodeIntegration: false,
-      sandbox: true,
-      preload: path.join(__dirname, "preload.cjs"),
-    },
-  });
+  /**
+   *=================================
+   * ? Splash Screen
+   *=================================
+   */
+  splashWindow = new BrowserWindow(CONFIG.window.splash);
+  splashWindow.loadFile("splash.html");
 
-  if (isDev) {
-    mainWindow.loadURL("http://localhost:3000");
+  /**
+   *=================================
+   * ? Main Screen
+   *=================================
+   */
+  mainWindow = new BrowserWindow(CONFIG.window.main);
+
+  if (CONFIG.isDev) {
+    mainWindow.loadURL(CONFIG.urls.dev);
   } else {
-    mainWindow.loadFile(path.join(__dirname, "../dist/index.html"));
+    mainWindow.loadFile(CONFIG.urls.prod);
   }
+
+  // Initialize IPC Handlers
+  initIPC(mainWindow);
+
+  // Transition from Splash to Main
+  setTimeout(() => {
+    if (splashWindow) splashWindow.close();
+    if (mainWindow) mainWindow.show();
+  }, CONFIG.timeouts.splash);
 
   mainWindow.on("closed", () => {
     mainWindow = null;
   });
 }
+
+/**
+ *=================================================
+ * ? App Lifecycle
+ *=================================================
+ */
 
 app.whenReady().then(createWindow);
 
@@ -42,26 +60,4 @@ app.on("activate", () => {
   if (BrowserWindow.getAllWindows().length === 0) {
     createWindow();
   }
-});
-
-/**
- *=================================================
- * ? IPC Handlers
- *=================================================
- */
-ipcMain.handle("ping", () => "pong");
-ipcMain.on("window:minimize", () => {
-  mainWindow.minimize();
-});
-
-ipcMain.on("window:maximize", () => {
-  if (mainWindow.isMaximized()) {
-    mainWindow.unmaximize();
-  } else {
-    mainWindow.maximize();
-  }
-});
-
-ipcMain.on("window:close", () => {
-  mainWindow.close();
 });

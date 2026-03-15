@@ -1,12 +1,28 @@
 import { useEffect, useState } from "react";
-import "./electron.css";
 import dayjs from "@/root.config";
-import {  Flex } from "@/src/components/base";
+import { Flex, Btn } from "@/src/components/base";
 import { ChevronLeft, ChevronRight, Minus, Square, X } from "lucide-react";
+
+import { useNavigate, useLocation } from "react-router-dom";
 
 export const WindowTitleBar = () => {
   const [time, setTime] = useState("");
   const [date, setDate] = useState("");
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // Simple history state tracking
+  const [canGoBack, setCanGoBack] = useState(false);
+  const [canGoForward, setCanGoForward] = useState(false);
+
+  useEffect(() => {
+    // Current history index tracking
+    const historyState = window.history.state;
+    const currentIdx = historyState?.idx || 0;
+
+    setCanGoBack(currentIdx > 0);
+    setCanGoForward(currentIdx < window.history.length - 1);
+  }, [location]);
 
   useEffect(() => {
     const updateTime = () => {
@@ -29,48 +45,62 @@ export const WindowTitleBar = () => {
   }, []);
 
   return (
-    <Flex direction="row" justify="between" className="bg-black text-white">
-      {/* LEFT SECTION */}
-      <div className="titlebar-left">
-        <button className="nav">
-          <ChevronLeft />
-        </button>
-        <button className="nav">
-          <ChevronRight />
-        </button>
+    <Flex
+      direction="row"
+      justify="between"
+      items="center"
+      className="h-8 bg-[#0d0d0d] text-white [webkit-app-region:drag] select-none"
+    >
+      {/* ======================================= */}
+      {/* ANCHOR : LEFT SECTION */}
+      <Flex direction="row" items="center" noGap className=" px-2.5">
+        <Btn
+          variant="solid"
+          onClick={() => navigate(-1)}
+          disabled={!canGoBack}
+          className={`[webkit-app-region:no-drag] rounded-l-md size-6 px-0 bg-transparent! hover:bg-white/10! ${
+            !canGoBack ? "text-white/20! cursor-pointer!" : "text-white"
+          }`}
+        >
+          <ChevronLeft size={16} />
+        </Btn>
+        <Btn
+          variant="solid"
+          onClick={() => navigate(1)}
+          disabled={!canGoForward}
+          className={`[webkit-app-region:no-drag] rounded-r-md size-6 px-0 bg-transparent! hover:bg-white/10! ${
+            !canGoForward ? "text-white/20! cursor-pointer!" : "text-white"
+          }`}
+        >
+          <ChevronRight size={16} />
+        </Btn>
+      </Flex>
 
-        <div className="logo">SPESLEY</div>
-       
-      </div>
-
-      {/* CENTER SECTION */}
-      <div className="titlebar-center">
-        <div className="info">{time}</div>
-
-        <div className="info">{date}</div>
-      </div>
-
-      {/* RIGHT SECTION */}
-      <div className="titlebar-right">
-        <button
+      {/* ======================================= */}
+      {/* ANCHOR : RIGHT SECTION */}
+      <Flex direction="row" items="center" className="gap-1">
+        <Btn
+          variant="solid"
+          className="[webkit-app-region:no-drag] w-8 px-0 bg-transparent! hover:bg-white/10!"
           onClick={() => window.electronAPI.minimize()}
-          className="win-btn"
         >
           <Minus size={16} />
-        </button>
-        <button
+        </Btn>
+        <Btn
+          variant="solid"
+          className="[webkit-app-region:no-drag] w-8 px-0 bg-transparent! hover:bg-white/10!"
           onClick={() => window.electronAPI.maximize()}
-          className="win-btn"
         >
-          <Square size={14} />
-        </button>
-        <button
+          <Square size={12} />
+        </Btn>
+        <Btn
+          variant="solid"
+          className="[webkit-app-region:no-drag] w-8 px-0 bg-transparent! hover:bg-red-600!"
           onClick={() => window.electronAPI.close()}
-          className="win-btn close"
         >
           <X size={16} />
-        </button>
-      </div>
+        </Btn>
+      </Flex>
     </Flex>
   );
 };

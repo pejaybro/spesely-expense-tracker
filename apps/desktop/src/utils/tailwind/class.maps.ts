@@ -60,8 +60,8 @@ export const gridColsMap = {
 export const btnVariantMap = {
   solid: "bg-violet-c1 text-pure-white!",
   outline: "border border-violet-c1 text-violet-c1",
-  soft: "bg-current/20 ",
+  soft: "bg-current/20 text-violet-c1!",
   "solid-icon": "bg-violet-c1 text-pure-white! size-8",
   "outline-icon": "border border-violet-c1 text-violet-c1 size-8",
-  "soft-icon": "bg-current/20 size-8",
+  "soft-icon": "bg-current/20 text-violet-c1! size-8",
 };

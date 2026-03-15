@@ -9,7 +9,7 @@ export const BtnStyles = () => {
         <Btn variant="solid" className="text-para-sm">
           solid
         </Btn>
-        <Btn variant="soft" className="text-para-sm text-violet-c1 ">
+        <Btn variant="soft" className="text-para-sm text-violet-c1">
           soft
         </Btn>
         <Btn variant="solid" className="text-para-sm" rounded="md">
