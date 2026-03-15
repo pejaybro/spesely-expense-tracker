@@ -1,0 +1,21 @@
+@theme {
+  /**
+     * =================================
+     * NOTE: Font Sizes
+     * =================================
+    */
+  --text-para: 16px;
+  --text-para-sm: 14px;
+  --text-para-xs: 12px;
+  --text-btn: 14px;
+  --text-btn-sm: 12px;
+  --text-heading: 22px;
+  --text-heading-lg: 28px;
+  --text-heading-xl: 36px;
+
+  /**
+     * =================================
+     * NOTE: Font Styles
+     * =================================
+    */
+}

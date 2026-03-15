@@ -1,4 +1,4 @@
-import { btnVariantMap, roudedMap, cn } from "@/src/utils";
+import { btnVariantMap, roundedMap, cn } from "@/src/utils";
 import type { ButtonProps } from "@/root.config";
 type Props = ButtonProps;
 export const Btn = ({
@@ -6,19 +6,19 @@ export const Btn = ({
   rounded = "none",
   className,
   children,
-  onClick,
+  type = "button",
+  ...props
 }: Props) => {
   return (
     <button
+      type={type}
       className={cn(
-        "flex items-center justify-center h-8 whitespace-nowrap gap-2 text-[14px] transition-colors duration-200",
+        "flex items-center justify-center px-4 h-8 whitespace-nowrap gap-2 text-[14px] transition-colors duration-200 cursor-pointer disabled:cursor-not-allowed",
         btnVariantMap[variant],
-        roudedMap[rounded],
-        rounded !== "full" && "px-4",
-        rounded === "full" && "h-auto size-5",
+        roundedMap[rounded],
         className,
       )}
-      onClick={onClick}
+      {...props}
     >
       {children}
     </button>

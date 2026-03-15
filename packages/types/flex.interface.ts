@@ -13,11 +13,11 @@ export type FlexDirection = "row" | "column";
  *? Interfaces
  *============================================
  */
-export interface FlexProps {
+export interface FlexProps extends React.HTMLAttributes<HTMLDivElement> {
   children?: React.ReactNode;
   items?: FlexAlign;
   justify?: FlexJustify;
   noGap?: boolean;
   direction: FlexDirection;
-  className?: string;
+  wrap?: boolean;
 }

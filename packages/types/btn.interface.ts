@@ -3,7 +3,13 @@
  *? types
  *============================================
  */
-export type ButtonVariant = "primary" | "outline" | "primaryOutline";
+export type ButtonVariant =
+  | "solid"
+  | "outline"
+  | "solid-icon"
+  | "outline-icon"
+  | "soft"
+  | "soft-icon";
 export type RoundedStyle = "full" | "lg" | "md" | "sm" | "none";
 
 /**
@@ -11,10 +17,8 @@ export type RoundedStyle = "full" | "lg" | "md" | "sm" | "none";
  *? Interfaces
  *============================================
  */
-export interface ButtonProps {
+export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children?: React.ReactNode;
-  onClick?: () => void;
-  className?: string;
   variant: ButtonVariant;
   rounded?: RoundedStyle;
 }

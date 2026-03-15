@@ -26,15 +26,6 @@
   letter-spacing: 1px;
 }
 
-button {
- 
-  border: none;
-  color: white;
-  cursor: pointer;
-
-  -webkit-app-region: no-drag;
-}
-
 .filter {
   background: #111;
   color: white;
