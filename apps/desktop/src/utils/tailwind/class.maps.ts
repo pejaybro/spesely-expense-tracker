@@ -58,10 +58,10 @@ export const gridColsMap = {
  */
 
 export const btnVariantMap = {
-  solid: "bg-violet-a1 text-pure-white!",
-  outline: "border border-violet-a1 text-violet-a1",
+  solid: "bg-violet-c1 text-pure-white!",
+  outline: "border border-violet-c1 text-violet-c1",
   soft: "bg-current/20 ",
-  "solid-icon": "bg-violet-a1 text-pure-white! size-8",
-  "outline-icon": "border border-violet-a1 text-violet-a1 size-8",
+  "solid-icon": "bg-violet-c1 text-pure-white! size-8",
+  "outline-icon": "border border-violet-c1 text-violet-c1 size-8",
   "soft-icon": "bg-current/20 size-8",
 };

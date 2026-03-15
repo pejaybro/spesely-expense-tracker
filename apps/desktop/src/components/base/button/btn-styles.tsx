@@ -9,7 +9,7 @@ export const BtnStyles = () => {
         <Btn variant="solid" className="text-para-sm">
           solid
         </Btn>
-        <Btn variant="soft" className="text-para-sm text-violet-a1 ">
+        <Btn variant="soft" className="text-para-sm text-violet-c1 ">
           soft
         </Btn>
         <Btn variant="solid" className="text-para-sm" rounded="md">
@@ -47,7 +47,11 @@ export const BtnStyles = () => {
           $
         </Btn>
 
-        <Btn variant="soft-icon" className="text-para-sm text-violet-a1 " rounded="full">
+        <Btn
+          variant="soft-icon"
+          className="text-para-sm text-violet-c1 "
+          rounded="full"
+        >
           $
         </Btn>
       </Flex>
