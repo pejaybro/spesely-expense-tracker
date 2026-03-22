@@ -1,0 +1,21 @@
+/* Spotify-like window border */
+html:not(.is-maximized) body {
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+  box-sizing: border-box;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Ensure the border doesn't shrink the content area in an ugly way */
+html.is-maximized body {
+  box-shadow: none;
+}
+
+/* Draggable regions for Electron */
+.window-drag {
+  -webkit-app-region: drag;
+}
+
+.window-no-drag {
+  -webkit-app-region: no-drag;
+}

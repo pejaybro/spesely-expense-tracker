@@ -8,6 +8,8 @@ const CONFIG = {
     main: {
       width: 1200,
       height: 800,
+      minWidth: 700,
+      minHeight: 500,
       frame: false,
       show: false,
       titleBarStyle: "hidden",

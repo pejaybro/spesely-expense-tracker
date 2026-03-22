@@ -5,7 +5,7 @@
          * =================================
         */
   --color-pure-white: #fff;
-  --color-slate-a1: #fafafa;
+  --color-chalk-c1: #fafafa;
 
   /**
          * =================================
@@ -13,6 +13,8 @@
          * =================================
         */
   --color-pure-black: #000;
+  --color-dark-c1: #0d0d0d;
+  --color-dark-c2: #121212;
   /**
          * =================================
          * NOTE: Violet Shades

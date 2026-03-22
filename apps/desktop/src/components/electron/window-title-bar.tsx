@@ -49,16 +49,21 @@ export const WindowTitleBar = () => {
       direction="row"
       justify="between"
       items="center"
-      className="h-8 bg-[#0d0d0d] text-white [webkit-app-region:drag] select-none"
+      className="h-8 bg-dark-c1 text-white w-full select-none window-drag"
     >
       {/* ======================================= */}
       {/* ANCHOR : LEFT SECTION */}
-      <Flex direction="row" items="center" noGap className=" px-2.5">
+      <Flex
+        direction="row"
+        items="center"
+        noGap
+        className="px-2.5 window-no-drag"
+      >
         <Btn
           variant="solid"
           onClick={() => navigate(-1)}
           disabled={!canGoBack}
-          className={`[webkit-app-region:no-drag] rounded-l-md size-6 px-0 bg-transparent! hover:bg-white/10! ${
+          className={`rounded-l-md size-6 px-0 bg-transparent! hover:bg-white/10! ${
             !canGoBack ? "text-white/20! cursor-pointer!" : "text-white"
           }`}
         >
@@ -68,7 +73,7 @@ export const WindowTitleBar = () => {
           variant="solid"
           onClick={() => navigate(1)}
           disabled={!canGoForward}
-          className={`[webkit-app-region:no-drag] rounded-r-md size-6 px-0 bg-transparent! hover:bg-white/10! ${
+          className={`rounded-r-md size-6 px-0 bg-transparent! hover:bg-white/10! ${
             !canGoForward ? "text-white/20! cursor-pointer!" : "text-white"
           }`}
         >
@@ -78,24 +83,24 @@ export const WindowTitleBar = () => {
 
       {/* ======================================= */}
       {/* ANCHOR : RIGHT SECTION */}
-      <Flex direction="row" items="center" className="gap-1">
+      <Flex direction="row" items="center" className="gap-1 window-no-drag">
         <Btn
           variant="solid"
-          className="[webkit-app-region:no-drag] w-8 px-0 bg-transparent! hover:bg-white/10!"
+          className="w-8 px-0 bg-transparent! hover:bg-white/10!"
           onClick={() => window.electronAPI.minimize()}
         >
           <Minus size={16} />
         </Btn>
         <Btn
           variant="solid"
-          className="[webkit-app-region:no-drag] w-8 px-0 bg-transparent! hover:bg-white/10!"
+          className="w-8 px-0 bg-transparent! hover:bg-white/10!"
           onClick={() => window.electronAPI.maximize()}
         >
           <Square size={12} />
         </Btn>
         <Btn
           variant="solid"
-          className="[webkit-app-region:no-drag] w-8 px-0 bg-transparent! hover:bg-red-600!"
+          className="w-8 px-0 bg-transparent! hover:bg-red-600!"
           onClick={() => window.electronAPI.close()}
         >
           <X size={16} />
