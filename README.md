@@ -52,7 +52,7 @@ To run the project locally in a development environment:
 
 1.  **Clone the repository**:
     ```bash
-    git clone [repository-url]
+    git clone https://github.com/pejaybro/spesely-expense-tracker.git
     ```
 2.  **Install dependencies**:
     ```bash
