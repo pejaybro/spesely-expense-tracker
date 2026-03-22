@@ -54,13 +54,15 @@ To run the project locally in a development environment:
     ```bash
     git clone https://github.com/pejaybro/spesely-expense-tracker.git
     ```
-2.  **Install dependencies**:
+2.  **Install everything**:
     ```bash
+    # This installs dependencies for the root and all apps/packages automatically
     npm install
     ```
-3.  **Run the Electron app**:
+3.  **Run the Desktop app**:
     ```bash
-    npm run dev:electron
+    # Starts the Electron dev environment from the root
+    npm run electron-dev
     ```
 
 ---
