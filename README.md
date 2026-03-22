@@ -1,6 +1,6 @@
-# Spesely - The Ultimate Expense Tracker 🚀
+# Spesely - Simply, Manage Finances. 🚀
 
-Spesely is a modern, premium, and offline-first expense management solution designed to give you total control over your financial life. Built with a focus on privacy and high-performance aesthetics, Spesely helps you track every penny, plan for the future, and manage complex costs like trips and recurring subscriptions.
+A modern application for managing expenses, budgets, and recurring payments with secure authentication, premium UI components, and efficient offline-first data handling. Built to scale from a native Windows desktop app (Electron) to a full-stack mobile and web ecosystem.
 
 ---
 
