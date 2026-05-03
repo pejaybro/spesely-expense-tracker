@@ -9,7 +9,8 @@ export type ButtonVariant =
   | "solid-icon"
   | "outline-icon"
   | "soft"
-  | "soft-icon";
+  | "soft-icon"
+  | "menu";
 export type RoundedStyle = "full" | "lg" | "md" | "sm" | "none";
 
 /**
@@ -19,6 +20,6 @@ export type RoundedStyle = "full" | "lg" | "md" | "sm" | "none";
  */
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children?: React.ReactNode;
-  variant: ButtonVariant;
+  variant?: ButtonVariant;
   rounded?: RoundedStyle;
 }

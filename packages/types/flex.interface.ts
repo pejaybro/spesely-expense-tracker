@@ -18,6 +18,6 @@ export interface FlexProps extends React.HTMLAttributes<HTMLDivElement> {
   items?: FlexAlign;
   justify?: FlexJustify;
   noGap?: boolean;
-  direction: FlexDirection;
+  direction?: FlexDirection;
   wrap?: boolean;
 }

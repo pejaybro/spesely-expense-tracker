@@ -2,7 +2,7 @@ import { btnVariantMap, roundedMap, cn } from "@/src/utils";
 import type { ButtonProps } from "@/root.config";
 type Props = ButtonProps;
 export const Btn = ({
-  variant,
+  variant = "solid",
   rounded = "none",
   className,
   children,

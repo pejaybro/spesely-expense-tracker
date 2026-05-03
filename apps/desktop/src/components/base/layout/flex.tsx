@@ -9,7 +9,7 @@ export const Flex = ({
   items = "start",
   justify = "start",
   noGap,
-  direction,
+  direction = "row",
   wrap,
   ...props
 }: Props) => {

@@ -1,4 +1,4 @@
-import { Flex } from "@/src/components/base";
+import { Btn, Flex } from "@/src/components/base";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import {
   LayoutDashboard,
@@ -69,7 +69,10 @@ export const AppLayout = () => {
   ];
 
   return (
-    <Flex direction="column" className="flex-1 w-full p-2.5 gap-2 overflow-hidden">
+    <Flex
+      direction="column"
+      className="flex-1 w-full p-2.5 gap-2 overflow-hidden"
+    >
       {/* TOP SECTION: Sidebar + Main Content */}
       <Flex direction="row" className="flex-1 w-full gap-2 overflow-hidden">
         {/* SIDEBAR */}
@@ -80,27 +83,22 @@ export const AppLayout = () => {
         >
           {/* Top Section: Menu */}
           <div className="flex flex-col gap-1.5 flex-1 overflow-y-auto pr-2 custom-scrollbar">
-            {nav.map((item) => {
+            {nav.map(item => {
               const isActive = location.pathname === item.link;
               return (
-                <div
+                <Btn
                   key={item.id}
                   onClick={() => navigate(item.link)}
-                  className={`
-                    flex items-center gap-3 px-4 py-2.5 rounded-lg cursor-pointer transition-all duration-200 
-                    text-sm font-bold capitalize tracking-widest
-                    ${
-                      isActive
-                        ? "bg-violet-c1/10 text-violet-c1 border border-violet-c1/20"
-                        : "opacity-60 hover:opacity-100 hover:bg-white/5 border border-transparent hover:border-white/5"
-                    }
-                  `}
+                  variant="menu"
+                  
                 >
-                  <span className={`${isActive ? "text-violet-c1" : "opacity-80"}`}>
+                  <span
+                    className={`${isActive ? "text-violet-c1" : "opacity-80"}`}
+                  >
                     {item.icon}
                   </span>
                   <span className="whitespace-nowrap">{item.name}</span>
-                </div>
+                </Btn>
               );
             })}
           </div>
