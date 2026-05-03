@@ -1,4 +1,4 @@
-import { Flex } from "@/src/components/base";
+import { Btn, Flex, Tooltip } from "@/src/components/base";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import {
   LayoutDashboard,
@@ -10,14 +10,37 @@ import {
   Calculator,
   Target,
   Settings,
+  Menu,
+  PanelLeftOpen,
+  PanelRightOpen,
 } from "lucide-react";
 import { ROUTES } from "../route.config";
 import { MenuBtn } from "@/src/components/app";
 import { cn } from "@/src/utils";
+import { useState, useLayoutEffect } from "react";
 
 export const AppLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
+
+  const [expandMenu, setExpandMenu] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  // Sync isMobile and reset expandMenu on desktop
+  useLayoutEffect(() => {
+    const handleResize = () => {
+      const mobile = window.innerWidth < 768;
+      setIsMobile(mobile);
+      if (!mobile) setExpandMenu(false);
+    };
+    window.addEventListener("resize", handleResize);
+    handleResize();
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // SINGLE SOURCE OF TRUTH:
+  // It's expanded if it's desktop OR if it's mobile + manually toggled
+  const isExpanded = !isMobile || expandMenu;
 
   const nav = [
     {
@@ -62,12 +85,7 @@ export const AppLayout = () => {
       icon: <Calculator size={18} />,
       link: ROUTES.budget,
     },
-    {
-      id: 7,
-      name: "Set Goals",
-      icon: <Target size={18} />,
-      link: ROUTES.goal,
-    },
+    { id: 7, name: "Set Goals", icon: <Target size={18} />, link: ROUTES.goal },
   ];
 
   return (
@@ -75,39 +93,72 @@ export const AppLayout = () => {
       direction="column"
       className="flex-1 w-full p-2.5 gap-2 overflow-hidden"
     >
-      {/* TOP SECTION: Sidebar + Main Content */}
       <Flex direction="row" className="flex-1 w-full gap-2 overflow-hidden">
-        {/* SIDEBAR */}
+        {/* SIDEBAR - Uses single variable for width */}
         <Flex
           direction="column"
           justify="between"
           className={cn(
-            "w-max bg-dark-c1 rounded-lg border border-chalk-10 h-full p-2",
-            "md:w-60 md:p-2",
+            "bg-dark-c1 rounded-lg border border-chalk-10 h-full p-2 overflow-hidden",
+            isExpanded ? "w-50" : "w-max md:w-50",
           )}
         >
-          {/* Top Section: Menu */}
-          <Flex direction="column" className="gap-1.5 w-full overflow-y-auto ">
-            {nav.map(item => {
-              const isActive = location.pathname === item.link;
-              return (
+          <Flex direction="column" className="gap-1.5 w-full overflow-y-auto">
+            {/* Toggle Button */}
+            <Tooltip
+              content="Expand Menu"
+              disabled={isExpanded}
+              direction="right"
+            >
+              <Btn
+                onClick={() => setExpandMenu(!expandMenu)}
+                // Disabled on desktop to keep it open
+                className={cn(
+                  "w-full px-2",
+                  !isMobile && "pointer-events-none cursor-default",
+                )}
+              >
+                {!isMobile ? (
+                  <Menu size={18} />
+                ) : expandMenu ? (
+                  <PanelRightOpen size={18} />
+                ) : (
+                  <PanelLeftOpen size={18} />
+                )}
+                {isExpanded && (
+                  <span className={cn("whitespace-nowrap font-bold")}>
+                    Spesely Menu
+                  </span>
+                )}
+              </Btn>
+            </Tooltip>
+
+            {/* Nav Items */}
+            {nav.map(item => (
+              <Tooltip 
+                content={item.name} 
+                disabled={isExpanded} 
+                direction="right"
+                key={item.id}
+              >
                 <MenuBtn
-                  key={item.id}
+                  isMenuExpanded={isExpanded}
                   onClick={() => navigate(item.link)}
                   name={item.name}
                   icon={item.icon}
-                  isActive={isActive}
+                  isActive={location.pathname === item.link}
                 />
-              );
-            })}
+              </Tooltip>
+            ))}
           </Flex>
 
-          {/* Bottom Section: Settings */}
+          {/* Settings */}
           <Flex
             direction="column"
-            className=" w-full ap-1.5 pt-4 mt-4 border-t border-chalk-20"
+            className="w-full pt-4 mt-4 border-t border-chalk-20"
           >
             <MenuBtn
+              isMenuExpanded={isExpanded}
               onClick={() => navigate(ROUTES.setting)}
               name={"Settings"}
               icon={<Settings size={18} />}
@@ -119,21 +170,13 @@ export const AppLayout = () => {
         {/* MAIN CONTENT AREA */}
         <Flex
           direction="column"
-          className="flex-1 bg-dark-c1 rounded-lg border border-chalk-10 p-4 h-full overflow-y-auto relative group"
+          className="flex-1 bg-dark-c1 rounded-lg border border-chalk-10 p-4 h-full overflow-y-auto relative"
         >
           <Outlet />
         </Flex>
       </Flex>
 
-      {/* BOTTOM BAR: Status Bar */}
-      <Flex
-        direction="row"
-        items="center"
-        justify="between"
-        className=" bg-dark-c1 rounded-lg w-full border border-chalk-10 p-4 text-xs"
-      >
-       
-      </Flex>
+      <Flex className="bg-dark-c1 rounded-lg w-full border border-chalk-10 p-4 text-xs"></Flex>
     </Flex>
   );
 };

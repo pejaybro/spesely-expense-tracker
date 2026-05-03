@@ -64,5 +64,6 @@ export const btnVariantMap = {
   "solid-icon": "bg-violet-c1 text-pure-white size-8",
   "outline-icon": "border border-violet-c1 text-violet-c1 size-8",
   "soft-icon": "bg-current/20 text-violet-c1 size-8",
-  menu : "justify-start text-white"
+  menu: "justify-start text-white",
+  none: "bg-transparent text-chalk-100 justify-start items-center",
 };

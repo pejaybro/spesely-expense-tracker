@@ -12,6 +12,7 @@
     "dev:electron": "concurrently \"npm run dev\" \"wait-on http://localhost:3000 && cross-env NODE_ENV=development electronmon electron/main.cjs\""
   },
   "dependencies": {
+    "@floating-ui/react": "^0.27.19",
     "@hookform/resolvers": "^5.2.2",
     "@reduxjs/toolkit": "^2.11.2",
     "clsx": "^2.1.1",

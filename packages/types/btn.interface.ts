@@ -10,7 +10,8 @@ export type ButtonVariant =
   | "outline-icon"
   | "soft"
   | "soft-icon"
-  | "menu";
+  | "menu"
+  | "none";
 export type RoundedStyle = "full" | "lg" | "md" | "sm" | "none";
 
 /**

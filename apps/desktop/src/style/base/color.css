@@ -56,4 +56,7 @@
   --color-menu-background-hover: var(--color-chalk-10);
   --color-menu-text-active: var(--color-dark-c1);
   --color-menu-background-active: var(--color-chalk-100);
+
+  --color-tooltip-text: var(--color-dark-c1);
+  --color-tooltip-background: var(--color-chalk-100);
 }
