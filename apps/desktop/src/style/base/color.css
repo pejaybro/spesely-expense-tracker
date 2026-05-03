@@ -5,8 +5,16 @@
          * =================================
         */
   --color-pure-white: #fff;
-  --color-chalk-c1: #fafafa;
-
+  --color-chalk-10: rgba(250, 250, 250, 0.1);
+  --color-chalk-20: rgba(250, 250, 250, 0.2);
+  --color-chalk-30: rgba(250, 250, 250, 0.3);
+  --color-chalk-40: rgba(250, 250, 250, 0.4);
+  --color-chalk-50: rgba(250, 250, 250, 0.5);
+  --color-chalk-60: rgba(250, 250, 250, 0.6);
+  --color-chalk-70: rgba(250, 250, 250, 0.7);
+  --color-chalk-80: rgba(250, 250, 250, 0.8);
+  --color-chalk-90: rgba(250, 250, 250, 0.9);
+  --color-chalk-100: rgb(250, 250, 250);
   /**
          * =================================
          * NOTE: Dark Shades
@@ -15,6 +23,7 @@
   --color-pure-black: #000;
   --color-dark-c1: #0d0d0d;
   --color-dark-c2: #121212;
+
   /**
          * =================================
          * NOTE: Violet Shades
@@ -36,4 +45,15 @@
          * NOTE: Red Shades
          * =================================
         */
+  /**
+         * =================================
+         * NOTE: Menu Colors
+         * =================================
+        */
+  --color-menu-text: var(--color-chalk-50);
+  --color-menu-background: transparent;
+  --color-menu-text-hover: var(--color-chalk-100);
+  --color-menu-background-hover: var(--color-chalk-10);
+  --color-menu-text-active: var(--color-dark-c1);
+  --color-menu-background-active: var(--color-chalk-100);
 }

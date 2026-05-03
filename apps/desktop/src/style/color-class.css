@@ -1,0 +1,19 @@
+/* ========================================================================== */
+/* MENU style */
+/* ========================================================================== */
+.menu-btn {
+  background-color: var(--color-menu-background);
+  color: var(--color-menu-text);
+}
+.menu-btn:hover {
+  background-color: var(--color-menu-background-hover);
+  color: var(--color-menu-text-hover);
+}
+.active-menu-btn {
+  background-color: var(--color-menu-background-active);
+  color: var(--color-menu-text-active);
+}
+.active-menu-btn:hover {
+  background-color: var(--color-menu-background-active);
+  color: var(--color-menu-text-active);
+}

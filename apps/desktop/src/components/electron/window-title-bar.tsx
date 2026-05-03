@@ -16,12 +16,17 @@ export const WindowTitleBar = () => {
   const [canGoForward, setCanGoForward] = useState(false);
 
   useEffect(() => {
-    // Current history index tracking
-    const historyState = window.history.state;
-    const currentIdx = historyState?.idx || 0;
+    const updateHistoryState = () => {
+      const historyState = window.history.state;
+      const currentIdx = historyState?.idx ?? 0;
 
-    setCanGoBack(currentIdx > 0);
-    setCanGoForward(currentIdx < window.history.length - 1);
+      setCanGoBack(currentIdx > 0);
+      setCanGoForward(currentIdx < window.history.length - 1);
+    };
+
+    // Small timeout to ensure history state is updated after location change
+    const timeout = setTimeout(updateHistoryState, 0);
+    return () => clearTimeout(timeout);
   }, [location]);
 
   useEffect(() => {
@@ -64,7 +69,7 @@ export const WindowTitleBar = () => {
           onClick={() => navigate(-1)}
           disabled={!canGoBack}
           className={`rounded-l-md size-6 px-0 bg-transparent! hover:bg-white/10! ${
-            !canGoBack ? "text-white/20! cursor-pointer!" : "text-white"
+            !canGoBack ? "text-white/20! cursor-default!" : "text-white cursor-pointer!"
           }`}
         >
           <ChevronLeft size={16} />
@@ -74,7 +79,7 @@ export const WindowTitleBar = () => {
           onClick={() => navigate(1)}
           disabled={!canGoForward}
           className={`rounded-r-md size-6 px-0 bg-transparent! hover:bg-white/10! ${
-            !canGoForward ? "text-white/20! cursor-pointer!" : "text-white"
+            !canGoForward ? "text-white/20! cursor-default!" : "text-white cursor-pointer!"
           }`}
         >
           <ChevronRight size={16} />

@@ -1,4 +1,4 @@
-import { Btn, Flex } from "@/src/components/base";
+import { Flex } from "@/src/components/base";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import {
   LayoutDashboard,
@@ -12,6 +12,8 @@ import {
   Settings,
 } from "lucide-react";
 import { ROUTES } from "../route.config";
+import { MenuBtn } from "@/src/components/app";
+import { cn } from "@/src/utils";
 
 export const AppLayout = () => {
   const navigate = useNavigate();
@@ -79,56 +81,45 @@ export const AppLayout = () => {
         <Flex
           direction="column"
           justify="between"
-          className="w-72 bg-dark-c1 rounded-xl border border-white/5 h-full p-4 transition-all hover:border-white/10"
+          className={cn(
+            "w-max bg-dark-c1 rounded-lg border border-chalk-10 h-full p-2.5",
+            "md:w-60 md:p-4",
+          )}
         >
           {/* Top Section: Menu */}
-          <div className="flex flex-col gap-1.5 flex-1 overflow-y-auto pr-2 custom-scrollbar">
+          <Flex direction="column" className="gap-1.5 w-full overflow-y-auto ">
             {nav.map(item => {
               const isActive = location.pathname === item.link;
               return (
-                <Btn
+                <MenuBtn
                   key={item.id}
                   onClick={() => navigate(item.link)}
-                  variant="menu"
-                  
-                >
-                  <span
-                    className={`${isActive ? "text-violet-c1" : "opacity-80"}`}
-                  >
-                    {item.icon}
-                  </span>
-                  <span className="whitespace-nowrap">{item.name}</span>
-                </Btn>
+                  name={item.name}
+                  icon={item.icon}
+                  isActive={isActive}
+                />
               );
             })}
-          </div>
+          </Flex>
 
           {/* Bottom Section: Settings */}
-          <div className="flex flex-col gap-1.5 pt-4 border-t border-white/5">
-            <div
+          <Flex
+            direction="column"
+            className=" w-full ap-1.5 pt-4 mt-4 border-t border-chalk-20"
+          >
+            <MenuBtn
               onClick={() => navigate(ROUTES.setting)}
-              className={`
-                flex items-center gap-3 px-4 py-2.5 rounded-lg cursor-pointer transition-all duration-200 
-                text-sm font-bold capitalize tracking-widest
-                ${
-                  location.pathname === ROUTES.setting
-                    ? "bg-violet-c1/10 text-violet-c1 border border-violet-c1/20"
-                    : "opacity-60 hover:opacity-100 hover:bg-white/5 border border-transparent hover:border-white/5"
-                }
-              `}
-            >
-              <span className="opacity-80">
-                <Settings size={18} />
-              </span>
-              <span className="whitespace-nowrap">Settings</span>
-            </div>
-          </div>
+              name={"Settings"}
+              icon={<Settings size={18} />}
+              isActive={location.pathname === ROUTES.setting}
+            />
+          </Flex>
         </Flex>
 
         {/* MAIN CONTENT AREA */}
         <Flex
           direction="column"
-          className="flex-1 bg-dark-c1 rounded-xl border border-white/5 p-8 h-full overflow-y-auto relative group"
+          className="flex-1 bg-dark-c1 rounded-lg border border-chalk-10 p-4 h-full overflow-y-auto relative group"
         >
           <Outlet />
         </Flex>
@@ -139,9 +130,9 @@ export const AppLayout = () => {
         direction="row"
         items="center"
         justify="between"
-        className="h-16 bg-dark-c1 rounded-xl w-full border border-white/5 px-6 text-xs font-black uppercase tracking-widest"
+        className=" bg-dark-c1 rounded-lg w-full border border-chalk-10 p-4 text-xs"
       >
-        <span>Status: Online</span>
+       
       </Flex>
     </Flex>
   );
