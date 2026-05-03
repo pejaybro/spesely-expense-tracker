@@ -82,8 +82,8 @@ export const AppLayout = () => {
           direction="column"
           justify="between"
           className={cn(
-            "w-max bg-dark-c1 rounded-lg border border-chalk-10 h-full p-2.5",
-            "md:w-60 md:p-4",
+            "w-max bg-dark-c1 rounded-lg border border-chalk-10 h-full p-2",
+            "md:w-60 md:p-2",
           )}
         >
           {/* Top Section: Menu */}

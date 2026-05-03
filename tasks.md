@@ -1,4 +1,3 @@
-1. set font sizes
-2. complete button comp styles
-3. decide thickness of font to be used
-4. set windows title buttons
+1. toottip custom - like spotify
+2. collaspe animation -> on/off
+3. menu title with icon -> on collaspe only icon -> on click icon toggle collaspe menu
