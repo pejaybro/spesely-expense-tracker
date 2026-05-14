@@ -1,38 +1,18 @@
-## 1. Input Component
-- [x] Basic Styling (Grayscale)
-- [x] Label Support (Top/Left/Right)
-- [x] Required Indicator
-- [x] Icon Support (Left/Right)
-- [ ] Clickable Icons (onLeftIconClick/onRightIconClick)
-- [ ] Clearable support (with X icon)
-- [ ] Animated / Floating Placeholder
+# Specialized Form Components Task List
 
-- [ ] Sizing Variants (sm/md/lg)
-
-### Input Types & Specializations
-- [x] Text (Standard)
-- [x] Password (with Visibility Toggle, Caps Lock, Strength Meter)
-- [x] Number (Simple, Amount, Phone variants with formatting)
-- [ ] Search (Optimized icons/clear)
-- [ ] Date / Time (Picker styling)
-- [/] File (Custom Upload UI & Previews)
-- [x] Email (Validation & Icons)
-- [x] Tel / URL
-
-## 2. Text Area Component
-
-- [ ] Basic Styling
-- [ ] Auto-resize support
-
-## 3. Radio Component
-- [ ] Basic Styling
-
-## 4. Switch Toggle Component
-- [ ] Basic Styling
-
-## 5. Checkbox Component
-- [ ] Basic Styling
-
----
-## Misc / Later
-- [ ] Collapse animation (on/off)
+- [x] Create Base Input Component
+- [x] Implement Email Input with validation
+- [x] Implement Password Input with visibility toggle
+- [x] Implement Number & Amount Input
+- [x] Implement Phone Input (Format aware)
+- [x] Implement File Input (Drag & Drop)
+- [x] Implement URL Input (Regex validated)
+- [x] Build Elite Checkbox (Shapes, Tristate, Custom Themes)
+- [x] Build CheckboxGroup (Single/Multi, Directional)
+- [x] Build Premium Switch (Custom math, snappy animation)
+- [ ] Build Radio Button Group (Premium aesthetics)
+- [ ] Build Date Picker (Custom calendar UI)
+- [ ] Build Time Picker (Wheel or Grid style)
+- [ ] Build Color Picker (Visual selector)
+- [ ] Build Range Slider (Custom track & thumb)
+- [ ] Build Search Input (With dynamic results logic)
