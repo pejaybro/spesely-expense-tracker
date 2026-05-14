@@ -15,4 +15,10 @@ export { dayjs as default } from "../../packages/lib";
  *? Props and types
  *============================================
  */
-export type { FlexProps, ButtonProps, GridProps, GridCols } from "types";
+export type {
+  FlexProps,
+  ButtonProps,
+  GridProps,
+  GridCols,
+  Provider,
+} from "types";
