@@ -1,163 +1,160 @@
-import React, { useRef } from "react";
+import React, { useState } from "react";
 import { cn } from "@/src/utils";
-import { X } from "lucide-react";
 
 interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "prefix"> {
-  label?: React.ReactNode;
-  labelDirection?: "top" | "left" | "right";
-  leftIcon?: React.ReactNode;
-  rightIcon?: React.ReactNode;
-  onLeftIconClick?: () => void;
-  onRightIconClick?: () => void;
+  label?: string;
+  description?: string;
   error?: string;
-  success?: string | boolean;
-  containerClassName?: string;
+  icon?: React.ReactNode;
+  rightIcon?: React.ReactNode;
   prefix?: React.ReactNode;
-  clearable?: boolean;
+  suffix?: React.ReactNode;
+  onRightIconClick?: (e: React.MouseEvent) => void;
+  variant?: "rounded" | "curved" | "square" | "floating";
+  labelDirection?: 
+    | "label-left" | "label-left-top" | "label-left-bottom"
+    | "label-right" | "label-right-top" | "label-right-bottom"
+    | "label-top" | "label-top-right" | "label-top-center";
+  labelWidth?: string;
+  labelAlign?: "left" | "center" | "right";
+  labelGap?: string;
 }
 
+export const Input = React.forwardRef<HTMLInputElement, InputProps>(
+  ({ 
+    label, 
+    description, 
+    error, 
+    icon, 
+    rightIcon,
+    prefix,
+    suffix,
+    onRightIconClick,
+    variant = "rounded", 
+    labelDirection = "label-top",
+    labelWidth = "w-32",
+    labelAlign,
+    labelGap = "gap-1.5",
+    className, 
+    onFocus,
+    onBlur,
+    ...props 
+  }, ref) => {
+    const [isFocused, setIsFocused] = useState(false);
+    
+    const isFloating = variant === "floating";
+    const hasValue = props.value !== undefined && props.value !== "";
+    const isActive = isFocused || hasValue;
 
+    const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+      setIsFocused(true);
+      onFocus?.(e);
+    };
 
+    const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+      setIsFocused(false);
+      onBlur?.(e);
+    };
 
+    const isSideLabel = labelDirection.startsWith("label-left") || labelDirection.startsWith("label-right");
+    const alignment = labelAlign || (
+      labelDirection.includes("-left") ? "left" : 
+      labelDirection.includes("-right") ? "right" : 
+      labelDirection.includes("-center") ? "center" : "left"
+    );
 
-export const Input = ({
-  label,
-  labelDirection = "top",
-  leftIcon,
-  rightIcon,
-  onLeftIconClick,
-  onRightIconClick,
-  error,
-  success,
-  className,
-  containerClassName,
-  id,
-  prefix,
-  clearable,
-  ...props
-}: InputProps) => {
-  const inputId = id || React.useId();
-  const inputRef = useRef<HTMLInputElement>(null);
+    const radiusClass = 
+      variant === "square" ? "rounded-none" : 
+      variant === "curved" ? "rounded-lg" : "rounded-xl";
 
-  const handleClear = () => {
-    if (inputRef.current) {
-      const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
-        window.HTMLInputElement.prototype,
-        "value"
-      )?.set;
-      nativeInputValueSetter?.call(inputRef.current, "");
-      const event = new Event("input", { bubbles: true });
-      inputRef.current.dispatchEvent(event);
-      
-      // Also trigger onChange for React
-      const changeEvent = {
-        target: inputRef.current,
-        currentTarget: inputRef.current,
-      } as React.ChangeEvent<HTMLInputElement>;
-      props.onChange?.(changeEvent);
-    }
-  };
-
-  return (
-    <div
-      className={cn(
-        "flex w-full gap-1.5",
-        labelDirection === "top" && "flex-col",
-        labelDirection === "left" && "flex-row items-center",
-        labelDirection === "right" && "flex-row-reverse items-center",
-        containerClassName
-      )}
-    >
-      {label && (
-        <label
-          htmlFor={inputId}
-          className={cn(
-            "text-sm font-medium text-black dark:text-white shrink-0",
-            labelDirection === "top" && "ml-1",
-            labelDirection === "left" && "mr-2",
-            labelDirection === "right" && "ml-2"
-          )}
-        >
-          {label}
-          {props.required && <span className="text-red-500 ml-1">*</span>}
-        </label>
-      )}
-
-      <div className="flex flex-col flex-1 gap-1">
-        <div
-          className={cn(
-            "flex items-center w-full h-10 px-3 rounded-xl border bg-white dark:bg-black transition-all duration-200 ease-in-out focus-within:ring-2 focus-within:ring-sky-500/20 focus-within:border-sky-500",
-            "border-gray-200 dark:border-gray-800",
-            error && "border-red-500 focus-within:border-red-500 focus-within:ring-red-500/20",
-            success && !error && "border-green-500 focus-within:border-green-500 focus-within:ring-green-500/20"
-          )}
-        >
-          {prefix && (
-            <div className="mr-2 pr-2 border-r border-gray-100 dark:border-gray-800 h-1/2 flex items-center text-sm font-semibold text-gray-500">
-              {prefix}
+    return (
+      <div className={cn("flex w-full", labelGap, isSideLabel ? "flex-row" : "flex-col", className)}>
+        {/* Standard Label (Non-Floating) */}
+        {label && !isFloating && (
+          <div className={cn("flex flex-col", isSideLabel ? "shrink-0" : "w-full", labelDirection.endsWith("-top") && isSideLabel && "mt-1.5")}>
+            <div className={cn(
+              isSideLabel ? labelWidth : "w-full", 
+              "flex flex-col", 
+              alignment === "left" && "items-start text-left", 
+              alignment === "right" && "items-end text-right", 
+              alignment === "center" && "items-center text-center"
+            )}>
+              <span className="text-sm font-semibold tracking-tight text-black dark:text-white uppercase">{label}</span>
+              {description && <span className="text-[11px] text-gray-400 font-medium mt-0.5">{description}</span>}
             </div>
-          )}
-          {leftIcon && (
+          </div>
+        )}
 
-            <div
+        <div className="flex-1 relative group">
+          {/* Floating Label */}
+          {label && isFloating && (
+            <span 
               className={cn(
-                "mr-2 text-gray-400 shrink-0",
-                onLeftIconClick && "cursor-pointer hover:text-black dark:hover:text-white transition-colors"
+                "absolute transition-all duration-200 pointer-events-none font-bold uppercase tracking-tight z-10 block truncate",
+                isActive 
+                  ? "-top-2.5 left-3 right-auto text-[10px] bg-white dark:bg-black px-1.5 text-sky-500 max-w-[calc(100%-1.5rem)]" 
+                  : cn(
+                      "top-1/2 -translate-y-1/2 text-[13px] text-gray-400",
+                      icon ? "left-11 right-8" : "left-4 right-4"
+                    )
               )}
-              onClick={onLeftIconClick}
             >
-              {leftIcon}
-            </div>
+              {label}
+            </span>
           )}
-          <input
-            id={inputId}
-            className={cn(
-              "w-full h-full bg-transparent text-sm text-black dark:text-white placeholder:text-gray-400 outline-none",
-              "[&::-ms-reveal]:hidden [&::-ms-clear]:hidden",
-              className
+
+          <div className="relative flex items-center">
+            {icon && (
+              <div className={cn(
+                "absolute left-4 text-gray-400 transition-colors",
+                isFocused ? "text-black dark:text-white" : ""
+              )}>
+                {icon}
+              </div>
             )}
-            ref={inputRef}
-            {...props}
-          />
-
-          {(rightIcon || (clearable && props.value)) && (
-            <div
+            <input
+              ref={ref}
+              {...props}
+              onFocus={handleFocus}
+              onBlur={handleBlur}
               className={cn(
-                "ml-2 text-gray-400 shrink-0 flex items-center gap-2",
-                (onRightIconClick || clearable) && "cursor-pointer"
+                "w-full h-11 bg-white dark:bg-black border-2 text-[13px] font-semibold text-black dark:text-white transition-all duration-200 outline-none",
+                radiusClass,
+                (icon || prefix) ? "pl-11" : "px-4",
+                (rightIcon || suffix) ? "pr-11" : ((icon || prefix) ? "" : "px-4"),
+                isFocused ? "border-sky-500 ring-4 ring-sky-500/10" : "border-gray-100 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-600",
+                error ? "border-red-500 ring-4 ring-red-500/10" : "",
+                isFloating && "placeholder:opacity-0 focus:placeholder:opacity-100"
               )}
-            >
-              {clearable && props.value && (
-                <button
-                  type="button"
-                  onClick={handleClear}
-                  className="hover:text-red-500 transition-colors"
-                >
-                  <X size={16} />
-                </button>
-              )}
-              {rightIcon && (
-                <div onClick={onRightIconClick} className="hover:text-black dark:hover:text-white transition-colors">
-                  {rightIcon}
-                </div>
-              )}
-            </div>
-          )}
-
+            />
+            {prefix && (
+              <div className="absolute left-4 text-gray-400 font-semibold pointer-events-none">
+                {prefix}
+              </div>
+            )}
+            {suffix && (
+              <div className="absolute right-4 text-gray-400 font-semibold pointer-events-none">
+                {suffix}
+              </div>
+            )}
+            {rightIcon && (
+              <div 
+                onClick={onRightIconClick}
+                className={cn(
+                  "absolute right-4 text-gray-400 transition-colors",
+                  onRightIconClick ? "cursor-pointer hover:text-black dark:hover:text-white" : "",
+                  isFocused ? "text-black dark:text-white" : ""
+                )}
+              >
+                {rightIcon}
+              </div>
+            )}
+          </div>
+          {error && <span className="text-[10px] font-bold text-red-500 mt-1.5 ml-1 block animate-in fade-in slide-in-from-top-1">{error}</span>}
         </div>
-        {error && (
-          <span className="text-xs text-red-500 ml-1 font-medium">{error}</span>
-        )}
-        {success && !error && typeof success === "string" && (
-          <span className="text-xs text-green-500 ml-1 font-medium">
-            {success}
-          </span>
-        )}
-
       </div>
-    </div>
-  );
-};
+    );
+  }
+);
 
-
-
+Input.displayName = "Input";

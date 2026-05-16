@@ -13,7 +13,8 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": path.resolve(__dirname),
-      utils: path.resolve(__dirname, "../../utils"),
+      utils: path.resolve(__dirname, "../../packages/lib"),
+
       types: path.resolve(__dirname, "../../packages/types"),
     },
   },

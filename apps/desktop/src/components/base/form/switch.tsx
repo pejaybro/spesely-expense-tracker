@@ -5,11 +5,16 @@ interface SwitchProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 
   label?: string;
   description?: string;
   error?: string;
-  variant?: "default" | "card";
-  activeColor?: string; // Track color when ON
-  inactiveColor?: string; // Track color when OFF
-  thumbColor?: string; // The "ball" color
-  borderColor?: string; // Track border color
+  labelDirection?: 
+    | "label-left" | "label-left-top" | "label-left-bottom"
+    | "label-right" | "label-right-top" | "label-right-bottom"
+    | "label-top" | "label-top-right" | "label-top-center";
+  labelWidth?: string;
+  labelAlign?: "left" | "center" | "right";
+  labelGap?: string;
+  activeColor?: string; 
+  inactiveColor?: string; 
+  thumbColor?: string; 
   onChange?: (checked: boolean) => void;
 }
 
@@ -17,11 +22,13 @@ export const Switch = ({
   label,
   description,
   error,
-  variant = "default",
-  activeColor = "bg-emerald-500",
-  inactiveColor = "bg-gray-300 dark:bg-gray-700",
-  thumbColor = "bg-white",
-  borderColor = "border-transparent",
+  labelDirection = "label-right",
+  labelWidth,
+  labelAlign,
+  labelGap = "gap-4",
+  activeColor = "bg-black dark:bg-white",
+  inactiveColor = "bg-gray-100 dark:bg-gray-800",
+  thumbColor = "bg-white dark:bg-black",
   onChange,
   className,
   id,
@@ -46,20 +53,33 @@ export const Switch = ({
     onChange?.(nextState);
   };
 
+  const isSideLabel = labelDirection.startsWith("label-left") || labelDirection.startsWith("label-right");
+
+  const alignment = labelAlign || (
+    labelDirection.includes("-left") ? "left" : 
+    labelDirection.includes("-right") ? "right" : 
+    labelDirection.includes("-center") ? "center" : "left"
+  );
+
   return (
-    <div className={cn("flex flex-col gap-1.5", variant === "card" && "w-full")}>
+    <div className={cn("flex flex-col gap-1.5", className)}>
       <label
         htmlFor={switchId}
         onClick={handleToggle}
         className={cn(
-          "group flex items-start gap-4 cursor-pointer select-none transition-all duration-200",
-          variant === "card" && "p-4 rounded-2xl border-2 border-gray-100 dark:border-gray-800 hover:border-emerald-500/30",
-          variant === "card" && isChecked && "border-emerald-500 bg-emerald-50/30 dark:bg-emerald-500/5",
-          props.disabled && "opacity-50 cursor-not-allowed",
-          className
+          "group flex cursor-pointer select-none transition-all duration-200",
+          labelGap,
+          isSideLabel ? "flex-row" : "flex-col",
+          (labelDirection === "label-left" || labelDirection === "label-right") && "items-center",
+          labelDirection.endsWith("-top") && "items-start pt-0.5",
+          labelDirection.endsWith("-bottom") && "items-end",
+          alignment === "center" && "items-center text-center",
+          labelDirection.startsWith("label-left") && "flex-row-reverse justify-between w-full",
+          labelDirection.startsWith("label-right") && "flex-row justify-between w-full",
+          props.disabled && "opacity-50 cursor-not-allowed"
         )}
       >
-        <div className="relative flex items-center shrink-0 mt-0.5">
+        <div className="relative flex items-center shrink-0">
           <input
             {...props}
             type="checkbox"
@@ -69,52 +89,58 @@ export const Switch = ({
             readOnly
           />
           
-          {/* Track */}
           <div
             className={cn(
-              "w-[46px] h-6 px-[1.5px] flex items-center rounded-full transition-all duration-200 ease-in-out border-[1.5px]",
+              "w-[44px] h-[24px] rounded-full transition-all duration-200 ease-in-out p-1",
               isChecked ? activeColor : inactiveColor,
-              isChecked ? activeColor.replace("bg-", "border-") : borderColor,
-              "peer-focus-visible:ring-2 peer-focus-visible:ring-emerald-500/40 peer-focus-visible:ring-offset-2 dark:peer-focus-visible:ring-offset-black"
+              "peer-focus-visible:ring-2 peer-focus-visible:ring-black/40 dark:peer-focus-visible:ring-white/40"
             )}
           >
-            {/* Thumb */}
             <div
               className={cn(
-                "w-[18px] h-[18px] rounded-full shadow-sm transition-all duration-200 ease-in-out transform",
+                "w-[16px] h-[16px] rounded-full shadow-sm transition-all duration-200 ease-in-out transform",
                 thumbColor,
-                isChecked ? "translate-x-[22px]" : "translate-x-0"
+                isChecked ? "translate-x-[20px]" : "translate-x-0"
               )}
             />
           </div>
-
-
-
-
-
-
-
-
-
         </div>
 
-        <div className="flex flex-col gap-0.5 min-w-0">
-          {label && (
-            <span className="text-sm font-bold text-black dark:text-white">
-              {label}
-              {props.required && <span className="text-red-500 ml-1">*</span>}
-            </span>
+        <div 
+          className={cn(
+            "flex flex-col gap-0.5 min-w-0",
+            isSideLabel ? (labelWidth || "flex-1") : "w-full",
+            alignment === "left" && "items-start text-left",
+            alignment === "right" && "items-end text-right",
+            alignment === "center" && "items-center text-center"
           )}
-          {description && (
-            <span className="text-xs text-gray-400 leading-tight">
-              {description}
-            </span>
-          )}
+        >
+          <div className={cn(
+            labelWidth ? labelWidth : "w-full", 
+            "flex flex-col", 
+            alignment === "left" && "items-start", 
+            alignment === "right" && "items-end", 
+            alignment === "center" && "items-center"
+          )}>
+            {label && (
+              <span className="text-sm font-bold text-black dark:text-white whitespace-normal break-words w-full">
+                {label}
+                {props.required && <span className="text-red-500 ml-1 font-black">*</span>}
+              </span>
+            )}
+            {description && (
+              <span className="text-xs text-gray-500 leading-tight whitespace-normal break-words w-full">
+                {description}
+              </span>
+            )}
+          </div>
         </div>
       </label>
 
       {error && (
-        <span className="text-xs text-red-500 ml-1 font-medium">{error}</span>
+        <span className="text-xs font-bold text-red-500 ml-1 italic tracking-tight animate-in fade-in slide-in-from-top-1">
+          {error}
+        </span>
       )}
     </div>
   );

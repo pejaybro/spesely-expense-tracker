@@ -1,201 +1,173 @@
 import React, { useState, useEffect } from "react";
-import { Check, X as CrossIcon } from "lucide-react";
 import { cn } from "@/src/utils";
+import { Check, Minus } from "lucide-react";
 
-interface CheckboxProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "type" | "onChange"> {
+interface CheckboxProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "onChange"> {
   label?: string;
   description?: string;
   error?: string;
-  variant?: "default" | "card";
-  shape?: "rounded" | "circle" | "square";
-  checkStyle?: "filled" | "simple" | "none";
-  color?: "default" | "dark";
+  shape?: "square" | "rounded" | "circle";
+  color?: "default" | "primary" | "success" | "warning" | "danger";
   activeColor?: string;
   checkColor?: string;
-  icon?: "check" | "cross";
+  labelDirection?: 
+    | "label-left" | "label-left-top" | "label-left-bottom"
+    | "label-right" | "label-right-top" | "label-right-bottom"
+    | "label-top" | "label-top-right" | "label-top-center";
+  labelWidth?: string;
+  labelAlign?: "left" | "center" | "right";
+  labelGap?: string;
+  icon?: "check" | "minus";
   isTristate?: boolean;
-
-  tristateValue?: "checked" | "unchecked" | "rejected";
-  onTristateChange?: (value: "checked" | "unchecked" | "rejected") => void;
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  tristateValue?: boolean | null;
+  onTristateChange?: (value: boolean | null) => void;
+  onChange?: (checked: boolean) => void;
 }
 
 export const Checkbox = ({
   label,
   description,
   error,
-  variant = "default",
   shape = "rounded",
-  checkStyle = "filled",
   color = "default",
-  activeColor,
-  checkColor,
+  activeColor = "bg-black dark:bg-white",
+  checkColor = "text-white dark:text-black",
+  labelDirection = "label-right",
+  labelWidth,
+  labelAlign,
+  labelGap = "gap-4",
   icon = "check",
   isTristate = false,
-
-  tristateValue,
+  tristateValue = null,
   onTristateChange,
   onChange,
   className,
   id,
   ...props
 }: CheckboxProps) => {
+
   const checkboxId = id || React.useId();
-  
-  const [internalValue, setInternalValue] = useState<"checked" | "unchecked" | "rejected">(
-    tristateValue || (props.checked ? "checked" : props.defaultChecked ? "checked" : "unchecked")
-  );
+  const [internalChecked, setInternalChecked] = useState(props.checked || props.defaultChecked || false);
 
   useEffect(() => {
-    if (tristateValue) {
-      setInternalValue(tristateValue);
-    } else if (props.checked !== undefined) {
-      setInternalValue(props.checked ? "checked" : "unchecked");
+    if (props.checked !== undefined) {
+      setInternalChecked(props.checked);
     }
-  }, [tristateValue, props.checked]);
+  }, [props.checked]);
 
   const handleToggle = (e: React.MouseEvent | React.KeyboardEvent) => {
     if (props.disabled) return;
     e.preventDefault();
 
-    let nextValue: "checked" | "unchecked" | "rejected";
-    
     if (isTristate) {
-      if (internalValue === "unchecked") nextValue = "checked";
-      else if (internalValue === "checked") nextValue = "rejected";
-      else nextValue = "unchecked";
-    } else {
-      nextValue = internalValue === "checked" ? "unchecked" : "checked";
-    }
-
-    setInternalValue(nextValue);
-    
-    if (isTristate) {
+      let nextValue: boolean | null;
+      if (tristateValue === null) nextValue = true;
+      else if (tristateValue === true) nextValue = false;
+      else nextValue = null;
       onTristateChange?.(nextValue);
     } else {
-      const isNowChecked = nextValue === "checked";
-      const event = {
-        target: { ...props, type: "checkbox", checked: isNowChecked, id: checkboxId },
-        currentTarget: { ...props, type: "checkbox", checked: isNowChecked, id: checkboxId },
-      } as unknown as React.ChangeEvent<HTMLInputElement>;
-      onChange?.(event);
+      const nextChecked = !internalChecked;
+      setInternalChecked(nextChecked);
+      if (onChange) {
+        onChange(nextChecked);
+      }
     }
   };
 
-  const isChecked = internalValue === "checked";
-  const isRejected = internalValue === "rejected";
-  const isAnyChecked = internalValue !== "unchecked";
+  const isChecked = isTristate ? tristateValue !== null : internalChecked;
+  const isSideLabel = labelDirection.startsWith("label-left") || labelDirection.startsWith("label-right");
 
-  // Decide which icon to show for the "Checked" state
-  const ActiveIcon = icon === "cross" ? CrossIcon : Check;
+  const alignment = labelAlign || (
+    labelDirection.includes("-left") ? "left" : 
+    labelDirection.includes("-right") ? "right" : 
+    labelDirection.includes("-center") ? "center" : "left"
+  );
 
   return (
-    <div className={cn("flex flex-col gap-1.5", variant === "card" && "w-full")}>
+    <div className={cn("flex flex-col gap-1.5", className)}>
       <label
         htmlFor={checkboxId}
         onClick={handleToggle}
         className={cn(
-          "group flex items-start gap-3 cursor-pointer select-none transition-all duration-200",
-          variant === "card" && "p-4 rounded-2xl border-2 border-gray-100 dark:border-gray-800 hover:border-sky-500/50",
-          variant === "card" && isChecked && (
-            activeColor ? `${activeColor} border-transparent text-white` :
-            color === "dark" 
-              ? "bg-black border-black text-white" 
-              : "border-sky-50 bg-sky-50/30 dark:bg-sky-500/5 border-sky-500"
-          ),
-          variant === "card" && isRejected && (
-            color === "dark" 
-              ? "bg-black border-black text-white" 
-              : "border-red-500 bg-red-50/30 dark:bg-red-500/5"
-          ),
-          props.disabled && "opacity-50 cursor-not-allowed",
-          className
+          "group flex cursor-pointer select-none transition-all duration-200",
+          labelGap,
+          isSideLabel ? "flex-row" : "flex-col",
+          (labelDirection === "label-left" || labelDirection === "label-right") && "items-center",
+          labelDirection.endsWith("-top") && "items-start pt-0.5",
+          labelDirection.endsWith("-bottom") && "items-end",
+          alignment === "center" && "items-center text-center",
+          labelDirection.startsWith("label-left") && "flex-row-reverse justify-between w-full",
+          labelDirection.startsWith("label-right") && "flex-row justify-between w-full",
+          props.disabled && "opacity-50 cursor-not-allowed"
         )}
       >
-        <div className="relative flex items-center justify-center shrink-0 mt-0.5">
+        <div className="relative flex items-center shrink-0">
           <input
             {...props}
             type="checkbox"
             id={checkboxId}
             className="peer sr-only"
-            checked={isAnyChecked}
+            checked={isTristate ? tristateValue === true : internalChecked}
             readOnly
           />
           
           <div
             className={cn(
-              "w-5 h-5 border-2 transition-all duration-200 flex items-center justify-center",
+              "w-5 h-5 flex items-center justify-center transition-all duration-200 border-2",
               shape === "rounded" && "rounded-md",
-              shape === "circle" && "rounded-full",
               shape === "square" && "rounded-none",
-              
-              // Base colors
-              "border-gray-200 dark:border-gray-800 bg-white dark:bg-black",
-              
-              // State colors (Checked or Rejected)
-              (isChecked || isRejected) && (
-                checkStyle === "simple" 
-                  ? (activeColor ? activeColor.replace("bg-", "border-") : (isRejected ? "border-black dark:border-white" : "border-black dark:border-white"))
-                  : (activeColor ? `${activeColor} ${activeColor.replace("bg-", "border-")}` : (color === "dark" ? "bg-black border-gray-700" : "bg-black dark:bg-white border-black dark:border-white"))
-              ),
-
-              // Background only case
-              (checkStyle === "none" && isAnyChecked) && (activeColor ? activeColor : (color === "dark" ? "bg-black border-gray-700" : "bg-black dark:bg-white border-black dark:border-white")),
-
-              "peer-focus-visible:ring-2 peer-focus-visible:ring-sky-500/40 peer-focus-visible:ring-offset-2 dark:peer-focus-visible:ring-offset-black",
-              "group-hover:border-black dark:group-hover:border-white"
+              shape === "circle" && "rounded-full",
+              isChecked 
+                ? cn(activeColor, activeColor.replace("bg-", "border-"))
+                : "border-gray-300 dark:border-gray-700 bg-transparent hover:border-gray-400 dark:hover:border-gray-600",
+              "peer-focus-visible:ring-2 peer-focus-visible:ring-black/40 dark:peer-focus-visible:ring-white/40"
             )}
-          />
-
-          {/* Render the appropriate icon based on state */}
-          {checkStyle !== "none" && (
-            <>
-              {isChecked && (
-                <ActiveIcon
-                  size={14}
-                  strokeWidth={4}
-                  className={cn(
-                    "absolute pointer-events-none transition-all duration-200 scale-100",
-                    checkColor ? checkColor : (
-                      checkStyle === "filled" 
-                        ? (color === "dark" ? "text-white" : "text-white dark:text-black") 
-                        : (icon === "cross" ? "text-red-500" : "text-black dark:text-white")
-                    )
-                  )}
-                />
-              )}
-              {isRejected && (
-                <CrossIcon
-                  size={14}
-                  strokeWidth={4}
-                  className={cn(
-                    "absolute pointer-events-none transition-all duration-200 scale-100",
-                    checkColor ? checkColor : (checkStyle === "filled" ? (color === "dark" ? "text-white" : "text-white dark:text-black") : "text-black dark:text-white")
-                  )}
-                />
-              )}
-
-            </>
-          )}
+          >
+            {isChecked && (
+              <span className={cn("animate-in zoom-in-50 duration-200", checkColor)}>
+                {isTristate && tristateValue === null ? null : (
+                  isTristate && tristateValue === false ? <Minus size={14} strokeWidth={4} /> : <Check size={14} strokeWidth={4} />
+                )}
+              </span>
+            )}
+          </div>
         </div>
 
-        <div className="flex flex-col gap-0.5 min-w-0">
-          {label && (
-            <span className="text-sm font-bold text-black dark:text-white">
-              {label}
-              {props.required && <span className="text-red-500 ml-1">*</span>}
-            </span>
+        <div 
+          className={cn(
+            "flex flex-col gap-0.5 min-w-0",
+            isSideLabel ? (labelWidth || "flex-1") : "w-full",
+            alignment === "left" && "items-start text-left",
+            alignment === "right" && "items-end text-right",
+            alignment === "center" && "items-center text-center"
           )}
-          {description && (
-            <span className="text-xs text-gray-500 leading-tight">
-              {description}
-            </span>
-          )}
+        >
+          <div className={cn(
+            labelWidth ? labelWidth : "w-full", 
+            "flex flex-col", 
+            alignment === "left" && "items-start", 
+            alignment === "right" && "items-end", 
+            alignment === "center" && "items-center"
+          )}>
+            {label && (
+              <span className="text-sm font-bold text-black dark:text-white whitespace-normal wrap-break-word w-full">
+                {label}
+                {props.required && <span className="text-red-500 ml-1 font-black">*</span>}
+              </span>
+            )}
+            {description && (
+              <span className="text-xs text-gray-500 leading-tight whitespace-normal wrap-break-word w-full">
+                {description}
+              </span>
+            )}
+          </div>
         </div>
       </label>
 
       {error && (
-        <span className="text-xs text-red-500 ml-1 font-medium">{error}</span>
+        <span className="text-xs font-bold text-red-500 ml-1 italic tracking-tight animate-in fade-in slide-in-from-top-1">
+          {error}
+        </span>
       )}
     </div>
   );

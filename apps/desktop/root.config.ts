@@ -9,6 +9,10 @@
  */
 
 export { dayjs as default } from "../../packages/lib";
+export * from "../../packages/lib";
+
+
+
 
 /**
  *============================================

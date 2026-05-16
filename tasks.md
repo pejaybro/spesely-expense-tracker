@@ -10,9 +10,13 @@
 - [x] Build Elite Checkbox (Shapes, Tristate, Custom Themes)
 - [x] Build CheckboxGroup (Single/Multi, Directional)
 - [x] Build Premium Switch (Custom math, snappy animation)
-- [ ] Build Radio Button Group (Premium aesthetics)
-- [ ] Build Date Picker (Custom calendar UI)
-- [ ] Build Time Picker (Wheel or Grid style)
+- [x] Build Radio Button Group (Premium aesthetics)
+- [x] Build Range Slider (Custom track & thumb)
+- [x] **Universal 9-Way Alignment Engine (Synced across all components)**
+- [x] **Modular Card Variant Architecture**
+
+- [x] Build Date Picker (Custom calendar UI, Hybrid Nav)
+- [/] Build Time Picker (Wheel or Grid style)
+
 - [ ] Build Color Picker (Visual selector)
-- [ ] Build Range Slider (Custom track & thumb)
 - [ ] Build Search Input (With dynamic results logic)
