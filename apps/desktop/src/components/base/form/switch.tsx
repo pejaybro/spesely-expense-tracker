@@ -123,13 +123,13 @@ export const Switch = ({
             alignment === "center" && "items-center"
           )}>
             {label && (
-              <span className="text-sm font-bold text-black dark:text-white whitespace-normal break-words w-full">
+              <span className="text-sm font-bold text-black dark:text-white whitespace-normal wrap-break-word w-full">
                 {label}
                 {props.required && <span className="text-red-500 ml-1 font-black">*</span>}
               </span>
             )}
             {description && (
-              <span className="text-xs text-gray-500 leading-tight whitespace-normal break-words w-full">
+              <span className="text-xs text-gray-500 leading-tight whitespace-normal wrap-break-word w-full">
                 {description}
               </span>
             )}
