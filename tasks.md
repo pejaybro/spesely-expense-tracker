@@ -18,5 +18,4 @@
 - [x] Build Date Picker (Custom calendar UI, Hybrid Nav)
 - [/] Build Time Picker (Wheel or Grid style)
 
-- [ ] Build Color Picker (Visual selector)
-- [ ] Build Search Input (With dynamic results logic)
+

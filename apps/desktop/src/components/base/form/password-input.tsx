@@ -116,14 +116,14 @@ export const PasswordInput = ({
                     "h-full flex-1 rounded-full transition-all duration-500",
                     strength >= step
                       ? getStrengthColor()
-                      : "bg-gray-200 dark:bg-gray-800"
+                      : "bg-gray-800"
                   )}
                 />
               ))}
             </div>
             <span
               className={cn(
-                "text-[10px] font-bold ml-2 uppercase",
+                "text-[10px] font-medium ml-2 uppercase",
                 strength > 0 ? "opacity-100" : "opacity-0"
               )}
             >
@@ -142,7 +142,7 @@ export const PasswordInput = ({
                   "w-3.5 h-3.5 rounded-full flex items-center justify-center border transition-all duration-300",
                   req.met
                     ? "bg-green-500 border-green-500"
-                    : "border-gray-300 dark:border-gray-700"
+                    : "border-gray-800"
                 )}
               >
                 {req.met && <Check size={10} className="text-white" />}
@@ -151,7 +151,7 @@ export const PasswordInput = ({
                 className={cn(
                   "text-[11px] transition-colors duration-300",
                   req.met
-                    ? "text-green-600 dark:text-green-400 font-medium"
+                    ? "text-green-500 font-medium"
                     : "text-gray-500"
                 )}
               >
@@ -163,21 +163,16 @@ export const PasswordInput = ({
       )}
 
       {showCapsLockWarning && isCapsLockOn && (
-        <span className="text-[10px] font-bold text-amber-600 ml-1 uppercase tracking-wider">
+        <span className="text-[10px] font-medium text-amber-600 ml-1 uppercase tracking-wider">
           ⚠️ Caps Lock is ON
         </span>
       )}
 
       {showWhitespaceWarning && /\s/.test(value) && (
-        <span className="text-[10px] font-bold text-red-500 ml-1 uppercase tracking-wider">
+        <span className="text-[10px] font-medium text-red-500 ml-1 uppercase tracking-wider">
           ⚠️ Password contains spaces
         </span>
       )}
     </div>
   );
 };
-
-
-
-
-

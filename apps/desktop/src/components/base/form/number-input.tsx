@@ -82,7 +82,7 @@ export const NumberInput = ({
       onChange={handleInternalChange}
 
       className={cn(
-        isNegativeValue && "text-red-500 font-semibold focus-within:border-red-500 focus-within:ring-red-500/20",
+        isNegativeValue && "text-red-500 font-medium focus-within:border-red-500 focus-within:ring-red-500/20",
         className
       )}
       rightIcon={

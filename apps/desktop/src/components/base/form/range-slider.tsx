@@ -91,7 +91,7 @@ export const RangeSlider = ({
             <div className="flex justify-between items-center w-full gap-4">
               <label
                 htmlFor={sliderId}
-                className="text-sm font-bold text-black dark:text-white cursor-pointer select-none whitespace-normal wrap-break-word"
+                className="text-sm font-medium text-black dark:text-white cursor-pointer select-none whitespace-normal wrap-break-word"
               >
                 {label}
               </label>
@@ -157,7 +157,7 @@ export const RangeSlider = ({
 
 
       {error && (
-        <span className="text-xs font-bold text-red-500 italic tracking-tight">
+        <span className="text-xs font-medium text-red-500 italic tracking-tight">
           {error}
         </span>
       )}

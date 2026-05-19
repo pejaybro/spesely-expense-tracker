@@ -180,7 +180,7 @@ export const FileInput = ({
                 <button
                   type="button"
                   onClick={triggerInput}
-                  className="h-full px-4 flex items-center text-xs font-bold bg-black dark:bg-white text-white dark:text-black hover:opacity-90 transition-opacity border-l border-gray-200 dark:border-gray-800"
+                  className="h-full px-4 flex items-center text-xs font-medium bg-black dark:bg-white text-white dark:text-black hover:opacity-90 transition-opacity border-l border-gray-200 dark:border-gray-800"
                 >
                   {file ? "Replace" : "Select a File"}
                 </button>
@@ -267,7 +267,7 @@ export const FileInput = ({
               dropzoneVariant === "square" ? "w-full px-2 items-center" : "items-start"
             )}>
               <span className={cn(
-                "text-sm font-bold text-black dark:text-white truncate block w-full",
+                "text-sm font-medium text-black dark:text-white truncate block w-full",
                 dropzoneVariant === "square" ? "text-center" : "text-left"
               )}>
                 {file.name}
@@ -303,7 +303,7 @@ export const FileInput = ({
               dropzoneVariant === "narrow" ? "items-start" : "items-center"
             )}>
 
-              <span className="text-sm font-bold text-black dark:text-white">
+              <span className="text-sm font-medium text-black dark:text-white">
                 {isDragging ? "Drop your file here" : "Click or drag to upload"}
               </span>
               <span className="text-xs text-gray-500">

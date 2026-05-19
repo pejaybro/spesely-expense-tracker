@@ -1,49 +1,64 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useLayoutEffect } from "react";
 import { cn } from "@/src/utils";
 
-interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "prefix"> {
+interface InputProps extends Omit<
+  React.InputHTMLAttributes<HTMLInputElement>,
+  "prefix"
+> {
   label?: string;
   description?: string;
   error?: string;
   icon?: React.ReactNode;
+  leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
   prefix?: React.ReactNode;
   suffix?: React.ReactNode;
   onRightIconClick?: (e: React.MouseEvent) => void;
-  variant?: "rounded" | "curved" | "square" | "floating";
-  labelDirection?: 
-    | "label-left" | "label-left-top" | "label-left-bottom"
-    | "label-right" | "label-right-top" | "label-right-bottom"
-    | "label-top" | "label-top-right" | "label-top-center";
+  variant?: "rounded" | "curved" | "square";
+  isFloating?: boolean;
+  labelPlacement?: "top" | "left" | "right";
   labelWidth?: string;
-  labelAlign?: "left" | "center" | "right";
-  labelGap?: string;
+  "labelAlign-X"?: "left" | "center" | "right";
+  "labelAlign-Y"?: "top" | "middle" | "bottom";
 }
 
 export const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ 
-    label, 
-    description, 
-    error, 
-    icon, 
-    rightIcon,
-    prefix,
-    suffix,
-    onRightIconClick,
-    variant = "rounded", 
-    labelDirection = "label-top",
-    labelWidth = "w-32",
-    labelAlign,
-    labelGap = "gap-1.5",
-    className, 
-    onFocus,
-    onBlur,
-    ...props 
-  }, ref) => {
+  (
+    {
+      label,
+      description,
+      error,
+      icon,
+      leftIcon,
+      rightIcon,
+      prefix,
+      suffix,
+      onRightIconClick,
+      variant = "curved",
+      isFloating = false,
+      labelPlacement = "top",
+      labelWidth = "w-32",
+      "labelAlign-X": labelAlignX,
+      "labelAlign-Y": labelAlignY = "middle",
+      className,
+      onFocus,
+      onBlur,
+      ...props
+    },
+    ref,
+  ) => {
     const [isFocused, setIsFocused] = useState(false);
-    
-    const isFloating = variant === "floating";
-    const hasValue = props.value !== undefined && props.value !== "";
+    const [internalHasContent, setInternalHasContent] = useState(!!props.defaultValue || !!props.value);
+    const [leftElementWidth, setLeftElementWidth] = useState(0);
+    const leftElementRef = useRef<HTMLDivElement>(null);
+
+    useLayoutEffect(() => {
+      if (leftElementRef.current) {
+        setLeftElementWidth(leftElementRef.current.offsetWidth);
+      }
+    }, [icon, leftIcon, prefix]);
+
+    const hasValue = (props.value !== undefined && props.value !== "") || (props.defaultValue !== undefined && props.defaultValue !== "") || internalHasContent;
     const isActive = isFocused || hasValue;
 
     const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
@@ -53,108 +68,164 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
 
     const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
       setIsFocused(false);
+      setInternalHasContent(e.target.value !== "");
       onBlur?.(e);
     };
 
-    const isSideLabel = labelDirection.startsWith("label-left") || labelDirection.startsWith("label-right");
-    const alignment = labelAlign || (
-      labelDirection.includes("-left") ? "left" : 
-      labelDirection.includes("-right") ? "right" : 
-      labelDirection.includes("-center") ? "center" : "left"
-    );
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      setInternalHasContent(e.target.value !== "");
+      props.onChange?.(e);
+    };
 
-    const radiusClass = 
-      variant === "square" ? "rounded-none" : 
-      variant === "curved" ? "rounded-lg" : "rounded-xl";
+    const isSideLabel = labelPlacement === "left" || labelPlacement === "right";
+
+    const xAlignment =
+      labelAlignX ||
+      (labelPlacement === "left"
+        ? "left"
+        : labelPlacement === "right"
+          ? "right"
+          : "left");
+
+    const yAlignmentClass =
+      labelAlignY === "top"
+        ? "items-start"
+        : labelAlignY === "bottom"
+          ? "items-end"
+          : "items-center";
+
+    const radiusClass =
+      variant === "square"
+        ? "rounded-none"
+        : variant === "curved"
+          ? "rounded-lg"
+          : variant === "rounded"
+            ? "rounded-full"
+            : "";
 
     return (
-      <div className={cn("flex w-full", labelGap, isSideLabel ? "flex-row" : "flex-col", className)}>
+      <div
+        className={cn(
+          "flex w-full",
+          labelPlacement === "top" && "flex-col gap-1.5",
+          labelPlacement === "left" && cn("flex-row gap-4", yAlignmentClass),
+          labelPlacement === "right" && cn("flex-row-reverse gap-4", yAlignmentClass),
+          className,
+        )}
+      >
         {/* Standard Label (Non-Floating) */}
         {label && !isFloating && (
-          <div className={cn("flex flex-col", isSideLabel ? "shrink-0" : "w-full", labelDirection.endsWith("-top") && isSideLabel && "mt-1.5")}>
-            <div className={cn(
-              isSideLabel ? labelWidth : "w-full", 
-              "flex flex-col", 
-              alignment === "left" && "items-start text-left", 
-              alignment === "right" && "items-end text-right", 
-              alignment === "center" && "items-center text-center"
-            )}>
-              <span className="text-sm font-semibold tracking-tight text-black dark:text-white uppercase">{label}</span>
-              {description && <span className="text-[11px] text-gray-400 font-medium mt-0.5">{description}</span>}
+          <div
+            className={cn(
+              "flex flex-col",
+              isSideLabel ? "shrink-0" : "w-full",
+              labelAlignY === "top" && isSideLabel && "mt-2.5",
+            )}
+          >
+            <div
+              className={cn(
+                isSideLabel ? labelWidth : "w-full",
+                "flex flex-col",
+                xAlignment === "left" && "items-start text-left",
+                xAlignment === "right" && "items-end text-right",
+                xAlignment === "center" && "items-center text-center",
+              )}
+            >
+              <span className="text-sm font-medium tracking-tight text-white">
+                {label}
+              </span>
+              {description && (
+                <span className="text-xs text-gray-400 font-medium mt-0.5">
+                  {description}
+                </span>
+              )}
             </div>
           </div>
         )}
 
-        <div className="flex-1 relative group">
-          {/* Floating Label */}
+        <div className="flex-1 flex flex-col relative group">
+          {/* Floating Label (Remains Absolute) */}
           {label && isFloating && (
-            <span 
+            <span
               className={cn(
-                "absolute transition-all duration-200 pointer-events-none font-bold uppercase tracking-tight z-10 block truncate",
-                isActive 
-                  ? "-top-2.5 left-3 right-auto text-[10px] bg-white dark:bg-black px-1.5 text-sky-500 max-w-[calc(100%-1.5rem)]" 
-                  : cn(
-                      "top-1/2 -translate-y-1/2 text-[13px] text-gray-400",
-                      icon ? "left-11 right-8" : "left-4 right-4"
-                    )
+                "absolute transition-all duration-200 pointer-events-none font-medium tracking-tight z-10 block truncate",
+                isActive
+                  ? "-top-4 left-6 right-auto text-sm bg-black px-1.5 text-sky-500 max-w-[calc(100%-1.5rem)]"
+                  : "top-1/2 -translate-y-1/2 text-md text-gray-400 px-4 left-0 right-0",
               )}
+              style={!isActive ? { paddingLeft: `${leftElementWidth}px` } : {}}
             >
               {label}
             </span>
           )}
 
-          <div className="relative flex items-center">
-            {icon && (
-              <div className={cn(
-                "absolute left-4 text-gray-400 transition-colors",
-                isFocused ? "text-black dark:text-white" : ""
-              )}>
-                {icon}
+          {/* New Dynamic Flex Container */}
+          <div
+            className={cn(
+              "flex items-center w-full bg-black border transition-all duration-200",
+              radiusClass,
+              isFocused
+                ? "border-sky-500 ring-4 ring-sky-500/10 shadow-lg"
+                : "border-gray-800 hover:border-gray-600",
+              error ? "border-red-500 ring-4 ring-red-500/10" : "",
+            )}
+          >
+            {/* Left Content Area */}
+            {(leftIcon || icon || prefix) && (
+              <div
+                ref={leftElementRef}
+                className="flex items-center pl-2.25 pr-2 text-gray-400 shrink-0"
+              >
+                {leftIcon || icon}
+                {prefix && <span className="font-medium">{prefix}</span>}
               </div>
             )}
+
             <input
               ref={ref}
               {...props}
               onFocus={handleFocus}
               onBlur={handleBlur}
+              onChange={handleChange}
+              placeholder={isFloating && !isActive ? "" : props.placeholder}
               className={cn(
-                "w-full h-11 bg-white dark:bg-black border-2 text-[13px] font-semibold text-black dark:text-white transition-all duration-200 outline-none",
-                radiusClass,
-                (icon || prefix) ? "pl-11" : "px-4",
-                (rightIcon || suffix) ? "pr-11" : ((icon || prefix) ? "" : "px-4"),
-                isFocused ? "border-sky-500 ring-4 ring-sky-500/10" : "border-gray-100 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-600",
-                error ? "border-red-500 ring-4 ring-red-500/10" : "",
-                isFloating && "placeholder:opacity-0 focus:placeholder:opacity-100"
+                "flex-1 bg-transparent border-none text-md text-white outline-none h-full py-2.5",
+                !(leftIcon || icon || prefix) && "pl-2",
+                !(rightIcon || suffix) && "pr-2",
               )}
             />
-            {prefix && (
-              <div className="absolute left-4 text-gray-400 font-semibold pointer-events-none">
-                {prefix}
-              </div>
-            )}
-            {suffix && (
-              <div className="absolute right-4 text-gray-400 font-semibold pointer-events-none">
-                {suffix}
-              </div>
-            )}
-            {rightIcon && (
-              <div 
-                onClick={onRightIconClick}
-                className={cn(
-                  "absolute right-4 text-gray-400 transition-colors",
-                  onRightIconClick ? "cursor-pointer hover:text-black dark:hover:text-white" : "",
-                  isFocused ? "text-black dark:text-white" : ""
+
+            {/* Right Content Area */}
+            {(rightIcon || suffix) && (
+              <div className="flex items-center pr-2.25 pl-2 text-gray-400 shrink-0">
+                {suffix && <span className="font-medium">{suffix}</span>}
+                {rightIcon && (
+                  <div
+                    onClick={onRightIconClick}
+                    className={cn(
+                      "transition-colors",
+                      onRightIconClick
+                        ? "cursor-pointer hover:text-white"
+                        : "",
+                      isFocused ? "text-white" : "",
+                    )}
+                  >
+                    {rightIcon}
+                  </div>
                 )}
-              >
-                {rightIcon}
               </div>
             )}
           </div>
-          {error && <span className="text-[10px] font-bold text-red-500 mt-1.5 ml-1 block animate-in fade-in slide-in-from-top-1">{error}</span>}
+
+          {error && (
+            <span className="text-xs font-medium text-red-500 mt-1.5 ml-1 block animate-in fade-in slide-in-from-top-1">
+              {error}
+            </span>
+          )}
         </div>
       </div>
     );
-  }
+  },
 );
 
 Input.displayName = "Input";
