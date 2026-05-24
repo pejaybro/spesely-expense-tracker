@@ -13,6 +13,7 @@ export * from "./card-switch";
 export * from "./date-picker";
 export * from "./time-picker";
 export * from "./date-range-picker";
+export * from "./time-range-picker";
 
 
 

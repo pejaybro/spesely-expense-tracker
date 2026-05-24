@@ -109,11 +109,9 @@ export const AmountInput = ({
       value={value}
       onChange={handleInternalChange}
       onBlur={handleBlur}
-      className={cn(
-
-        isNegativeValue && "text-red-500 font-medium focus-within:border-red-500 focus-within:ring-red-500/20",
-        className
-      )}
+      className={className}
+      wrapperClassName={cn(isNegativeValue && "border-red-500 ring-4 ring-red-500/10")}
+      inputClassName={cn(isNegativeValue && "text-red-500 font-medium")}
     />
   );
 };

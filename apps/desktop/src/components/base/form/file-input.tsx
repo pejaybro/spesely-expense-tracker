@@ -149,16 +149,16 @@ export const FileInput = ({
                 {props.required && <span className="text-red-500 ml-1">*</span>}
               </label>
             )}
-            <div 
-              className={cn(
-                "flex items-center w-full h-10 rounded-xl border bg-white dark:bg-black overflow-hidden transition-all duration-200 focus-within:ring-2 focus-within:ring-sky-500/20 focus-within:border-sky-500",
-                displayError ? "border-red-500" : "border-gray-200 dark:border-gray-800",
-                className
-              )}
-            >
+              <div 
+                className={cn(
+                  "flex items-center w-full h-10 rounded-xl border bg-black overflow-hidden transition-all duration-200 focus-within:ring-2 focus-within:ring-sky-500/20 focus-within:border-sky-500",
+                  displayError ? "border-red-500" : "border-gray-800",
+                  className
+                )}
+              >
               <div 
                 onClick={triggerInput}
-                className="flex-1 h-full flex items-center px-3 cursor-pointer truncate text-sm text-black dark:text-white"
+                className="flex-1 h-full flex items-center px-3 cursor-pointer truncate text-sm text-white"
               >
                 {file ? (
                   <span className="truncate">{file.name}</span>
@@ -180,7 +180,7 @@ export const FileInput = ({
                 <button
                   type="button"
                   onClick={triggerInput}
-                  className="h-full px-4 flex items-center text-xs font-medium bg-black dark:bg-white text-white dark:text-black hover:opacity-90 transition-opacity border-l border-gray-200 dark:border-gray-800"
+                  className="h-full px-4 flex items-center text-xs font-medium bg-white text-black hover:bg-gray-200 transition-colors border-l border-gray-800"
                 >
                   {file ? "Replace" : "Select a File"}
                 </button>
@@ -196,7 +196,7 @@ export const FileInput = ({
   return (
     <div className="flex flex-col w-full gap-1.5">
       {label && (
-        <label className="text-sm font-medium text-black dark:text-white ml-1">
+        <label className="text-sm font-medium text-white ml-1">
           {label}
           {props.required && <span className="text-red-500 ml-1">*</span>}
         </label>
@@ -220,11 +220,11 @@ export const FileInput = ({
         }}
 
         className={cn(
-          "group relative flex flex-col items-center justify-center w-full p-4 rounded-2xl border-2 border-dashed transition-all cursor-pointer outline-none focus-within:ring-2 focus-within:ring-sky-500/20 focus-within:border-sky-500",
-          "bg-gray-50 dark:bg-black hover:bg-gray-100 dark:hover:bg-gray-900",
-          file ? "border-sky-500 bg-sky-50/10" : "border-gray-200 dark:border-gray-800 hover:border-sky-500",
-          isDragging && "border-sky-500 bg-sky-100 dark:bg-sky-900/20",
-          displayError && "border-red-500 bg-red-50/10",
+          "group relative flex flex-col items-center justify-center w-full p-4 rounded-2xl border transition-all cursor-pointer outline-none focus-within:ring-2 focus-within:ring-sky-500/20 focus-within:border-sky-500",
+          "bg-black hover:bg-gray-900/50",
+          file ? "border-sky-500 bg-sky-500/10" : "border-gray-800 border-dashed hover:border-sky-500",
+          isDragging && "border-sky-500 bg-sky-900/20",
+          displayError && "border-red-500 bg-red-500/10",
           // Shape variants
           dropzoneVariant === "rectangle" && "min-h-[120px]",
           dropzoneVariant === "square" && "aspect-square",
@@ -251,7 +251,7 @@ export const FileInput = ({
             dropzoneVariant === "narrow" && "gap-2"
           )}>
             <div className={cn(
-              "rounded-xl bg-white dark:bg-gray-800 flex items-center justify-center text-sky-500 shadow-sm border border-gray-100 dark:border-gray-700 shrink-0",
+              "rounded-xl bg-gray-800 flex items-center justify-center text-sky-500 shadow-sm border border-gray-700 shrink-0",
               dropzoneVariant === "narrow" ? "w-8 h-8" : "w-12 h-12"
             )}>
               {file.type.startsWith("image/") ? (
@@ -267,7 +267,7 @@ export const FileInput = ({
               dropzoneVariant === "square" ? "w-full px-2 items-center" : "items-start"
             )}>
               <span className={cn(
-                "text-sm font-medium text-black dark:text-white truncate block w-full",
+                "text-sm font-medium text-white truncate block w-full",
                 dropzoneVariant === "square" ? "text-center" : "text-left"
               )}>
                 {file.name}
@@ -282,7 +282,7 @@ export const FileInput = ({
             <button
               type="button"
               onClick={handleClear}
-              className="p-2 rounded-full bg-gray-200 dark:bg-gray-800 hover:bg-red-500 hover:text-white transition-all shadow-sm cursor-pointer"
+              className="p-2 rounded-full bg-gray-800 hover:bg-red-500 hover:text-white transition-all shadow-sm cursor-pointer"
             >
               <X size={14} />
             </button>
@@ -293,7 +293,7 @@ export const FileInput = ({
             dropzoneVariant === "narrow" ? "flex-row w-full" : "flex-col"
           )}>
             <div className={cn(
-              "rounded-full bg-sky-100 dark:bg-sky-900/30 flex items-center justify-center text-sky-600 dark:text-sky-400 group-hover:scale-110 transition-transform shrink-0",
+              "rounded-full bg-sky-500/10 flex items-center justify-center text-sky-400 group-hover:scale-110 transition-transform shrink-0",
               dropzoneVariant === "narrow" ? "w-8 h-8" : "w-10 h-10"
             )}>
               <Upload size={dropzoneVariant === "narrow" ? 16 : 20} />
@@ -303,7 +303,7 @@ export const FileInput = ({
               dropzoneVariant === "narrow" ? "items-start" : "items-center"
             )}>
 
-              <span className="text-sm font-medium text-black dark:text-white">
+              <span className="text-sm font-medium text-white">
                 {isDragging ? "Drop your file here" : "Click or drag to upload"}
               </span>
               <span className="text-xs text-gray-500">

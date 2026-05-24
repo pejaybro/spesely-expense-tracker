@@ -8,6 +8,7 @@ interface CheckboxOption {
   value: string;
   description?: string;
   disabled?: boolean;
+  indicator?: React.ReactNode | "bullet" | "number";
 }
 
 interface CheckboxGroupProps {
@@ -127,37 +128,27 @@ export const CheckboxGroup = ({
                 ? internalValue === option.value
                 : Array.isArray(internalValue) && internalValue.includes(option.value);
 
-            let renderIndicator: React.ReactNode = null;
-            if (indicator === "dots") {
-              renderIndicator = <div className="w-1.5 h-1.5 rounded-full bg-white shrink-0" />;
-            } else if (indicator === "numbers") {
-              renderIndicator = (
-                <span className="text-sm font-bold text-gray-500 shrink-0 w-4 text-center">
-                  {index + 1}.
-                </span>
-              );
-            } else if (indicator !== undefined) {
-              renderIndicator = (
-                <div className="shrink-0 flex items-center justify-center text-sm font-medium text-gray-500">
-                  {indicator}
-                </div>
-              );
+            const optIndicator = option.indicator || indicator;
+            let indicatorNode = null;
+            if (optIndicator === "bullet" || optIndicator === "dots") {
+              indicatorNode = <div className="w-1.5 h-1.5 rounded-full bg-white shrink-0 mt-2" />;
+            } else if (optIndicator === "number" || optIndicator === "numbers") {
+              indicatorNode = <span className="text-sm font-bold text-gray-500 shrink-0 mt-0.5 w-4 text-center">{index + 1}.</span>;
+            } else if (optIndicator) {
+              indicatorNode = <div className="shrink-0 mt-0.5 flex items-center justify-center text-sm font-medium text-gray-500">{optIndicator}</div>;
             }
 
             return (
-              <div key={option.id || option.value || index} className="flex items-center gap-3 w-full">
-                {renderIndicator && (
-                  <div className="flex items-center justify-center shrink-0">
-                    {renderIndicator}
-                  </div>
-                )}
+              <div key={option.id || option.value || index} className="flex gap-3 items-start">
+                {indicatorNode}
                 <Checkbox
+                  id={option.id}
                   label={option.label}
                   description={option.description}
                   disabled={option.disabled}
                   checked={isChecked}
                   onChange={() => handleCheckboxChange(option.value)}
-                  className="flex-1 min-w-0"
+                  className="shrink-0 flex-1"
                 />
               </div>
             );

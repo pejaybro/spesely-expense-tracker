@@ -68,7 +68,7 @@ export const PhoneInput = ({
               onChange={handleCountryCodeChange}
               placeholder={includePlus ? "1" : countryCodePlaceholder}
               className={cn(
-                "bg-transparent outline-none text-black dark:text-white font-medium",
+                "bg-transparent outline-none text-white font-medium",
                 includePlus ? "w-8" : "w-12"
               )}
               maxLength={includePlus ? 4 : 5}

@@ -17,6 +17,8 @@ interface TextAreaProps
   allowResize?: "none" | "both" | "vertical" | "horizontal";
   showCount?: "characters" | "words" | "both" | "none";
   maxWordLimit?: number;
+  wrapperClassName?: string;
+  inputClassName?: string;
 }
 
 export const TextArea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
@@ -36,6 +38,8 @@ export const TextArea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
       allowResize = "none",
       showCount = "none",
       maxWordLimit,
+      wrapperClassName,
+      inputClassName,
       className,
       onFocus,
       onBlur,
@@ -172,6 +176,7 @@ export const TextArea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
                 ? "border-sky-500 ring-4 ring-sky-500/10 shadow-lg"
                 : "border-gray-800 hover:border-gray-600",
               error ? "border-red-500 ring-4 ring-red-500/10" : "",
+              wrapperClassName
             )}
           >
             <textarea
@@ -185,6 +190,7 @@ export const TextArea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
               className={cn(
                 "w-full bg-transparent border-none text-md text-white outline-none p-4",
                 autoResize && "overflow-hidden",
+                inputClassName
               )}
             />
 

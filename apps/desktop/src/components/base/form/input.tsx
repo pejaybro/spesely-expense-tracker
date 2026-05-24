@@ -20,6 +20,9 @@ interface InputProps extends Omit<
   labelWidth?: string;
   "labelAlign-X"?: "left" | "center" | "right";
   "labelAlign-Y"?: "top" | "middle" | "bottom";
+  wrapperClassName?: string;
+  inputClassName?: string;
+  countryCode?: string;
 }
 
 export const Input = React.forwardRef<HTMLInputElement, InputProps>(
@@ -40,7 +43,10 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
       labelWidth = "w-32",
       "labelAlign-X": labelAlignX,
       "labelAlign-Y": labelAlignY = "middle",
+      wrapperClassName,
+      inputClassName,
       className,
+      countryCode,
       onFocus,
       onBlur,
       ...props
@@ -51,6 +57,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
     const [internalHasContent, setInternalHasContent] = useState(!!props.defaultValue || !!props.value);
     const [leftElementWidth, setLeftElementWidth] = useState(0);
     const leftElementRef = useRef<HTMLDivElement>(null);
+    const prevValueRef = useRef(props.value?.toString() || props.defaultValue?.toString() || "");
 
     useLayoutEffect(() => {
       if (leftElementRef.current) {
@@ -73,6 +80,30 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      let val = e.target.value;
+
+      if (props.type === "number") {
+        val = val.replace(/[^0-9.]/g, "");
+        const parts = val.split(".");
+        if (parts.length > 2) val = parts[0] + "." + parts.slice(1).join("");
+        if (val.includes(".")) {
+          const [intP, decP] = val.split(".");
+          val = `${intP}.${decP.slice(0, 2)}`;
+        }
+        if (props.max !== undefined && Number(val) > Number(props.max)) {
+          val = prevValueRef.current;
+        }
+        e.target.value = val;
+      } else if (props.type === "tel") {
+        val = val.replace(/\D/g, "");
+        const maxLen = props.maxLength || 10;
+        if (val.length > maxLen) {
+          val = val.slice(0, maxLen);
+        }
+        e.target.value = val;
+      }
+
+      prevValueRef.current = e.target.value;
       setInternalHasContent(e.target.value !== "");
       props.onChange?.(e);
     };
@@ -168,22 +199,29 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
                 ? "border-sky-500 ring-4 ring-sky-500/10 shadow-lg"
                 : "border-gray-800 hover:border-gray-600",
               error ? "border-red-500 ring-4 ring-red-500/10" : "",
+              wrapperClassName
             )}
           >
             {/* Left Content Area */}
-            {(leftIcon || icon || prefix) && (
+            {(leftIcon || icon || prefix || countryCode) && (
               <div
                 ref={leftElementRef}
-                className="flex items-center pl-2.25 pr-2 text-gray-400 shrink-0"
+                className="flex items-center pl-2.25 pr-2 text-gray-400 shrink-0 gap-1.5"
               >
                 {leftIcon || icon}
-                {prefix && <span className="font-medium">{prefix}</span>}
+                {(prefix || countryCode) && (
+                  <span className={cn("font-medium", countryCode && "text-white font-bold tracking-wide")}>
+                    {countryCode || prefix}
+                  </span>
+                )}
               </div>
             )}
 
             <input
               ref={ref}
               {...props}
+              type={props.type === "number" || props.type === "tel" ? "text" : props.type}
+              inputMode={props.type === "number" ? "decimal" : props.type === "tel" ? "numeric" : props.inputMode}
               onFocus={handleFocus}
               onBlur={handleBlur}
               onChange={handleChange}
@@ -192,6 +230,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
                 "flex-1 bg-transparent border-none text-md text-white outline-none h-full py-2.5",
                 !(leftIcon || icon || prefix) && "pl-2",
                 !(rightIcon || suffix) && "pr-2",
+                inputClassName
               )}
             />
 

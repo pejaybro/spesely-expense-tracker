@@ -75,10 +75,8 @@ export const URLInput = ({
           props.rightIcon
         )
       }
-      className={cn(
-        value && !isValid && "focus-within:border-amber-500 focus-within:ring-amber-500/20",
-        className
-      )}
+      className={className}
+      wrapperClassName={cn(value && !isValid && "border-amber-500 ring-4 ring-amber-500/10")}
     />
   );
 };
