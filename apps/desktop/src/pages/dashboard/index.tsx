@@ -1,337 +1,214 @@
-import { useState } from "react";
-import { CheckboxGroup, RadioGroup } from "@/src/components/base";
-import { Settings, Bell } from "lucide-react";
+import { Btn, toast } from "@/src/components/base";
+import { CheckCircle, AlertCircle, AlertTriangle, Info, Sparkles, Gift, Zap, SendHorizontal } from "lucide-react";
 
 export const Dashboard = () => {
-  // CheckboxGroup States
-  const [chkDefault, setChkDefault] = useState<string[]>(["email", "push"]);
-  const [chkSingle, setChkSingle] = useState<string>("pro");
-  const [chkNumbered, setChkNumbered] = useState<string[]>([]);
-  const [chkDisabled, setChkDisabled] = useState<string[]>(["tos"]);
-
-  // RadioGroup States
-  const [radDefault, setRadDefault] = useState<string>("credit");
-  const [radDots, setRadDots] = useState<string>("standard");
-  const [radPlacement, setRadPlacement] = useState<string>("monthly");
-  const [radDisabled, setRadDisabled] = useState<string>("available");
-
-  // Options Definitions
-  const notificationOptions = [
-    {
-      value: "email",
-      label: "Email Notifications",
-      description: "Receive updates, billing info, and newsletters.",
-    },
-    {
-      value: "sms",
-      label: "SMS Alerts",
-      description: "Critical security notifications sent to your phone.",
-    },
-    {
-      value: "push",
-      label: "Push Notifications",
-      description: "Real-time updates directly in your browser or desktop app.",
-    },
-  ];
-
-  const planOptions = [
-    {
-      value: "free",
-      label: "Free Plan",
-      description: "Access basic expense tracking and monthly reports.",
-    },
-    {
-      value: "pro",
-      label: "Pro Subscription",
-      description: "Unlimited tracking, advanced analytics, and bank sync.",
-    },
-    {
-      value: "enterprise",
-      label: "Enterprise Tier",
-      description: "Team collaboration tools, dedicated support, and custom APIs.",
-    },
-  ];
-
-  const workflowOptions = [
-    { value: "fetch", label: "Retrieve Transaction Data", description: "Fetch raw logs from bank feed" },
-    { value: "parse", label: "Clean and Categorize", description: "Standardize fields and auto-tag categories" },
-    { value: "store", label: "Commit to Ledger", description: "Save immutable transaction records" },
-    { value: "notify", label: "Trigger Notifications", description: "Email alert on large debits" },
-  ];
-
-  const agreementOptions = [
-    {
-      value: "tos",
-      label: "Accept Terms of Service",
-      description: "Read and agree to our licensing rules.",
-    },
-    {
-      value: "privacy",
-      label: "Accept Privacy Policy",
-      description: "Required for data synchronization features.",
-    },
-    {
-      value: "marketing",
-      label: "Opt-in to Marketing Updates",
-      description: "We will only send high-quality updates once a month.",
-      disabled: true,
-    },
-  ];
-
-  const paymentOptions = [
-    {
-      value: "credit",
-      label: "Credit or Debit Card",
-      description: "Supports Visa, Mastercard, and American Express.",
-    },
-    {
-      value: "paypal",
-      label: "PayPal Account",
-      description: "Fast checkout using your saved credentials.",
-    },
-    {
-      value: "crypto",
-      label: "Cryptocurrency (BTC/ETH)",
-      description: "Secure, decentralized anonymous payment.",
-    },
-  ];
-
-  const shipmentOptions = [
-    { value: "economy", label: "Economy Ground", description: "Delivered in 5-7 business days." },
-    { value: "standard", label: "Standard Shipping", description: "Delivered in 3-4 business days." },
-    { value: "express", label: "Express Air", description: "Guaranteed 1-2 business days." },
-  ];
-
-  const cycleOptions = [
-    { value: "monthly", label: "Monthly Billing" },
-    { value: "annual", label: "Annual Billing (Save 20%)" },
-  ];
-
-  const availabilityOptions = [
-    { value: "available", label: "Online & Available", description: "Receive all task allocations immediately." },
-    { value: "busy", label: "Do Not Disturb", description: "Pause incoming sound alerts and banners." },
-    { value: "offline", label: "Offline", description: "Appear logged out to other workspace members.", disabled: true },
-  ];
-
   return (
     <div className="flex flex-col items-center justify-start p-8 min-h-screen w-full gap-8 overflow-y-auto bg-black text-white selection:bg-sky-500 selection:text-black">
       {/* Page Header */}
-      <div className="w-full max-w-6xl flex flex-col gap-2 border-b border-gray-900 pb-6">
+      <div className="w-full max-w-4xl flex flex-col gap-2 border-b border-gray-900 pb-6">
         <div className="flex items-center gap-3">
           <span className="px-3 py-1 text-xs font-semibold uppercase tracking-widest text-sky-400 bg-sky-950/40 border border-sky-800/30 rounded-full">
             Component Audit
           </span>
         </div>
         <h1 className="text-3xl font-extrabold tracking-tight text-white mt-1">
-          Form Group Variations
+          Toast Notification Showcase
         </h1>
         <p className="text-gray-400 text-sm max-w-2xl">
-          Visual and functional audit of CheckboxGroup and RadioGroup components supporting multiple alignments, dynamic prefixes/indicators, and states.
+          All triggers use a consistent object-based API. Every field is named explicitly so the call site is always self-documenting.
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full max-w-6xl">
-        
-        {/* ================= CHECKBOX GROUP VARIATIONS ================= */}
-        <div className="flex flex-col gap-8 p-6 bg-gray-950 border border-gray-900 rounded-2xl shadow-xl">
-          <div>
-            <div className="flex items-center gap-2">
-              <Bell className="text-sky-400" size={20} />
-              <h2 className="text-xl font-bold tracking-tight text-white">CheckboxGroup</h2>
+      {/* Toast Triggers */}
+      <div className="w-full max-w-4xl p-6 bg-gray-950 border border-gray-900 rounded-2xl shadow-xl flex flex-col gap-4">
+        <div>
+          <div className="flex items-center gap-2">
+            <Sparkles className="text-sky-400" size={20} />
+            <h2 className="text-xl font-bold tracking-tight text-white">Global Toast Notification System</h2>
+          </div>
+          <p className="text-xs text-gray-500 mt-1">
+            All values are passed as a single object. Success & Error show a close button, Warning & Info do not.
+          </p>
+        </div>
+
+        <div className="flex flex-wrap gap-3 mt-2">
+          {/* Success — with close */}
+          <Btn
+            onClick={() => toast.success({
+              title: "Transaction Committed",
+              description: "Expense record has been successfully saved to the database.",
+              showClose: true,
+            })}
+            className="rounded-lg bg-emerald-950/60 border border-emerald-850/30 hover:bg-emerald-900/50 text-emerald-400 hover:text-emerald-300 font-semibold text-xs transition-all px-4 py-2"
+          >
+            <CheckCircle size={14} className="mr-1" /> Success (With Close)
+          </Btn>
+
+          {/* Error — with close */}
+          <Btn
+            onClick={() => toast.error({
+              title: "Database Sync Failed",
+              description: "Unable to establish handshake with banking API. Retrying...",
+              showClose: true,
+            })}
+            className="rounded-lg bg-red-950/60 border border-red-850/30 hover:bg-red-900/50 text-red-400 hover:text-red-300 font-semibold text-xs transition-all px-4 py-2"
+          >
+            <AlertCircle size={14} className="mr-1" /> Error (With Close)
+          </Btn>
+
+          {/* Warning — no close */}
+          <Btn
+            onClick={() => toast.warning({
+              title: "Budget Cap Warned",
+              description: "You have exhausted 90% of your entertainment budget for May.",
+            })}
+            className="rounded-lg bg-amber-950/60 border border-amber-850/30 hover:bg-amber-900/50 text-amber-400 hover:text-amber-300 font-semibold text-xs transition-all px-4 py-2"
+          >
+            <AlertTriangle size={14} className="mr-1" /> Warning (No Close)
+          </Btn>
+
+          {/* Info — no close */}
+          <Btn
+            onClick={() => toast.info({
+              title: "Sync Complete",
+              description: "Categorization engine processed 14 new transactions.",
+            })}
+            className="rounded-lg bg-sky-950/60 border border-sky-850/30 hover:bg-sky-900/50 text-sky-400 hover:text-sky-300 font-semibold text-xs transition-all px-4 py-2"
+          >
+            <Info size={14} className="mr-1" /> Info (No Close)
+          </Btn>
+
+          {/* Custom — violet, default icon */}
+          <Btn
+            onClick={() => toast({
+              type: "custom",
+              title: "Premium Upgrade",
+              description: "Unlock bank accounts integration and advanced projections. Upgrade to Pro!",
+              showClose: true,
+            })}
+            className="rounded-lg bg-violet-950/60 border border-violet-800/30 hover:bg-violet-900/50 text-violet-400 hover:text-violet-300 font-semibold text-xs transition-all px-4 py-2"
+          >
+            <Sparkles size={14} className="mr-1" /> Custom Violet
+          </Btn>
+
+          {/* Custom — pink, custom Gift icon */}
+          <Btn
+            onClick={() => toast({
+              type: "custom",
+              title: "Weekly Reward!",
+              description: "You earned 500 bonus points for categorization streaks. Claim now!",
+              showClose: true,
+              icon: <Gift className="text-pink-400 shrink-0 mt-0.5" size={18} />,
+              borderColor: "border-pink-500/20",
+              bgGlow: "shadow-pink-500/5",
+              accentColor: "bg-pink-500",
+            })}
+            className="rounded-lg bg-pink-950/60 border border-pink-800/30 hover:bg-pink-900/50 text-pink-400 hover:text-pink-300 font-semibold text-xs transition-all px-4 py-2"
+          >
+            <Gift size={14} className="mr-1" /> Custom Pink + Icon
+          </Btn>
+
+          {/* Custom — full color override (yellow) */}
+          <Btn
+            onClick={() => toast({
+              type: "custom",
+              title: "Power Mode Activated",
+              description: "All analytics pipelines are now running at maximum capacity.",
+              showClose: true,
+              icon: <Zap className="text-yellow-300 shrink-0 mt-0.5" size={18} />,
+              bgColor: "bg-yellow-950/80",
+              borderColor: "border-yellow-500/20",
+              accentColor: "bg-yellow-400",
+              bgGlow: "shadow-yellow-500/5",
+              titleColor: "text-yellow-200",
+              descriptionColor: "text-yellow-100/60",
+            })}
+            className="rounded-lg bg-yellow-950/60 border border-yellow-800/30 hover:bg-yellow-900/50 text-yellow-400 hover:text-yellow-300 font-semibold text-xs transition-all px-4 py-2"
+          >
+            <Zap size={14} className="mr-1" /> Full Custom Colors (Yellow)
+          </Btn>
+        </div>
+      </div>
+      {/* Dismiss Demo Section */}
+      <div className="w-full max-w-4xl p-6 bg-gray-950 border border-gray-900 rounded-2xl shadow-xl flex flex-col gap-4">
+        <div>
+          <div className="flex items-center gap-2">
+            <SendHorizontal className="text-sky-400" size={20} />
+            <h2 className="text-xl font-bold tracking-tight text-white">Custom ID & Dismiss Patterns</h2>
+          </div>
+          <p className="text-xs text-gray-500 mt-1">
+            Two ways to dismiss a toast — via <code className="text-sky-400 bg-gray-900 px-1 rounded">toast.dismiss(id)</code> or by passing{" "}
+            <code className="text-sky-400 bg-gray-900 px-1 rounded">dismiss: "id"</code> inside the next toast object.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+          {/* Pattern 1 — toast.dismiss(id) */}
+          <div className="flex flex-col gap-2 p-4 bg-gray-900 border border-gray-800 rounded-xl">
+            <h3 className="text-xs font-semibold text-sky-400 uppercase tracking-widest">Pattern 1 — toast.dismiss(id)</h3>
+            <p className="text-xs text-gray-500 leading-relaxed">
+              Show an info toast with a custom ID, then manually call <code className="text-sky-300">toast.dismiss()</code> before showing the success.
+            </p>
+            <div className="flex gap-2 mt-1">
+              <Btn
+                onClick={() => toast.info({
+                  id: "form-submit",
+                  title: "Sending Report...",
+                  description: "Your expense report is being uploaded to the server.",
+                  duration: Infinity,
+                })}
+                className="rounded-lg bg-sky-950/60 border border-sky-800/30 hover:bg-sky-900/50 text-sky-400 font-semibold text-xs transition-all px-3 py-2"
+              >
+                <Info size={13} className="mr-1" /> Show Info
+              </Btn>
+              <Btn
+                onClick={() => {
+                  toast.dismiss("form-submit");
+                  toast.success({
+                    title: "Report Submitted!",
+                    description: "Your data was saved to the server successfully.",
+                    showClose: true,
+                  });
+                }}
+                className="rounded-lg bg-emerald-950/60 border border-emerald-800/30 hover:bg-emerald-900/50 text-emerald-400 font-semibold text-xs transition-all px-3 py-2"
+              >
+                <CheckCircle size={13} className="mr-1" /> Dismiss → Success
+              </Btn>
             </div>
-            <p className="text-xs text-gray-500 mt-1">Multi-value checkboxes wrapped inside layout and validation containers.</p>
           </div>
 
-          <div className="flex flex-col gap-8">
-            {/* 1. Default Multiple Selection */}
-            <div className="flex flex-col gap-3">
-              <h3 className="text-xs font-semibold text-sky-400 uppercase tracking-widest">
-                1. Standard Multi-Select
-              </h3>
-              <CheckboxGroup
-                label="Notification Subscriptions"
-                description="Choose the channels where you wish to receive updates"
-                options={notificationOptions}
-                value={chkDefault}
-                onChange={setChkDefault}
-              />
-              <div className="text-xs text-gray-600 bg-gray-950 border border-gray-900 rounded px-2.5 py-1.5 mt-1 self-start font-mono">
-                Selected values: {JSON.stringify(chkDefault)}
-              </div>
-            </div>
-
-            {/* 2. Single Selection Mode */}
-            <div className="flex flex-col gap-3">
-              <h3 className="text-xs font-semibold text-sky-400 uppercase tracking-widest">
-                2. Single-Selection Checkboxes
-              </h3>
-              <CheckboxGroup
-                label="Subscription Plan"
-                description="Selecting an option clears other selections (behaving like a radio group)"
-                type="single"
-                options={planOptions}
-                value={chkSingle}
-                onChange={setChkSingle}
-              />
-              <div className="text-xs text-gray-600 bg-gray-950 border border-gray-900 rounded px-2.5 py-1.5 mt-1 self-start font-mono">
-                Selected value: "{chkSingle}"
-              </div>
-            </div>
-
-            {/* 3. Numbered Options Indicator */}
-            <div className="flex flex-col gap-3">
-              <h3 className="text-xs font-semibold text-sky-400 uppercase tracking-widest">
-                3. Numbered Option Layout
-              </h3>
-              <CheckboxGroup
-                label="Required Deployment Steps"
-                description="Sequence steps are styled with integer prefixes"
-                indicator="numbers"
-                options={workflowOptions}
-                value={chkNumbered}
-                onChange={setChkNumbered}
-              />
-              <div className="text-xs text-gray-600 bg-gray-950 border border-gray-900 rounded px-2.5 py-1.5 mt-1 self-start font-mono">
-                Completed steps: {JSON.stringify(chkNumbered)}
-              </div>
-            </div>
-
-            {/* 4. Disabled Options and Left Alignment */}
-            <div className="flex flex-col gap-3">
-              <h3 className="text-xs font-semibold text-sky-400 uppercase tracking-widest">
-                4. Left Label Alignment & Disabled State
-              </h3>
-              <CheckboxGroup
-                label="Legal Audits"
-                description="Acceptance checklist"
-                labelPlacement="left"
-                labelWidth="w-40"
-                options={agreementOptions}
-                value={chkDisabled}
-                onChange={setChkDisabled}
-              />
-              <div className="text-xs text-gray-600 bg-gray-950 border border-gray-900 rounded px-2.5 py-1.5 mt-1 self-start font-mono">
-                Accepted: {JSON.stringify(chkDisabled)}
-              </div>
-            </div>
-
-            {/* 5. CheckboxGroup with Validation Error */}
-            <div className="flex flex-col gap-3">
-              <h3 className="text-xs font-semibold text-sky-400 uppercase tracking-widest">
-                5. Validation Error State
-              </h3>
-              <CheckboxGroup
-                label="Compliance Attestation"
-                description="Declare status under corporate policy"
-                options={[
-                  { value: "agree", label: "I confirm all reported transactions are business-related." }
-                ]}
-                error="You must certify compliance before proceeding to submit expense reports."
-              />
+          {/* Pattern 2 — dismiss field inside next toast */}
+          <div className="flex flex-col gap-2 p-4 bg-gray-900 border border-gray-800 rounded-xl">
+            <h3 className="text-xs font-semibold text-sky-400 uppercase tracking-widest">Pattern 2 — dismiss: "id" inside toast</h3>
+            <p className="text-xs text-gray-500 leading-relaxed">
+              Show an info toast with a custom ID, then pass <code className="text-sky-300">dismiss: "id"</code> inside the next toast — it auto-dismisses the first.
+            </p>
+            <div className="flex gap-2 mt-1">
+              <Btn
+                onClick={() => toast.info({
+                  id: "form-upload",
+                  title: "Uploading File...",
+                  description: "Your attachment is being processed by the server.",
+                  duration: Infinity,
+                })}
+                className="rounded-lg bg-sky-950/60 border border-sky-800/30 hover:bg-sky-900/50 text-sky-400 font-semibold text-xs transition-all px-3 py-2"
+              >
+                <Info size={13} className="mr-1" /> Show Info
+              </Btn>
+              <Btn
+                onClick={() => toast.success({
+                  dismiss: "form-upload",
+                  title: "Upload Complete!",
+                  description: "Your file was processed and stored successfully.",
+                  showClose: true,
+                })}
+                className="rounded-lg bg-emerald-950/60 border border-emerald-800/30 hover:bg-emerald-900/50 text-emerald-400 font-semibold text-xs transition-all px-3 py-2"
+              >
+                <CheckCircle size={13} className="mr-1" /> Auto-dismiss → Success
+              </Btn>
             </div>
           </div>
         </div>
-
-        {/* ================= RADIO GROUP VARIATIONS ================= */}
-        <div className="flex flex-col gap-8 p-6 bg-gray-950 border border-gray-900 rounded-2xl shadow-xl">
-          <div>
-            <div className="flex items-center gap-2">
-              <Settings className="text-sky-400" size={20} />
-              <h2 className="text-xl font-bold tracking-tight text-white">RadioGroup</h2>
-            </div>
-            <p className="text-xs text-gray-500 mt-1">Single-value selection radios wrapped inside layout and validation containers.</p>
-          </div>
-
-          <div className="flex flex-col gap-8">
-            {/* 1. Default Selection */}
-            <div className="flex flex-col gap-3">
-              <h3 className="text-xs font-semibold text-sky-400 uppercase tracking-widest">
-                1. Standard Radio Selection
-              </h3>
-              <RadioGroup
-                label="Payment Method"
-                description="Select how you want your invoices processed"
-                options={paymentOptions}
-                value={radDefault}
-                onChange={setRadDefault}
-              />
-              <div className="text-xs text-gray-600 bg-gray-950 border border-gray-900 rounded px-2.5 py-1.5 mt-1 self-start font-mono">
-                Active option: "{radDefault}"
-              </div>
-            </div>
-
-            {/* 2. Dots/Bullets List Indicator */}
-            <div className="flex flex-col gap-3">
-              <h3 className="text-xs font-semibold text-sky-400 uppercase tracking-widest">
-                2. Bullet List Indicator
-              </h3>
-              <RadioGroup
-                label="Delivery Speed"
-                description="Delivery estimations based on address profile"
-                indicator="dots"
-                options={shipmentOptions}
-                value={radDots}
-                onChange={setRadDots}
-              />
-              <div className="text-xs text-gray-600 bg-gray-950 border border-gray-900 rounded px-2.5 py-1.5 mt-1 self-start font-mono">
-                Active speed: "{radDots}"
-              </div>
-            </div>
-
-            {/* 3. Horizontal Right Alignment */}
-            <div className="flex flex-col gap-3">
-              <h3 className="text-xs font-semibold text-sky-400 uppercase tracking-widest">
-                3. Right Label Alignment
-              </h3>
-              <RadioGroup
-                label="Billing Plan"
-                description="Frequency of recurring charges"
-                labelPlacement="right"
-                labelWidth="w-36"
-                options={cycleOptions}
-                value={radPlacement}
-                onChange={setRadPlacement}
-              />
-              <div className="text-xs text-gray-600 bg-gray-950 border border-gray-900 rounded px-2.5 py-1.5 mt-1 self-start font-mono">
-                Cycle: "{radPlacement}"
-              </div>
-            </div>
-
-            {/* 4. Disabled Options */}
-            <div className="flex flex-col gap-3">
-              <h3 className="text-xs font-semibold text-sky-400 uppercase tracking-widest">
-                4. Disabled State & Description
-              </h3>
-              <RadioGroup
-                label="Workspace Presence"
-                description="Controls how you appear on workspace updates"
-                options={availabilityOptions}
-                value={radDisabled}
-                onChange={setRadDisabled}
-              />
-              <div className="text-xs text-gray-600 bg-gray-950 border border-gray-900 rounded px-2.5 py-1.5 mt-1 self-start font-mono">
-                Availability: "{radDisabled}"
-              </div>
-            </div>
-
-            {/* 5. RadioGroup with Validation Error */}
-            <div className="flex flex-col gap-3">
-              <h3 className="text-xs font-semibold text-sky-400 uppercase tracking-widest">
-                5. Validation Error State
-              </h3>
-              <RadioGroup
-                label="Authorize Autopay"
-                description="Enable direct debit for future billing periods"
-                options={[
-                  { value: "yes", label: "Yes, charge my card automatically each period." },
-                  { value: "no", label: "No, send an invoice manually each period." },
-                ]}
-                error="Selecting automatic billing authorization is required to enable trial accounts."
-              />
-            </div>
-          </div>
-        </div>
-
       </div>
     </div>
   );
