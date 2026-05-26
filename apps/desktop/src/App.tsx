@@ -2,6 +2,7 @@ import { RouterProvider } from "react-router-dom";
 import { router } from "./router";
 import { ToastContainer } from "./components/base";
 import { NotifyContainer } from "./components/base/notify";
+import { RenderRightClickMenu, RenderActionFeedback } from "./components/base/context-menu";
 
 function App() {
   return (
@@ -9,6 +10,8 @@ function App() {
       <RouterProvider router={router} />
       <ToastContainer />
       <NotifyContainer />
+      <RenderRightClickMenu />
+      <RenderActionFeedback />
     </>
   );
 }

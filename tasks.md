@@ -1,21 +1,17 @@
-# Specialized Form Components Task List
 
-- [x] Create Base Input Component
-- [x] Implement Email Input with validation
-- [x] Implement Password Input with visibility toggle
-- [x] Implement Number & Amount Input
-- [x] Implement Phone Input (Format aware)
-- [x] Implement File Input (Drag & Drop)
-- [x] Implement URL Input (Regex validated)
-- [x] Build Elite Checkbox (Shapes, Tristate, Custom Themes)
-- [x] Build CheckboxGroup (Single/Multi, Directional)
-- [x] Build Premium Switch (Custom math, snappy animation)
-- [x] Build Radio Button Group (Premium aesthetics)
-- [x] Build Range Slider (Custom track & thumb)
-- [x] **Universal 9-Way Alignment Engine (Synced across all components)**
-- [x] **Modular Card Variant Architecture**
 
-- [x] Build Date Picker (Custom calendar UI, Hybrid Nav)
-- [/] Build Time Picker (Wheel or Grid style)
+# Context Menu & Hover Card System
+
+- [x] Recursive rendering for infinite level submenus
+- [x] Submenu hover gap flicker fix using Floating UI `safePolygon`
+- [x] Left-click element-level menus (dropdown replacement)
+- [x] Centralized double-click action hook (`useDoubleClickAction`) and copy-cell handler
+- [ ] Group dividers (`type: "divider"`) for dividing menu action blocks
+- [ ] Conditional item rendering (`when?: boolean | (() => boolean)`)
+- [ ] Dismiss menu on `Escape`, container scroll, or window resize/blur
+- [ ] Implement `useHoverCard` hook for hover cards
+- [ ] Render custom JSX overlay aligned to hover coordinates
+- [ ] Integrate hover timer delays to prevent accidental triggers
+
 
 

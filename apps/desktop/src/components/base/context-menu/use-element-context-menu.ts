@@ -1,5 +1,5 @@
 import { useCallback, useRef } from "react";
-import { registerElementMenu } from "./element";
+import { registerElementMenu } from "./element-menu";
 import type { ContextMenuItem } from "./types";
 
 type Config<TPayload = unknown> = {

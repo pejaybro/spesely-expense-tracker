@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import { useContextMenuStore } from "./store";
-import { getPageContextMenu } from "./page";
+import { getPageContextMenu } from "./page-menu";
 import { BASE_MENU_RIGHT_CLICK } from "./constants";
-import { getElementContextMenu } from "./element";
+import { getElementContextMenu } from "./element-menu";
 
 export function useContextMenu() {
   const open = useContextMenuStore((s) => s.open);

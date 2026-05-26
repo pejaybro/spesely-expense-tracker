@@ -10,7 +10,7 @@ import {
   X,
 } from "lucide-react";
 import { cn } from "@/src/utils";
-import { Potral } from "../overlay/portal";
+import { Portal } from "../overlay/portal";
 
 function ToastItem({ toast }: { toast: ToastData }) {
   const [dragOffset, setDragOffset] = useState(0);
@@ -241,7 +241,7 @@ export function ToastContainer() {
   }, []);
 
   return (
-    <Potral>
+    <Portal>
       <div
         className="
           fixed top-4 right-4
@@ -253,6 +253,6 @@ export function ToastContainer() {
           <ToastItem key={toast.id} toast={toast} />
         ))}
       </div>
-    </Potral>
+    </Portal>
   );
 }

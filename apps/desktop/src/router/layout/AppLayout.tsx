@@ -18,10 +18,12 @@ import { ROUTES } from "../route.config";
 import { MenuBtn } from "@/src/components/app";
 import { cn } from "@/src/utils";
 import { useState, useLayoutEffect } from "react";
+import { useContextMenu } from "@/src/components/base/context-menu";
 
 export const AppLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  useContextMenu();
 
   const [expandMenu, setExpandMenu] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
