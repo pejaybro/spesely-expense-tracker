@@ -1,10 +1,10 @@
 import { createPortal } from "react-dom";
 import { useEffect, useState, type ReactNode } from "react";
 
-interface PotralProps {
+interface PortalProps {
   children: ReactNode;
 }
-export function Potral({ children }: PotralProps) {
+export function Portal({ children }: PortalProps) {
   const [container] = useState(document.createElement("div"));
   useEffect(() => {
     container.id = "dynamic-portal";

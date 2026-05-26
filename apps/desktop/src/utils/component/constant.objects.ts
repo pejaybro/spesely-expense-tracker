@@ -1,3 +1,4 @@
 export const APP_PROVIDER_TYPE = {
-  modal: "modal",
+  MODAL: "modal",
+  SIDE_PANEL: "side-panel",
 };

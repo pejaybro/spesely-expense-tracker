@@ -2,4 +2,4 @@ export * from "./layout";
 export * from "./button";
 export * from "./form";
 export * from "./toast";
-export * from "./Portal";
+export * from "./overlay";

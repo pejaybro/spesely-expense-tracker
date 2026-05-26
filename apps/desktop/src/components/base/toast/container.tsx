@@ -1,9 +1,16 @@
 import { useEffect, useState, useRef } from "react";
 import type { ToastData } from "./types";
 import { toastStore } from "./store";
-import { CheckCircle, AlertCircle, AlertTriangle, Info, Sparkles, X } from "lucide-react";
+import {
+  CheckCircle,
+  AlertCircle,
+  AlertTriangle,
+  Info,
+  Sparkles,
+  X,
+} from "lucide-react";
 import { cn } from "@/src/utils";
-import { Potral } from "../Portal";
+import { Potral } from "../overlay/portal";
 
 function ToastItem({ toast }: { toast: ToastData }) {
   const [dragOffset, setDragOffset] = useState(0);
@@ -153,24 +160,25 @@ function ToastItem({ toast }: { toast: ToastData }) {
       style={{
         transform: `translateX(${dragOffset}px)`,
         opacity: isDismissing ? 0 : opacity,
-        transition: isDragging ? "none" : "transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
+        transition: isDragging
+          ? "none"
+          : "transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
       }}
       className={cn(
         "relative overflow-hidden min-w-[320px] max-w-[400px] rounded-xl border backdrop-blur-md p-4 shadow-2xl flex gap-3 items-start",
         "select-none cursor-pointer active:cursor-grabbing",
-        isDismissing ? "animate-out fade-out slide-out-to-right duration-200" : "animate-in slide-in-from-right fade-in duration-300",
+        isDismissing
+          ? "animate-out fade-out slide-out-to-right duration-200"
+          : "animate-in slide-in-from-right fade-in duration-300",
         toast.bgColor ?? "bg-gray-950/95",
         borderColor,
         bgGlow,
-        toast.className
+        toast.className,
       )}
     >
       {accentColor && accentColor !== "bg-transparent" && (
         <div
-          className={cn(
-            "absolute left-0 top-0 bottom-0 w-[3px]",
-            accentColor
-          )}
+          className={cn("absolute left-0 top-0 bottom-0 w-[3px]", accentColor)}
         />
       )}
 
@@ -179,15 +187,28 @@ function ToastItem({ toast }: { toast: ToastData }) {
           {toast.icon}
         </div>
       ) : (
-        <Icon className={cn("shrink-0 mt-0.5 ml-1 pointer-events-none", iconColor)} size={18} />
+        <Icon
+          className={cn("shrink-0 mt-0.5 ml-1 pointer-events-none", iconColor)}
+          size={18}
+        />
       )}
 
       <div className="flex-1 flex flex-col gap-0.5 pointer-events-none">
-        <h3 className={cn("font-semibold text-sm tracking-tight leading-tight pr-4", toast.titleColor ?? "text-white")}>
+        <h3
+          className={cn(
+            "font-semibold text-sm tracking-tight leading-tight pr-4",
+            toast.titleColor ?? "text-white",
+          )}
+        >
           {toast.title}
         </h3>
         {toast.description && (
-          <p className={cn("text-xs font-medium mt-1 leading-normal", toast.descriptionColor ?? "text-gray-400")}>
+          <p
+            className={cn(
+              "text-xs font-medium mt-1 leading-normal",
+              toast.descriptionColor ?? "text-gray-400",
+            )}
+          >
             {toast.description}
           </p>
         )}
@@ -195,7 +216,7 @@ function ToastItem({ toast }: { toast: ToastData }) {
 
       {toast.showClose && (
         <button
-          onClick={(e) => {
+          onClick={e => {
             e.stopPropagation();
             setIsDismissing(true);
             setTimeout(() => {
@@ -228,7 +249,7 @@ export function ToastContainer() {
           flex flex-col gap-3
         "
       >
-        {toasts.map((toast) => (
+        {toasts.map(toast => (
           <ToastItem key={toast.id} toast={toast} />
         ))}
       </div>
