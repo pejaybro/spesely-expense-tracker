@@ -57,4 +57,10 @@
   40%, 60%            { opacity: 1; transform: scale(1); }
 }
 
+/* Custom override for pagination input border radius to match buttons */
+.border-radius-override {
+  border-radius: 8px !important;
+}
+
+
 
