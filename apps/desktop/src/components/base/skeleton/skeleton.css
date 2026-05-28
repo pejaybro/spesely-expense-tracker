@@ -1,0 +1,23 @@
+/* ─────────────────────────────────────────────────────────────
+   SKELETON SHIMMER SHINE ANIMS
+   ───────────────────────────────────────────────────────────── */
+
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton-shimmer-bg {
+  background: linear-gradient(
+    90deg,
+    #121214 25%,
+    #1a1a1e 37%,
+    #121214 63%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s infinite linear;
+}
