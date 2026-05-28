@@ -21,6 +21,7 @@ The `Input` component is a high-performance, premium text entry field featuring 
 | `rightIcon` | `ReactNode` | `undefined` | Icon displayed on the right. |
 | `prefix` | `ReactNode` | `undefined` | Element fixed to the left inside the box (e.g., "$"). |
 | `suffix` | `ReactNode` | `undefined` | Element fixed to the right inside the box (e.g., ".com"). |
+| `countryCode` | `string` | `undefined` | Fixed country code tag displayed on the left inside the box (e.g., "+1"). |
 
 ### 3. Layout & Alignment Props
 | Prop | Type | Default | Description |
