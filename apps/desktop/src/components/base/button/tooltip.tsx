@@ -87,7 +87,7 @@ export const Tooltip = ({
       <div
         ref={refs.setReference}
         {...getReferenceProps()}
-        className="w-full flex items-center"
+        className="w-full flex items-center min-w-0"
       >
         {children}
       </div>
@@ -100,7 +100,7 @@ export const Tooltip = ({
             style={floatingStyles}
             {...getFloatingProps()}
             className={cn(
-              "z-9999 px-2 py-1 text-xs font-medium text-tooltip-text bg-tooltip-background rounded-sm whitespace-nowrap pointer-events-none",
+              "z-9999 px-2 py-1 text-xs font-medium text-tooltip-text bg-tooltip-background rounded-sm max-w-xs whitespace-normal break-words pointer-events-none",
               isOpen ? "opacity-100 scale-100" : "opacity-0 scale-95",
               className,
             )}
