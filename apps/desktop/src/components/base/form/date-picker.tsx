@@ -386,6 +386,7 @@ export const DatePicker = ({
           </div>
         ) : (
           <button
+            type="button"
             ref={refs.setReference}
             {...getReferenceProps()}
             onFocus={() => setIsFocused(true)}

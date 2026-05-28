@@ -61,6 +61,8 @@ export interface MultiSelectInputProps {
   searchable?: boolean;
   /** Position of the search input: 'trigger' (direct typing in trigger) or 'dropdown' (input inside overlay) */
   searchPosition?: "trigger" | "dropdown";
+  /** Error state message or boolean flag */
+  error?: string | boolean;
 }
 
 // A helper component to conditionally display a tooltip only if the wrapped child is truncated
@@ -111,6 +113,7 @@ export function MultiSelectInput({
   showTooltip = false,
   searchable = false,
   searchPosition = "trigger",
+  error,
 }: MultiSelectInputProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
@@ -372,6 +375,7 @@ export function MultiSelectInput({
         className={cn(
           "flex items-center justify-between rounded-lg border text-sm select-none cursor-pointer outline-none transition-all duration-150 min-h-[42px] w-full",
           "bg-black border-gray-800 text-white hover:border-gray-600 focus-within:border-sky-500 focus-within:ring-4 focus-within:ring-sky-500/10",
+          error && "border-red-500 focus-within:border-red-500 focus-within:ring-red-500/10",
           (disabled || loading) && "opacity-50 pointer-events-none cursor-not-allowed border-zinc-900"
         )}
       >

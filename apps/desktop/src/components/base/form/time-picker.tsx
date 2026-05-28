@@ -340,6 +340,7 @@ export const TimePicker = ({
           </div>
         ) : (
           <button
+            type="button"
             ref={refs.setReference}
             {...getReferenceProps()}
             onFocus={() => setIsFocused(true)}

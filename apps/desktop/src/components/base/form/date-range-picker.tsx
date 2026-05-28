@@ -523,6 +523,7 @@ export const DateRangePicker = ({
           </div>
         ) : (
           <button
+            type="button"
             ref={refs.setReference}
             {...getReferenceProps()}
             onFocus={() => setIsFocused(true)}
