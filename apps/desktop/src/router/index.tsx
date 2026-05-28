@@ -1,6 +1,6 @@
 import { createHashRouter, Navigate } from "react-router-dom";
 import { WindowLayout } from "./layout/WindowLayout";
-import { AppLayout } from "./layout/AppLayout";
+import { AppLayoutV2 } from "./layout/AppLayoutV2";
 import { Dashboard } from "../pages/dashboard";
 import { Settings } from "../pages/settings";
 import { DailyExpense } from "../pages/daily-expense";
@@ -21,7 +21,7 @@ export const router = createHashRouter([
     path: "/",
     element: (
       <WindowLayout>
-        <AppLayout />
+        <AppLayoutV2 variant="hybrid" />
       </WindowLayout>
     ),
     children: [

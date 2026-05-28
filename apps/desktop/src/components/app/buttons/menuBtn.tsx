@@ -34,7 +34,7 @@ export const MenuBtn = ({
         className,
       )}
     >
-      <span>{icon}</span>
+      {icon && <span>{icon}</span>}
       <span
         className={cn("whitespace-nowrap", isMenuExpanded ? "block" : "hidden")}
       >
