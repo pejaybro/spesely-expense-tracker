@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Spinner, type SpinnerVariant } from "@/src/components/base/spinner";
 import { Pagination } from "@/src/components/base/pagination";
 import { NumberInput } from "@/src/components/base/form";
+import { Progress } from "@/src/components/base/progress";
 
 const VARIANTS: { key: SpinnerVariant; label: string; desc: string }[] = [
   { key: "ring",      label: "Ring",      desc: "Single arc rotating 360°" },
@@ -24,9 +25,18 @@ const PAGINATION_VARIANTS = [
   { key: "input",    label: "Input Jump",    desc: "Type a page number and hit Enter" },
 ] as const;
 
+const PROGRESS_VARIANTS = [
+  { key: "line",      label: "Line Fill",      desc: "Sleek solid background horizontal fill" },
+  { key: "striped",   label: "Striped Slide",  desc: "Diagonal violet stripes sliding continuously" },
+  { key: "gradient",  label: "Gradient Flow",  desc: "Multi-color smooth horizontal flow" },
+  { key: "segmented", label: "Segment Blocks", desc: "Discrete block segments auto-fitting in space" },
+  { key: "circle",    label: "Circular Ring",  desc: "SVG-based circular path drawing itself" },
+] as const;
+
 export const Dashboard = () => {
   const [activePage, setActivePage] = useState(3);
   const [demoNum, setDemoNum] = useState("42");
+  const [progressVal, setProgressVal] = useState(65);
   const totalPages = 12;
 
   const handleNext = () => setActivePage((p) => Math.min(p + 1, totalPages));
@@ -130,6 +140,82 @@ export const Dashboard = () => {
           <span className="text-[10px] text-zinc-600 mt-2">
             Current State Value: <code className="text-white font-mono bg-zinc-900 px-1 py-0.5 rounded">{demoNum}</code>
           </span>
+        </div>
+      </div>
+
+      {/* ── PROGRESS BAR SHOWCASE ── */}
+      <div className="w-full max-w-2xl flex flex-col gap-6">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div className="flex flex-col gap-1">
+            <h1 className="text-lg font-bold text-white tracking-tight">Progress Variants</h1>
+            <p className="text-zinc-500 text-xs">4 premium custom styles with interactive controllers</p>
+          </div>
+
+          {/* Interactive Controller */}
+          <div className="flex items-center gap-3 bg-zinc-950 border border-zinc-900 px-3.5 py-2 rounded-xl">
+            <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider">Control</span>
+            <input
+              type="range"
+              min="0"
+              max="100"
+              value={progressVal}
+              onChange={(e) => setProgressVal(Number(e.target.value))}
+              className="w-24 accent-white bg-zinc-800 cursor-pointer h-1 rounded"
+            />
+            <span className="text-xs font-bold font-mono text-white w-8 text-right">{progressVal}%</span>
+          </div>
+        </div>
+
+        {/* Showcase grid */}
+        <div className="flex flex-col gap-3">
+          {PROGRESS_VARIANTS.map(({ key, label, desc }) => (
+            <div
+              key={key}
+              className="flex items-center justify-between gap-6 p-4 bg-zinc-950 border border-zinc-900 rounded-2xl"
+            >
+              {/* Label */}
+              <div className="w-40 shrink-0">
+                <p className="text-xs font-semibold text-white">{label}</p>
+                <p className="text-[10px] text-zinc-500 leading-tight mt-0.5">{desc}</p>
+              </div>
+
+              {/* Component view */}
+              <div className="flex-1 flex justify-center items-center py-4 px-6 bg-zinc-900/50 rounded-xl border border-zinc-800/40 min-h-[56px]">
+                <div className="w-full flex items-center justify-center">
+                  {key === "circle" ? (
+                    <div className="flex gap-8 items-center">
+                      <div className="flex flex-col items-center gap-1.5">
+                        <Progress value={progressVal} variant="circle" showCircleLabel={true} />
+                        <span className="text-[8px] text-zinc-500 uppercase tracking-widest font-bold">With Label</span>
+                      </div>
+                      <div className="flex flex-col items-center gap-1.5">
+                        <Progress value={progressVal} variant="circle" showCircleLabel={false} />
+                        <span className="text-[8px] text-zinc-500 uppercase tracking-widest font-bold">No Label</span>
+                      </div>
+                    </div>
+                  ) : (
+                    <Progress
+                      value={progressVal}
+                      variant={key}
+                      showLabel={true}
+                      label={
+                        key === "line"
+                          ? "Database Sync"
+                          : key === "gradient"
+                          ? "Asset Flowing"
+                          : key === "striped"
+                          ? "Photoshop"
+                          : undefined
+                      }
+                      labelPosition={key === "line" ? "bottom" : "top"}
+                      height={key === "striped" ? 8 : 6}
+                    />
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 

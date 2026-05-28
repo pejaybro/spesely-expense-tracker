@@ -5,3 +5,5 @@ export * from "./toast";
 export * from "./overlay";
 export * from "./select-dropdown";
 export * from "./spinner";
+export * from "./pagination";
+export * from "./progress";
