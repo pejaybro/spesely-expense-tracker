@@ -18,19 +18,25 @@ import { ChevronRight } from "lucide-react";
 import { useContextMenuStore } from "./store";
 import { Portal } from "../overlay/portal";
 import { cn } from "@/src/utils";
-import type { ContextMenuItem } from "./types";
+import type { ContextMenuAction, ContextMenuItem } from "./types";
 
-// ─── Shared item classes (shadcn style) ─────────────────────────────────────
+// ─── Shared item classes ─────────────────────────────────────────────────────
 const itemBase =
   "relative flex items-center justify-between gap-2 rounded-md px-2 py-1.5 text-sm outline-none cursor-default select-none transition-colors duration-100";
 const itemActive = "bg-zinc-800 text-white";
 const itemDisabled = "text-zinc-600 pointer-events-none opacity-50";
 
+// ─── Divider ─────────────────────────────────────────────────────────────────
+function Divider({ id }: { id: string }) {
+  return <div key={id} className="my-1 h-px bg-zinc-800 mx-1" />;
+}
+
+// ─── Sub-menu item ────────────────────────────────────────────────────────────
 function SubMenuItem({
   item,
   close,
 }: {
-  item: ContextMenuItem;
+  item: ContextMenuAction;
   close: () => void;
 }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -42,7 +48,6 @@ function SubMenuItem({
     open: isOpen,
     onOpenChange: (open) => {
       setIsOpen(open);
-      // Close sibling submenus when this node opens
       if (open && tree) {
         tree.events.emit("close", { id: nodeId, parentId });
       }
@@ -65,7 +70,6 @@ function SubMenuItem({
 
   const { getReferenceProps, getFloatingProps } = useInteractions([hover]);
 
-  // Handle tree-level closing events to close nested submenus cleanly
   useEffect(() => {
     if (!tree) return;
     const handleClose = (payload: { id: string; parentId: string }) => {
@@ -84,7 +88,12 @@ function SubMenuItem({
       <div
         ref={refs.setReference}
         {...getReferenceProps()}
-        className={cn(itemBase, isOpen ? itemActive : "hover:bg-zinc-800", item.disabled && itemDisabled, "text-zinc-100")}
+        className={cn(
+          itemBase,
+          isOpen ? itemActive : "hover:bg-zinc-800",
+          item.disabled && itemDisabled,
+          "text-zinc-100",
+        )}
       >
         <span>{item.label}</span>
         <span className="flex items-center gap-1 text-zinc-400">
@@ -101,27 +110,7 @@ function SubMenuItem({
             {...getFloatingProps()}
             className="z-[10000] min-w-[160px] overflow-hidden rounded-md border border-zinc-800 bg-zinc-950 p-1 shadow-md"
           >
-            {item.children?.map((child) => {
-              if (child.children?.length) {
-                return <SubMenuItem key={child.id} item={child} close={close} />;
-              }
-
-              return (
-                <div
-                  key={child.id}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    if (child.disabled) return;
-                    child.onClick?.();
-                    close();
-                  }}
-                  className={cn(itemBase, "hover:bg-zinc-800 text-zinc-100", child.disabled && itemDisabled)}
-                >
-                  <span>{child.label}</span>
-                  {child.icon && <span className="text-zinc-500">{child.icon}</span>}
-                </div>
-              );
-            })}
+            {renderItems(item.children ?? [], close)}
           </div>
         </Portal>
       )}
@@ -129,11 +118,42 @@ function SubMenuItem({
   );
 }
 
+// ─── Shared item renderer (handles dividers + actions recursively) ────────────
+function renderItems(items: ContextMenuItem[], close: () => void) {
+  return items.map((item) => {
+    if (item.type === "divider") {
+      return <Divider key={item.id} id={item.id} />;
+    }
 
-// ─── Root menu content (nested inside FloatingTree) ─────────────────────────
+    if (item.children?.length) {
+      return <SubMenuItem key={item.id} item={item} close={close} />;
+    }
+
+    return (
+      <div
+        key={item.id}
+        onClick={(e) => {
+          e.stopPropagation();
+          if (item.disabled) return;
+          item.onClick?.();
+          close();
+        }}
+        className={cn(
+          itemBase,
+          "hover:bg-zinc-800 text-zinc-100",
+          item.disabled && itemDisabled,
+        )}
+      >
+        <span>{item.label}</span>
+        {item.icon && <span className="text-zinc-500">{item.icon}</span>}
+      </div>
+    );
+  });
+}
+
+// ─── Root menu content ────────────────────────────────────────────────────────
 function MainMenuContent() {
   const { isOpen, x, y, items, close } = useContextMenuStore();
-  const tree = useFloatingTree();
 
   const { refs, floatingStyles } = useFloating({
     placement: "bottom-start",
@@ -144,8 +164,6 @@ function MainMenuContent() {
     ],
     whileElementsMounted: autoUpdate,
   });
-
-
 
   useEffect(() => {
     if (isOpen) {
@@ -166,31 +184,13 @@ function MainMenuContent() {
         style={floatingStyles}
         className="z-[9999] min-w-[180px] overflow-hidden rounded-lg border border-zinc-800 bg-zinc-950 p-1 shadow-xl"
       >
-        {items.map((item) => {
-          if (item.children?.length) {
-            return <SubMenuItem key={item.id} item={item} close={close} />;
-          }
-
-          return (
-            <div
-              key={item.id}
-              onClick={() => {
-                if (item.disabled) return;
-                item.onClick?.();
-                close();
-              }}
-              className={cn(itemBase, "hover:bg-zinc-800 text-zinc-100", item.disabled && itemDisabled)}
-            >
-              <span>{item.label}</span>
-              {item.icon && <span className="text-zinc-500">{item.icon}</span>}
-            </div>
-          );
-        })}
+        {renderItems(items, close)}
       </div>
     </Portal>
   );
 }
 
+// ─── Public export ────────────────────────────────────────────────────────────
 export function RenderRightClickMenu() {
   const isOpen = useContextMenuStore((s) => s.isOpen);
   if (!isOpen) return null;

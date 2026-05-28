@@ -8,7 +8,7 @@
 - [x] Centralized double-click action hook (`useDoubleClickAction`) and copy-cell handler
 - [ ] Group dividers (`type: "divider"`) for dividing menu action blocks
 - [ ] Conditional item rendering (`when?: boolean | (() => boolean)`)
-- [ ] Dismiss menu on `Escape`, container scroll, or window resize/blur
+- [x] Dismiss menu on `Escape` keypress
 - [ ] Implement `useHoverCard` hook for hover cards
 - [ ] Render custom JSX overlay aligned to hover coordinates
 - [ ] Integrate hover timer delays to prevent accidental triggers

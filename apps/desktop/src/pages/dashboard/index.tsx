@@ -60,6 +60,24 @@ export const Dashboard = () => {
     openMenu(rect.right, rect.bottom, nestedMenuItems);
   };
 
+  // Divider demo items — right-click the dark area below
+  const dividerMenuItems = [
+    { id: "cut", label: "Cut", onClick: () => console.log("Cut") },
+    { id: "copy", label: "Copy", onClick: () => console.log("Copy") },
+    { id: "paste", label: "Paste", onClick: () => console.log("Paste") },
+    { id: "div-1", type: "divider" as const },
+    { id: "rename", label: "Rename", onClick: () => console.log("Rename") },
+    { id: "move", label: "Move to", onClick: () => console.log("Move") },
+    { id: "div-2", type: "divider" as const },
+    { id: "delete", label: "Delete", disabled: true, onClick: () => console.log("Delete") },
+  ];
+
+  const handleDividerAreaRightClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    openMenu(e.clientX, e.clientY, dividerMenuItems);
+  };
+
   // Centralized hook registry copy-cell call
   const doubleClickRef = useDoubleClickAction("copy-cell", {
     value: "double-click-btn-value@example.com",
@@ -103,6 +121,20 @@ export const Dashboard = () => {
           Click to open a menu with nested submenus: Share - Export -Send via
           Email - To Personal / To Work.
         </p>
+      </div>
+
+      {/* Divider demo — dark right-click area */}
+      <div className="w-full max-w-2xl p-6 bg-gray-950 border border-gray-900 rounded-2xl flex flex-col gap-3">
+        <h2 className="font-bold text-white">Divider Groups (Right Click)</h2>
+        <p className="text-xs text-gray-500">
+          Right-click inside the dark area below to see a grouped menu with divider separators.
+        </p>
+        <div
+          onContextMenu={handleDividerAreaRightClick}
+          className="w-full h-32 rounded-xl bg-zinc-950 border border-zinc-800 flex items-center justify-center text-zinc-600 text-xs select-none cursor-context-menu"
+        >
+          Right-click anywhere in here
+        </div>
       </div>
 
       {/* Double-click Action */}

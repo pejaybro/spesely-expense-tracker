@@ -52,13 +52,18 @@ export function useContextMenu() {
     };
 
     const handleClick = () => close();
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") close();
+    };
 
     window.addEventListener("contextmenu", handleRightClick);
     window.addEventListener("click", handleClick);
+    window.addEventListener("keydown", handleKeyDown);
 
     return () => {
       window.removeEventListener("contextmenu", handleRightClick);
       window.removeEventListener("click", handleClick);
+      window.removeEventListener("keydown", handleKeyDown);
     };
   }, [open, close]);
 }
