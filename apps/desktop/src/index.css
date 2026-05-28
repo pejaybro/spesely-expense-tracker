@@ -3,6 +3,7 @@
 @import "./style/base/color.css";
 @import "./style/custom-class.css";
 @import "./style/color-class.css";
+@import "./style/scrollbar.css";
 
 @keyframes fadeInOut {
   0% {

@@ -1,0 +1,75 @@
+/* ─────────────────────────────────────────────────────────────
+   CUSTOM SCROLLBAR — applied globally to every scrollable element
+   Works in Electron / Chromium (webkit-based engines)
+   ───────────────────────────────────────────────────────────── */
+
+/* [1] TRACK GROOVE — faint lane to indicate scrollable area */
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.04); /* ← faint groove; set to transparent to hide */
+  border-radius: 999px;
+}
+
+/* Scrollbar overall gutter size */
+::-webkit-scrollbar {
+  width: 8px;   /* ← total gutter width for vertical scrollbar  */
+  height: 8px;  /* ← total gutter height for horizontal scrollbar */
+}
+
+/* [2] THUMB — flat violet accent color
+   The transparent border creates equal inset spacing on all 4 sides.
+   background-clip: content-box clips the color to inside the border. */
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.20); /* ← muted grey-white thumb */
+  border-radius: 999px;
+  border: 2px solid transparent;         /* ← equal spacing on all 4 sides */
+  background-clip: content-box;
+}
+
+/* [3] HOVER — brighter thumb */
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.45); /* ← brighter white on hover */
+  background-clip: content-box;
+}
+
+/* [4] ACTIVE DRAG STATE — solid opaque accent when the user grabs & drags */
+::-webkit-scrollbar-thumb:active {
+  background: rgba(255, 255, 255, 0.70); /* ← near-solid white on drag */
+  background-clip: content-box;
+}
+
+/* Scrollbar buttons (the tiny arrows at each end) — hidden by default */
+::-webkit-scrollbar-button {
+  display: none; /* ← remove this line (or set display: block) to show arrows */
+  width: 0;
+  height: 0;
+}
+
+/* Corner piece where vertical + horizontal scrollbars meet */
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   OPTION A — Always visible (DEFAULT, currently active)
+   The scrollbar thumb is always shown when content overflows.
+   Nothing extra needed — this is the default behavior above.
+   ───────────────────────────────────────────────────────────── */
+
+/* ─────────────────────────────────────────────────────────────
+   OPTION B — Auto-hide: only show scrollbar on hover over the container
+   To activate: UNCOMMENT the block below and COMMENT OUT option A note.
+   This makes the thumb invisible until the user hovers the scrollable div.
+
+   *::-webkit-scrollbar-thumb {
+     background: transparent;
+     background-clip: content-box;
+   }
+   *:hover::-webkit-scrollbar-thumb {
+     background: rgba(255, 255, 255, 0.20);
+     background-clip: content-box;
+   }
+   *:hover::-webkit-scrollbar-thumb:hover {
+     background: rgba(255, 255, 255, 0.45);
+     background-clip: content-box;
+   }
+   ───────────────────────────────────────────────────────────── */

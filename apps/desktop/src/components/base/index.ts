@@ -4,3 +4,4 @@ export * from "./form";
 export * from "./toast";
 export * from "./overlay";
 export * from "./select-dropdown";
+export * from "./spinner";

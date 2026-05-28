@@ -415,7 +415,7 @@ export function MultiSelectInput({
                       onChange?.([], []);
                       setSearchQuery("");
                     }}
-                    className="text-[10px] text-zinc-500 hover:text-white shrink-0 font-medium outline-none transition-colors"
+                    className="shrink-0 text-[10px] font-semibold text-zinc-400 hover:text-white bg-zinc-900 border border-zinc-800 hover:bg-zinc-850 hover:border-zinc-700 rounded px-1.5 py-0.5 outline-none transition-all duration-150 active:scale-95 cursor-pointer"
                     tabIndex={-1}
                   >
                     Clear all
