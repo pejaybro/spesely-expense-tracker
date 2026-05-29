@@ -1,16 +1,49 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Input } from "./input";
-
 import { Plus, Minus } from "lucide-react";
 import { cn } from "@/src/utils";
 
+/*
+ * ============================================================================
+ * Types & Interfaces
+ * ============================================================================
+ */
+
 interface NumberInputProps extends React.ComponentProps<typeof Input> {
+  /* Controls visibility of right-side increment/decrement steppers */
   showSteppers?: boolean;
+  /* Value delta to apply when stepping up or down */
   step?: number;
-  min?: number;
-  max?: number;
+  /* Minimum value constraint */
+  min?: string | number;
+  /* Maximum value constraint */
+  max?: string | number;
+  /* Allows typing and submitting negative values */
   allowNegative?: boolean;
+  /* Max number of decimal places allowed (undefined for unlimited) */
+  decimalScale?: number;
 }
+
+/*
+ * ============================================================================
+ * Style Theme Configuration
+ * ============================================================================
+ */
+
+const NUMBER_STYLE = {
+  /* Color classes for hover states and text */
+  btn: "text-white bg-black",
+  /* Style class applied to negative value text states */
+  negativeText: "text-red-500 font-medium focus-within:border-red-500 focus-within:ring-red-500/20",
+  /* Divider border layout colors */
+  divider: "border-r border-gray-100 dark:border-gray-800",
+};
+
+/*
+ * ============================================================================
+ * NumberInput Component
+ * ============================================================================
+ */
 
 export const NumberInput = ({
   showSteppers = true,
@@ -18,54 +51,106 @@ export const NumberInput = ({
   min,
   max,
   allowNegative = false,
+  decimalScale,
   onChange,
   className,
   ...props
 }: NumberInputProps) => {
+  /* Base amount string value state */
   const [value, setValue] = useState((props.value as string) || "");
 
+  /* Synchronize value shifts programmatically from parents */
+  useEffect(() => {
+    if (props.value !== undefined) {
+      setValue(String(props.value));
+    }
+  }, [props.value]);
+
+  /* Default min to 0 unless allowNegative is enabled */
+  const resolvedMin = min !== undefined 
+    ? (typeof min === "number" ? min : parseFloat(String(min))) 
+    : (allowNegative ? undefined : 0);
+
+  const resolvedMax = max !== undefined 
+    ? (typeof max === "number" ? max : parseFloat(String(max))) 
+    : undefined;
+
+  /* Unified value updater: performs min/max boundaries and RHF event propagation */
   const updateValue = (newVal: number | string) => {
-    // 1. Convert to a pure number for calculations
-    let numeric = typeof newVal === "number" ? newVal : parseFloat(String(newVal).replace(/,/g, ""));
-    
+    let rawValue = String(newVal);
+
+    /* Sanitize non-numeric characters (allowing decimal point and negative sign) */
+    if (allowNegative) {
+      rawValue = rawValue.replace(/(?!^)-/g, "").replace(/[^\d.-]/g, "");
+      const dotParts = rawValue.split(".");
+      if (dotParts.length > 2) rawValue = `${dotParts[0]}.${dotParts[1]}`;
+    } else {
+      rawValue = rawValue.replace(/[^\d.]/g, "");
+    }
+
+    let numeric = parseFloat(rawValue);
+
+    /* Handle empty/NaN values, including intermediate minus sign */
     if (isNaN(numeric)) {
-      // If it's just a "-" sign being typed, allow it if allowNegative is true
-      if (allowNegative && String(newVal) === "-") {
-        setValue("-");
-        return;
-      }
-      setValue("");
+      const emptyVal = allowNegative && rawValue === "-" ? "-" : "";
+      setValue(emptyVal);
+
+      const event = {
+        target: { value: emptyVal },
+      } as React.ChangeEvent<HTMLInputElement>;
+      onChange?.(event);
       return;
     }
 
-    // 2. Enforce allowNegative
-    if (!allowNegative && numeric < 0) numeric = 0;
+    /* Clamp numeric boundaries */
+    if (resolvedMin !== undefined && numeric < resolvedMin)
+      numeric = resolvedMin;
+    if (resolvedMax !== undefined && numeric > resolvedMax) numeric = resolvedMax;
 
-    // 3. Enforce min/max
-    if (min !== undefined && numeric < min) numeric = min;
-    if (max !== undefined && numeric > max) numeric = max;
+    /* Apply decimalScale truncation if provided */
+    let finalVal = String(numeric);
+    if (decimalScale !== undefined) {
+      const parts = String(numeric).split(".");
+      if (parts.length > 1) {
+        if (decimalScale === 0) {
+          finalVal = parts[0];
+        } else {
+          finalVal = `${parts[0]}.${parts[1].slice(0, decimalScale)}`;
+        }
+      }
+    }
 
-    // 4. Convert back to string and update state
-    const finalVal = String(numeric);
+    /* Preserve the typed trailing dot (e.g. "2.") so they can continue typing decimals */
+    if (rawValue.endsWith(".") && !finalVal.includes(".")) {
+      finalVal += ".";
+    } else if (rawValue.includes(".") && decimalScale !== 0) {
+      const [_, fractional] = rawValue.split(".");
+      const [intPart] = finalVal.split(".");
+      const scale = decimalScale !== undefined ? decimalScale : fractional.length;
+      finalVal = `${intPart}.${fractional.slice(0, scale)}`;
+    }
+
     setValue(finalVal);
-    
+
+    /* Propagate change up to React Hook Form listener */
     const event = {
       target: { value: finalVal },
     } as React.ChangeEvent<HTMLInputElement>;
     onChange?.(event);
   };
 
-
-
+  /* Text input change handler: forwards to unified value updater */
   const handleInternalChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     updateValue(e.target.value);
   };
 
+  /* Stepper button increment click action */
   const handleIncrement = () => {
     const current = Number(value) || 0;
     updateValue(current + step);
   };
 
+  /* Stepper button decrement click action */
   const handleDecrement = () => {
     const current = Number(value) || 0;
     updateValue(current - step);
@@ -77,36 +162,46 @@ export const NumberInput = ({
     <Input
       placeholder="0"
       {...props}
-      type="tel"
+      type="text"
       value={value}
       onChange={handleInternalChange}
-
-      className={cn(
-        isNegativeValue && "text-red-500 font-medium focus-within:border-red-500 focus-within:ring-red-500/20",
-        className
-      )}
+      className={cn(isNegativeValue && NUMBER_STYLE.negativeText, className)}
       rightIcon={
-
-        showSteppers && (
-          <div className="flex items-center gap-1 border-l border-gray-100 dark:border-gray-800 pl-2 ml-1">
-            <button
-              type="button"
-              onClick={handleDecrement}
-              className="p-0.5 hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition-colors text-gray-500 hover:text-black dark:hover:text-white"
-            >
-              <Minus size={14} />
-            </button>
-            <button
-              type="button"
-              onClick={handleIncrement}
-              className="p-0.5 hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition-colors text-gray-500 hover:text-black dark:hover:text-white"
-            >
-              <Plus size={14} />
-            </button>
+        (showSteppers || props.rightIcon) && (
+          <div className="flex items-center gap-1.5 pl-2 ml-1">
+            {showSteppers && (
+              <div
+                className={cn(
+                  "flex items-center gap-1",
+                  props.rightIcon && `${NUMBER_STYLE.divider} pr-2 mr-1`,
+                )}
+              >
+                <button
+                  type="button"
+                  onClick={handleDecrement}
+                  className={cn(
+                    "p-0.5 rounded transition-colors",
+                    NUMBER_STYLE.btn,
+                  )}
+                >
+                  <Minus size={14} />
+                </button>
+                <button
+                  type="button"
+                  onClick={handleIncrement}
+                  className={cn(
+                    "p-0.5 rounded transition-colors",
+                    NUMBER_STYLE.btn,
+                  )}
+                >
+                  <Plus size={14} />
+                </button>
+              </div>
+            )}
+            {props.rightIcon}
           </div>
         )
       }
     />
   );
 };
-

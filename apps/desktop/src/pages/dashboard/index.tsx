@@ -3,6 +3,9 @@ import {
   Input,
   EmailInput,
   PasswordInput,
+  AmountInput,
+  NumberInput,
+  PhoneInput,
   Flex,
   Btn,
 } from "@/src/components/base";
@@ -12,16 +15,22 @@ interface FormValues {
   username: string;
   email: string;
   password: string;
+  amount: string;
+  age: string;
+  phone: string;
 }
 
 const defaultValues: FormValues = {
   username: "hhhh",
   email: "hello@ghello.com",
   password: "1234567890",
+  amount: "1,250.50",
+  age: "25",
+  phone: "1234567890",
 };
 
 export const Dashboard = () => {
-  // React Hook Form manages Username, Email, and Password state/submission
+  // React Hook Form manages Form state/submission
   const {
     register,
     handleSubmit,
@@ -34,6 +43,10 @@ export const Dashboard = () => {
 
   const emailValue = watch("email");
   const passwordValue = watch("password") || "";
+  const amountValue = watch("amount") || "";
+  const ageValue = watch("age") || "";
+  const phoneValue = watch("phone") || "";
+
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const isEmailValid = emailRegex.test(emailValue);
 
@@ -101,22 +114,54 @@ export const Dashboard = () => {
               message: "Password must be at least 8 characters",
             },
             validate: {
-              noWhitespace: (val) => !val || !/\s/.test(val) || "Password cannot contain spaces",
+              noWhitespace: val =>
+                !val || !/\s/.test(val) || "Password cannot contain spaces",
             },
           })}
         />
 
+        {/* Amount Input registered with React Hook Form */}
+        <AmountInput
+          label="Transaction Amount"
+          placeholder="0.00"
+          value={amountValue}
+          fixedDecimalOnBlur={true}
+          showSteppers={true}
+          error={errors.amount?.message}
+          {...register("amount", {
+            required: "Amount is required",
+          })}
+        />
+
+        {/* Number Input (e.g. Age) registered with React Hook Form */}
+        <NumberInput
+          label="Age"
+          placeholder="0"
+          value={ageValue}
+          min={0}
+          max={120}
+          error={errors.age?.message}
+          {...register("age", {
+            required: "Age is required",
+          })}
+        />
+
+        {/* Phone Input registered with React Hook Form */}
+        <PhoneInput
+          label="Phone Number"
+          placeholder="(555) 555-5555"
+          value={phoneValue}       
+          error={errors.phone?.message}
+          {...register("phone", {
+            required: "Phone number is required",
+          })}
+        />
+
         {/* Disabled unless all RHF validations pass */}
-        <Btn
-          type="submit"
-          variant="solid"
-          className="mt-2"
-          disabled={!isValid}
-        >
+        <Btn type="submit" variant="solid" className="mt-2" disabled={!isValid}>
           Submit Form
         </Btn>
       </Flex>
     </form>
   );
 };
-
