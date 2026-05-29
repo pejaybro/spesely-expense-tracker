@@ -1,77 +1,70 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Input } from "./input";
 import { Mail, CheckCircle2, AlertCircle } from "lucide-react";
-import { cn } from "@/src/utils";
+
+/*
+ * ============================================================================
+ * Types & Interfaces
+ * ============================================================================
+ */
 
 interface EmailInputProps extends React.ComponentProps<typeof Input> {
+  /* Controls visibility of validation indicator icons (Check/Alert) */
   showValidationIcon?: boolean;
+  /* Represents the validity status calculated by the parent form state */
+  isValid?: boolean;
 }
 
-/**
- * Validates standard email formats:
- * - user@domain.com
- * - first.last@subdomain.example.org
- * - name+tag@provider.net
+/*
+ * ============================================================================
+ * Style Theme Configuration
+ * ============================================================================
  */
-const validateEmail = (email: string) => {
-  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return regex.test(email);
+
+const EMAIL_STYLE = {
+  /* Status icon styling */
+  successIcon: "text-green-500",
+  warningIcon: "text-amber-500",
+
+  /* Sizing parameter */
+  iconSize: 18,
 };
+
+/*
+ * ============================================================================
+ * EmailInput Component
+ * ============================================================================
+ */
 
 export const EmailInput = ({
   showValidationIcon = true,
+  isValid = false,
   onChange,
   className,
+  value,
   ...props
 }: EmailInputProps) => {
-  const [value, setValue] = useState((props.value as string) || "");
-  const [isValid, setIsValid] = useState(validateEmail((props.value as string) || ""));
-
-  useEffect(() => {
-    const newVal = (props.value as string) || "";
-    setValue(newVal);
-    setIsValid(validateEmail(newVal));
-  }, [props.value]);
-
-  const handleInternalChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-
-    const val = e.target.value.toLowerCase();
-    setValue(val);
-    setIsValid(validateEmail(val));
-    
-    // Create a fake event with the lowercased value
-    const event = {
-      ...e,
-      target: { ...e.target, value: val }
-    } as React.ChangeEvent<HTMLInputElement>;
-    
-    onChange?.(event);
-  };
-
-
   return (
     <Input
       autoComplete="email"
       type="email"
-      leftIcon={<Mail size={18} />}
+      leftIcon={<Mail size={EMAIL_STYLE.iconSize} />}
       {...props}
       value={value}
-      onChange={handleInternalChange}
+      onChange={onChange}
       rightIcon={
+        /* Render check circle on success, alert circle on format errors */
         showValidationIcon && value ? (
           isValid ? (
-            <CheckCircle2 size={18} className="text-green-500" />
+            <CheckCircle2 size={EMAIL_STYLE.iconSize} className={EMAIL_STYLE.successIcon} />
           ) : (
-            <AlertCircle size={18} className="text-amber-500" />
+            <AlertCircle size={EMAIL_STYLE.iconSize} className={EMAIL_STYLE.warningIcon} />
           )
         ) : (
           props.rightIcon
         )
       }
-      className={cn(
-        value && !isValid && "focus-within:border-amber-500 focus-within:ring-amber-500/20",
-        className
-      )}
+      className={className}
     />
   );
 };

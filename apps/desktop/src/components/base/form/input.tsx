@@ -48,7 +48,7 @@ interface InputProps extends Omit<
 const INPUT_STYLE = {
   // Colors & Formats
   bg: "bg-white",
-  inputBoxFormat: "rounded-lg w-30",
+  inputBoxFormat: "rounded-lg w-full",
   textFormat: " tracking-normal text-md font-medium text-black",
   placeholderFormat: "placeholder:text-gray-300 placeholder:truncate",
 
@@ -130,9 +130,8 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
           val = prevValueRef.current;
         }
         e.target.value = val;
-      } 
+      } else if (props.type === "tel") {
       /* Sanitization rules for telephone digits (enforces numeric digits + maxLength check) */
-      else if (props.type === "tel") {
         val = val.replace(/\D/g, "");
         const maxLen = props.maxLength || 10;
         if (val.length > maxLen) {
