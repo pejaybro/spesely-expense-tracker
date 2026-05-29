@@ -1,29 +1,87 @@
-import React, { useState, useRef, useLayoutEffect } from "react";
+import React, { useRef } from "react";
 import { cn } from "@/src/utils";
+
+/*
+ * ============================================================================
+ * Types & Interfaces
+ * ============================================================================
+ */
 
 interface InputProps extends Omit<
   React.InputHTMLAttributes<HTMLInputElement>,
   "prefix"
 > {
+  /** Optional main text label displayed above or next to the input */
   label?: string;
+  /** Optional secondary text helper details shown underneath the label */
   description?: string;
+  /** Validation error text which triggers error borders and shows below the input */
   error?: string;
-  icon?: React.ReactNode;
+  /** Explicit left-side icon Node */
   leftIcon?: React.ReactNode;
+  /** Optional right-side clickable/decorative icon Node */
   rightIcon?: React.ReactNode;
+  /** Static text content displayed inside the input box on the left */
   prefix?: React.ReactNode;
+  /** Static text content displayed inside the input box on the right */
   suffix?: React.ReactNode;
+  /** Click action handler triggered when clicking the rightIcon */
   onRightIconClick?: (e: React.MouseEvent) => void;
-  variant?: "rounded" | "curved" | "square";
-  isFloating?: boolean;
+  /** Controls layout position of label relative to the input box */
   labelPlacement?: "top" | "left" | "right";
+  /** Sets standard width constraints when using horizontal/side labels */
   labelWidth?: string;
+  /** Custom horizontal text alignments for the label content */
   "labelAlign-X"?: "left" | "center" | "right";
+  /** Custom vertical cross-axis alignments for side label layout blocks */
   "labelAlign-Y"?: "top" | "middle" | "bottom";
-  wrapperClassName?: string;
-  inputClassName?: string;
+  /** Renders phone input calling code prefix styles */
   countryCode?: string;
 }
+
+/*
+ * ============================================================================
+ * Component Style Theme Configuration
+ * ============================================================================
+ */
+
+const INPUT_STYLE = {
+  // Colors & Formats
+  bg: "bg-white",
+  inputBoxFormat: "rounded-lg w-30",
+  textFormat: " tracking-normal text-md font-medium text-black",
+  placeholderFormat: "placeholder:text-gray-300 placeholder:truncate",
+
+  // Focus & Default Border/Ring Config
+  borderWidth: "border-[1.5px]",
+  ringWidth: "ring-[2px]",
+  borderDefault: "border-gray-300",
+  borderFocus: "border-sky-500",
+  ringFocus: "ring-sky-500/15",
+
+  // Validation Error Styling
+  borderError: "border-red-600",
+  ringError: "ring-red-600/15",
+  errorTextFormat: "text-red-600 text-xs font-medium",
+
+  // Icon & Decorator Color Accents
+  iconLeft: "text-black",
+  iconRight: "text-black",
+
+  // Label & Helper text styling
+  labelFormat: "text-md font-medium tracking-tight text-black",
+  descriptionFormat: "text-xs text-black font-medium mt-0.5",
+
+  /* Static Prefix / Suffix styling */
+  suffixFormat: "font-medium",
+  prefixFormat: "font-medium",
+};
+
+/*
+ * ============================================================================
+ * Main Input Component (ForwardRef Enabled)
+ * ============================================================================
+ */
 
 export const Input = React.forwardRef<HTMLInputElement, InputProps>(
   (
@@ -31,57 +89,35 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
       label,
       description,
       error,
-      icon,
       leftIcon,
       rightIcon,
       prefix,
       suffix,
       onRightIconClick,
-      variant = "curved",
-      isFloating = false,
       labelPlacement = "top",
       labelWidth = "w-32",
       "labelAlign-X": labelAlignX,
       "labelAlign-Y": labelAlignY = "middle",
-      wrapperClassName,
-      inputClassName,
-      className,
       countryCode,
-      onFocus,
-      onBlur,
       ...props
     },
     ref,
   ) => {
-    const [isFocused, setIsFocused] = useState(false);
-    const [internalHasContent, setInternalHasContent] = useState(!!props.defaultValue || !!props.value);
-    const [leftElementWidth, setLeftElementWidth] = useState(0);
-    const leftElementRef = useRef<HTMLDivElement>(null);
-    const prevValueRef = useRef(props.value?.toString() || props.defaultValue?.toString() || "");
+    /* Stores previous input content to revert/roll back invalid characters */
+    const prevValueRef = useRef(
+      props.value?.toString() || props.defaultValue?.toString() || "",
+    );
 
-    useLayoutEffect(() => {
-      if (leftElementRef.current) {
-        setLeftElementWidth(leftElementRef.current.offsetWidth);
-      }
-    }, [icon, leftIcon, prefix]);
-
-    const hasValue = (props.value !== undefined && props.value !== "") || (props.defaultValue !== undefined && props.defaultValue !== "") || internalHasContent;
-    const isActive = isFocused || hasValue;
-
-    const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
-      setIsFocused(true);
-      onFocus?.(e);
-    };
-
-    const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-      setIsFocused(false);
-      setInternalHasContent(e.target.value !== "");
-      onBlur?.(e);
-    };
+    /*
+     * ------------------------------------------------------------------------
+     * Event Handlers & Sanitizers
+     * ------------------------------------------------------------------------
+     */
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       let val = e.target.value;
 
+      /* Sanitization rules for numbers (Forces float formats, locks max value limits) */
       if (props.type === "number") {
         val = val.replace(/[^0-9.]/g, "");
         const parts = val.split(".");
@@ -94,7 +130,9 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
           val = prevValueRef.current;
         }
         e.target.value = val;
-      } else if (props.type === "tel") {
+      } 
+      /* Sanitization rules for telephone digits (enforces numeric digits + maxLength check) */
+      else if (props.type === "tel") {
         val = val.replace(/\D/g, "");
         const maxLen = props.maxLength || 10;
         if (val.length > maxLen) {
@@ -103,10 +141,16 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         e.target.value = val;
       }
 
+      /* Sync refs and call external parent listeners */
       prevValueRef.current = e.target.value;
-      setInternalHasContent(e.target.value !== "");
       props.onChange?.(e);
     };
+
+    /*
+     * ------------------------------------------------------------------------
+     * Layout & Position Compilations
+     * ------------------------------------------------------------------------
+     */
 
     const isSideLabel = labelPlacement === "left" || labelPlacement === "right";
 
@@ -125,14 +169,11 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
           ? "items-end"
           : "items-center";
 
-    const radiusClass =
-      variant === "square"
-        ? "rounded-none"
-        : variant === "curved"
-          ? "rounded-lg"
-          : variant === "rounded"
-            ? "rounded-full"
-            : "";
+    /*
+     * ------------------------------------------------------------------------
+     * Renders Component Layout Tree
+     * ------------------------------------------------------------------------
+     */
 
     return (
       <div
@@ -140,12 +181,12 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
           "flex w-full",
           labelPlacement === "top" && "flex-col gap-1.5",
           labelPlacement === "left" && cn("flex-row gap-4", yAlignmentClass),
-          labelPlacement === "right" && cn("flex-row-reverse gap-4", yAlignmentClass),
-          className,
+          labelPlacement === "right" &&
+            cn("flex-row-reverse gap-4", yAlignmentClass),
         )}
       >
-        {/* Standard Label (Non-Floating) */}
-        {label && !isFloating && (
+        {/* Standard Label & Optional Helper Text Block */}
+        {label && (
           <div
             className={cn(
               "flex flex-col",
@@ -162,11 +203,9 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
                 xAlignment === "center" && "items-center text-center",
               )}
             >
-              <span className="text-sm font-medium tracking-tight text-white">
-                {label}
-              </span>
+              <span className={cn(INPUT_STYLE.labelFormat)}>{label}</span>
               {description && (
-                <span className="text-xs text-gray-400 font-medium mt-0.5">
+                <span className={cn(INPUT_STYLE.descriptionFormat)}>
                   {description}
                 </span>
               )}
@@ -174,79 +213,83 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
           </div>
         )}
 
-        <div className="flex-1 flex flex-col relative group">
-          {/* Floating Label (Remains Absolute) */}
-          {label && isFloating && (
-            <span
-              className={cn(
-                "absolute transition-all duration-200 pointer-events-none font-medium tracking-tight z-10 block truncate",
-                isActive
-                  ? "-top-4 left-6 right-auto text-sm bg-black px-1.5 text-sky-500 max-w-[calc(100%-1.5rem)]"
-                  : "top-1/2 -translate-y-1/2 text-md text-gray-400 px-4 left-0 right-0",
-              )}
-              style={!isActive ? { paddingLeft: `${leftElementWidth}px` } : {}}
-            >
-              {label}
-            </span>
-          )}
-
-          {/* New Dynamic Flex Container */}
+        {/* Input Wrapper Group */}
+        <div className="flex-1 min-w-0 flex flex-col relative group">
+          {/* Dynamic Flex Container representing the input borders and decorators */}
           <div
             className={cn(
-              "flex items-center w-full bg-black border transition-all duration-200",
-              radiusClass,
-              isFocused
-                ? "border-sky-500 ring-4 ring-sky-500/10 shadow-lg"
-                : "border-gray-800 hover:border-gray-600",
-              error ? "border-red-500 ring-4 ring-red-500/10" : "",
-              wrapperClassName
+              "flex items-center transition-all duration-200 gap-0",
+              INPUT_STYLE.inputBoxFormat,
+              INPUT_STYLE.borderWidth,
+              INPUT_STYLE.bg,
+              INPUT_STYLE.borderDefault,
+              `focus-within:${INPUT_STYLE.borderFocus} focus-within:${INPUT_STYLE.ringWidth} focus-within:${INPUT_STYLE.ringFocus}`,
+              error
+                ? `${INPUT_STYLE.borderError} ${INPUT_STYLE.ringWidth} ${INPUT_STYLE.ringError}`
+                : "",
             )}
           >
-            {/* Left Content Area */}
-            {(leftIcon || icon || prefix || countryCode) && (
+            {/* Left Content Decorators (Icon / Prefix / Country Calling Code) */}
+            {(leftIcon || prefix || countryCode) && (
               <div
-                ref={leftElementRef}
-                className="flex items-center pl-2.25 pr-2 text-gray-400 shrink-0 gap-1.5"
+                className={cn(
+                  "flex items-center pl-2 pr-2 shrink-0 gap-1.5",
+                  INPUT_STYLE.iconLeft,
+                )}
               >
-                {leftIcon || icon}
+                {leftIcon}
                 {(prefix || countryCode) && (
-                  <span className={cn("font-medium", countryCode && "text-white font-bold tracking-wide")}>
+                  <span className={cn(INPUT_STYLE.prefixFormat)}>
                     {countryCode || prefix}
                   </span>
                 )}
               </div>
             )}
 
+            {/* Native HTML Input Element */}
             <input
               ref={ref}
               {...props}
-              type={props.type === "number" || props.type === "tel" ? "text" : props.type}
-              inputMode={props.type === "number" ? "decimal" : props.type === "tel" ? "numeric" : props.inputMode}
-              onFocus={handleFocus}
-              onBlur={handleBlur}
+              type={
+                props.type === "number" || props.type === "tel"
+                  ? "text"
+                  : props.type
+              }
+              inputMode={
+                props.type === "number"
+                  ? "decimal"
+                  : props.type === "tel"
+                    ? "numeric"
+                    : props.inputMode
+              }
               onChange={handleChange}
-              placeholder={isFloating && !isActive ? "" : props.placeholder}
+              placeholder={props.placeholder}
               className={cn(
-                "flex-1 bg-transparent border-none text-md text-white outline-none h-full py-2.5",
-                !(leftIcon || icon || prefix) && "pl-2",
+                "flex-1 w-full min-w-0 bg-transparent border-none outline-none h-full py-1.5 truncate",
+                INPUT_STYLE.textFormat,
+                INPUT_STYLE.placeholderFormat,
+                !(leftIcon || prefix) && "pl-2",
                 !(rightIcon || suffix) && "pr-2",
-                inputClassName
               )}
             />
 
-            {/* Right Content Area */}
+            {/* Right Content Decorators (Suffix / Interactive Right Action Icon) */}
             {(rightIcon || suffix) && (
-              <div className="flex items-center pr-2.25 pl-2 text-gray-400 shrink-0">
-                {suffix && <span className="font-medium">{suffix}</span>}
+              <div
+                className={cn(
+                  "flex items-center pr-2.25 pl-2 shrink-0",
+                  INPUT_STYLE.iconRight,
+                )}
+              >
+                {suffix && (
+                  <span className={cn(INPUT_STYLE.suffixFormat)}>{suffix}</span>
+                )}
                 {rightIcon && (
                   <div
                     onClick={onRightIconClick}
                     className={cn(
-                      "transition-colors",
-                      onRightIconClick
-                        ? "cursor-pointer hover:text-white"
-                        : "",
-                      isFocused ? "text-white" : "",
+                      "transition-colors group-focus-within:text-white",
+                      onRightIconClick && "cursor-pointer",
                     )}
                   >
                     {rightIcon}
@@ -256,8 +299,14 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             )}
           </div>
 
+          {/* Validation Error Message Display */}
           {error && (
-            <span className="text-xs font-medium text-red-500 mt-1.5 ml-1 block animate-in fade-in slide-in-from-top-1">
+            <span
+              className={cn(
+                INPUT_STYLE.errorTextFormat,
+                "mt-1.5 ml-1 block animate-in fade-in slide-in-from-top-1",
+              )}
+            >
               {error}
             </span>
           )}

@@ -12,6 +12,7 @@ import { RecurringExpense } from "../pages/recurring-expense";
 import { Analytics } from "../pages/analytics";
 import { Auth } from "../pages/auth";
 import { ROUTES } from "./route.config";
+import { AppLayoutV2 } from "./layout/AppLayoutV2";
 
 /**
  * Modern Data Router Configuration for Electron
@@ -21,7 +22,7 @@ export const router = createHashRouter([
     path: "/",
     element: (
       <WindowLayout>
-        <AppLayout />
+        <AppLayoutV2 />
       </WindowLayout>
     ),
     children: [
