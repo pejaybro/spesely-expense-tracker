@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { ChevronDown, ChevronRight } from "lucide-react";
-import { Btn, Tooltip } from "@/src/components/base";
+import { Button, Tooltip } from "@/src/components/base";
 import { MenuBtn } from "@/src/components/app";
 import { cn } from "@/src/utils";
 
@@ -138,7 +138,7 @@ export const SidebarMenu = ({ config, isExpanded, onItemClick, tooltipsDisabled 
     const element = hasSubmenu ? (
       <div key={item.id} className="flex flex-col gap-1 w-full">
         <Tooltip content={item.label} disabled={tooltipsDisabled || !delayedCollapsed} direction="right">
-          <Btn
+          <Button
             variant="menu"
             rounded="md"
             onClick={() => toggleSubmenu(item.id)}
@@ -156,7 +156,7 @@ export const SidebarMenu = ({ config, isExpanded, onItemClick, tooltipsDisabled 
                 {isSubmenuOpen ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
               </span>
             )}
-          </Btn>
+          </Button>
         </Tooltip>
 
         {isExpanded && isSubmenuOpen && (

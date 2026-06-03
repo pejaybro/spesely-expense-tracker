@@ -1,4 +1,4 @@
-import { Btn, Flex, Tooltip } from "@/src/components/base";
+import { Button, Flex, Tooltip } from "@/src/components/base";
 import { Outlet, useLocation } from "react-router-dom";
 import {
   LayoutDashboard,
@@ -311,7 +311,7 @@ const SidePanel = ({
           disabled={tooltipsDisabled}
           direction="right"
         >
-          <Btn
+          <Button
             onClick={() => setExpandMenu(!expandMenu)}
             aria-expanded={isExpanded}
             aria-label={isExpanded ? "Collapse Menu" : "Expand Menu"}
@@ -332,7 +332,7 @@ const SidePanel = ({
                 Menu
               </span>
             )}
-          </Btn>
+          </Button>
         </Tooltip>
       )}
 
@@ -363,13 +363,13 @@ const SidePanel = ({
             expandMenu ? "opacity-100" : "opacity-0 pointer-events-none"
           )}
         >
-          <Btn
+          <Button
             onClick={() => setExpandMenu(false)}
             aria-label="Close Menu"
             className="w-10 h-10 flex items-center justify-center p-0 rounded-lg bg-white text-zinc-800 shadow-xl hover:bg-zinc-100 border border-zinc-200 shrink-0 cursor-pointer"
           >
             <X size={18} />
-          </Btn>
+          </Button>
         </div>
       </div>
     );
@@ -409,14 +409,14 @@ const TopBar = ({
             disabled={tooltipsDisabled}
             direction="right"
           >
-            <Btn
+            <Button
               onClick={() => setExpandMenu(true)}
               aria-expanded={false}
               aria-label="Expand Menu"
               className="w-10 h-10 flex items-center justify-center shrink-0 px-0 mr-2 rounded-md hover:bg-zinc-800"
             >
               <PanelRightOpen size={18} />
-            </Btn>
+            </Button>
           </Tooltip>
         </div>
       )}

@@ -24,36 +24,6 @@ interface PasswordInputProps extends React.ComponentProps<typeof Input> {
 
 /*
  * ============================================================================
- * Style Theme Configuration
- * ============================================================================
- */
-
-const PASSWORD_STYLE = {
-  /* Visibility toggle and alert icon sizes */
-  iconSize: 18,
-  warningIconSize: 12,
-  eyeIconColor: "text-black",
-
-  /* Password strength meter color mapping */
-  strengthColors: {
-    weak: "bg-red-500",
-    fair: "bg-amber-500",
-    good: "bg-yellow-500",
-    strong: "bg-green-500",
-    empty: "bg-gray-800",
-  },
-
-  /* Warning container and text styles */
-  warnings: {
-    iconCapsLock: "text-amber-500",
-    iconWhitespace: "text-red-500",
-    capsLock: "text-[10px] font-medium text-amber-600 uppercase tracking-wider",
-    whitespace: "text-[10px] font-medium text-red-500 uppercase tracking-wider",
-  },
-};
-
-/*
- * ============================================================================
  * PasswordInput Component
  * ============================================================================
  */
@@ -108,10 +78,10 @@ export const PasswordInput = ({
 
   /* Get strength color mapping based on calculated score */
   const getStrengthColor = () => {
-    if (strength <= 2) return PASSWORD_STYLE.strengthColors.weak;
-    if (strength <= 3) return PASSWORD_STYLE.strengthColors.fair;
-    if (strength <= 4) return PASSWORD_STYLE.strengthColors.good;
-    return PASSWORD_STYLE.strengthColors.strong;
+    if (strength <= 2) return "bg-red-500";
+    if (strength <= 3) return "bg-amber-500";
+    if (strength <= 4) return "bg-yellow-500";
+    return "bg-green-500";
   };
 
   /* Get strength label text based on calculated score */
@@ -160,13 +130,13 @@ export const PasswordInput = ({
           showToggle ? (
             isVisible ? (
               <EyeOff
-                size={PASSWORD_STYLE.iconSize}
-                className={PASSWORD_STYLE.eyeIconColor}
+                size={18}
+                className="text-black"
               />
             ) : (
               <Eye
-                size={PASSWORD_STYLE.iconSize}
-                className={PASSWORD_STYLE.eyeIconColor}
+                size={18}
+                className="text-black"
               />
             )
           ) : (
@@ -190,7 +160,7 @@ export const PasswordInput = ({
                     "h-full flex-1 rounded-full transition-all duration-500",
                     strength >= step
                       ? getStrengthColor()
-                      : PASSWORD_STYLE.strengthColors.empty,
+                      : "bg-black/10",
                   )}
                 />
               ))}
@@ -237,10 +207,10 @@ export const PasswordInput = ({
       {showCapsLockWarning && isCapsLockOn && (
         <div className={"flex items-center gap-1 mt-1 px-1"}>
           <AlertTriangle
-            size={PASSWORD_STYLE.warningIconSize}
-            className={PASSWORD_STYLE.warnings.iconCapsLock}
+            size={12}
+            className="text-amber-500"
           />
-          <span className={PASSWORD_STYLE.warnings.capsLock}>
+          <span className="text-[10px] font-medium text-amber-600 uppercase tracking-wider">
             Caps Lock is ON
           </span>
         </div>
@@ -250,10 +220,10 @@ export const PasswordInput = ({
       {showWhitespaceWarning && /\s/.test(value) && (
         <div className={"flex items-center gap-1 mt-1 px-1"}>
           <AlertTriangle
-            size={PASSWORD_STYLE.warningIconSize}
-            className={PASSWORD_STYLE.warnings.iconWhitespace}
+            size={12}
+            className="text-red-500"
           />
-          <span className={PASSWORD_STYLE.warnings.whitespace}>
+          <span className="text-[10px] font-medium text-red-500 uppercase tracking-wider">
             Password contains spaces
           </span>
         </div>

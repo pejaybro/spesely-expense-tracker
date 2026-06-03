@@ -1,27 +1,7 @@
-import { type ReactNode } from "react";
-
-export namespace Provider {
-  export interface BaseProps {
-    children: ReactNode;
-    id: string;
-    type: string;
-    content: ReactNode;
-    custom: () => ReactNode;
-    providerContent: (helpers: { close: () => void }) => ReactNode;
-    options?: {
-      [key: string]: unknown;
-      onSide?: "left" | "right" | undefined;
-    };
-  }
-  export interface AppContextProps {
-    open: (
-      type: BaseProps["type"],
-      content?: BaseProps["providerContent"],
-      options?: BaseProps["options"],
-    ) => void;
-    close: (id: BaseProps["id"]) => void;
-  }
-  export interface ProviderProps {
-    children: BaseProps["children"];
-  }
-}
+/*
+ * Provider types have been moved into:
+ * apps/desktop/src/providers/index.tsx
+ *
+ * The Provider namespace is exported directly from that file
+ * and re-exported via root.config.ts.
+ */

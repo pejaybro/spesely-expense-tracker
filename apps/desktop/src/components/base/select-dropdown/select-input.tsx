@@ -22,11 +22,11 @@ export interface SelectOption {
 function getNextSelectableIndex(
   currentIndex: number,
   direction: "up" | "down",
-  list: SelectOption[]
+  list: SelectOption[],
 ) {
   if (list.length === 0) return -1;
   let nextIndex = currentIndex;
-  
+
   for (let i = 0; i < list.length; i++) {
     if (direction === "down") {
       nextIndex = nextIndex < list.length - 1 ? nextIndex + 1 : 0;
@@ -99,7 +99,7 @@ function TruncatedTooltip({
   });
 
   return (
-    <Tooltip content={content} disabled={!enabled || !isTruncated}>
+    <Tooltip content={content} disabled={!enabled || !isTruncated} fullWidth>
       {trigger}
     </Tooltip>
   );
@@ -130,25 +130,28 @@ export function SelectInput({
     return defaultValue !== undefined ? defaultValue : "";
   });
 
-  const activeValue = controlledValue !== undefined ? controlledValue : localValue;
+  const activeValue =
+    controlledValue !== undefined ? controlledValue : localValue;
 
   // Find currently selected option
-  const selectedOption = options.find((opt) => opt.key === activeValue);
+  const selectedOption = options.find(opt => opt.key === activeValue);
 
   // Filter options based on search query, keeping headers only if their group contains matches
   const filteredOptions = React.useMemo(() => {
     if (!searchQuery) return options;
-    
+
     const result: SelectOption[] = [];
     let currentHeader: SelectOption | null = null;
     let hasItemsInCurrentGroup = false;
-    
+
     for (const opt of options) {
       if (opt.isHeader) {
         currentHeader = opt;
         hasItemsInCurrentGroup = false;
       } else {
-        const matches = opt.label.toLowerCase().includes(searchQuery.toLowerCase());
+        const matches = opt.label
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase());
         if (matches) {
           if (currentHeader && !hasItemsInCurrentGroup) {
             result.push(currentHeader);
@@ -169,7 +172,7 @@ export function SelectInput({
   // 1. Setup Floating UI
   const { refs, floatingStyles } = useFloating({
     open: isOpen,
-    onOpenChange: (open) => {
+    onOpenChange: open => {
       setIsOpen(open);
       if (!open) {
         setSearchQuery("");
@@ -196,14 +199,16 @@ export function SelectInput({
   useEffect(() => {
     if (isOpen) {
       if (searchQuery !== "") {
-        const firstIdx = filteredOptions.findIndex((opt) => !opt.isHeader);
+        const firstIdx = filteredOptions.findIndex(opt => !opt.isHeader);
         setHighlightedIndex(firstIdx >= 0 ? firstIdx : 0);
       } else {
-        const selectedIdx = filteredOptions.findIndex((opt) => opt.key === activeValue && !opt.isHeader);
+        const selectedIdx = filteredOptions.findIndex(
+          opt => opt.key === activeValue && !opt.isHeader,
+        );
         if (selectedIdx >= 0) {
           setHighlightedIndex(selectedIdx);
         } else {
-          const firstIdx = filteredOptions.findIndex((opt) => !opt.isHeader);
+          const firstIdx = filteredOptions.findIndex(opt => !opt.isHeader);
           setHighlightedIndex(firstIdx >= 0 ? firstIdx : 0);
         }
       }
@@ -213,7 +218,14 @@ export function SelectInput({
         setTimeout(() => dropdownInputRef.current?.focus(), 50);
       }
     }
-  }, [isOpen, searchQuery, activeValue, searchable, searchPosition, filteredOptions]);
+  }, [
+    isOpen,
+    searchQuery,
+    activeValue,
+    searchable,
+    searchPosition,
+    filteredOptions,
+  ]);
 
   // Scroll highlighted item into view
   useEffect(() => {
@@ -259,7 +271,12 @@ export function SelectInput({
     if (disabled || loading) return;
 
     if (!isOpen) {
-      if (e.key === "Enter" || e.key === " " || e.key === "ArrowDown" || e.key === "ArrowUp") {
+      if (
+        e.key === "Enter" ||
+        e.key === " " ||
+        e.key === "ArrowDown" ||
+        e.key === "ArrowUp"
+      ) {
         e.preventDefault();
         setIsOpen(true);
         if (searchable && searchPosition === "trigger") {
@@ -274,8 +291,8 @@ export function SelectInput({
       e.preventDefault();
       typeBufferRef.current += e.key.toLowerCase();
 
-      const matchIndex = filteredOptions.findIndex((opt) =>
-        opt.label.toLowerCase().startsWith(typeBufferRef.current)
+      const matchIndex = filteredOptions.findIndex(opt =>
+        opt.label.toLowerCase().startsWith(typeBufferRef.current),
       );
 
       if (matchIndex !== -1) {
@@ -296,24 +313,39 @@ export function SelectInput({
     switch (e.key) {
       case "ArrowDown":
         e.preventDefault();
-        setHighlightedIndex((prev) => getNextSelectableIndex(prev, "down", filteredOptions));
+        setHighlightedIndex(prev =>
+          getNextSelectableIndex(prev, "down", filteredOptions),
+        );
         break;
       case "ArrowUp":
         e.preventDefault();
-        setHighlightedIndex((prev) => getNextSelectableIndex(prev, "up", filteredOptions));
+        setHighlightedIndex(prev =>
+          getNextSelectableIndex(prev, "up", filteredOptions),
+        );
         break;
       case "Enter":
         e.preventDefault();
-        if (highlightedIndex >= 0 && highlightedIndex < filteredOptions.length) {
+        if (
+          highlightedIndex >= 0 &&
+          highlightedIndex < filteredOptions.length
+        ) {
           selectOption(filteredOptions[highlightedIndex]);
         }
         break;
       case "Spacebar":
       case " ":
         // Only trigger selection on space when NOT actively typing in search inputs
-        if (!searchable || (searchable && e.target !== inputRef.current && e.target !== dropdownInputRef.current)) {
+        if (
+          !searchable ||
+          (searchable &&
+            e.target !== inputRef.current &&
+            e.target !== dropdownInputRef.current)
+        ) {
           e.preventDefault();
-          if (highlightedIndex >= 0 && highlightedIndex < filteredOptions.length) {
+          if (
+            highlightedIndex >= 0 &&
+            highlightedIndex < filteredOptions.length
+          ) {
             selectOption(filteredOptions[highlightedIndex]);
           }
         }
@@ -339,7 +371,7 @@ export function SelectInput({
         ref={refs.setReference}
         onClick={() => {
           if (!disabled && !loading) {
-            setIsOpen((prev) => !prev);
+            setIsOpen(prev => !prev);
             if (!isOpen && isTriggerSearchActive) {
               setTimeout(() => inputRef.current?.focus(), 50);
             }
@@ -348,23 +380,25 @@ export function SelectInput({
         onKeyDown={handleKeyDown}
         tabIndex={disabled || loading || isTriggerSearchActive ? -1 : 0}
         className={cn(
-          "flex items-center justify-between rounded-lg border text-sm select-none cursor-pointer outline-none transition-all duration-150 h-[42px] w-full",
-          "bg-black border-gray-800 text-white hover:border-gray-600 focus-within:border-sky-500 focus-within:ring-4 focus-within:ring-sky-500/10",
-          error && "border-red-500 focus-within:border-red-500 focus-within:ring-red-500/10",
-          (disabled || loading) && "opacity-50 pointer-events-none cursor-not-allowed border-zinc-900"
+          "flex items-center justify-between rounded-lg border-[1.5px] border-black text-sm select-none cursor-pointer outline-none transition-all duration-150 h-9 w-full",
+          "bg-white text-black hover:border-gray-800 focus-within:border-sky-500 focus-within:ring-4 focus-within:ring-sky-500/10",
+          error &&
+            "border-red-500 focus-within:border-red-500 focus-within:ring-red-500/10",
+          (disabled || loading) &&
+            "opacity-50 pointer-events-none cursor-not-allowed border-gray-300",
         )}
       >
         {/* Left Prefix Icon Area */}
         {prefixIcon && (
-          <div className="flex items-center pl-3 text-zinc-400 shrink-0 h-full">
+          <div className="flex items-center pl-3 text-black shrink-0 h-full">
             {prefixIcon}
           </div>
         )}
 
         {/* Central Content Area */}
-        <div className="flex items-center min-w-0 flex-1 px-3 py-2.5 h-full">
+        <div className="flex items-center min-w-0 flex-1 px-3 py-2 h-full">
           {loading ? (
-            <span className="text-zinc-500 animate-pulse flex-1 text-left min-w-0 text-sm font-medium">
+            <span className="text-gray-400 animate-pulse flex-1 text-left min-w-0 text-sm font-medium">
               Loading...
             </span>
           ) : isTriggerSearchActive ? (
@@ -372,30 +406,49 @@ export function SelectInput({
             <input
               ref={inputRef}
               type="text"
-              className="w-full bg-transparent border-none text-zinc-100 placeholder:text-zinc-500 outline-none text-left p-0 text-sm"
-              placeholder={selectedOption ? selectedOption.label : (options.length === 0 ? "No options available" : placeholder)}
-              value={isOpen ? searchQuery : (selectedOption ? selectedOption.label : "")}
-              onChange={(e) => {
+              className="w-full bg-transparent border-none text-black placeholder:text-gray-400 outline-none text-left p-0 text-sm font-medium"
+              placeholder={
+                selectedOption
+                  ? selectedOption.label
+                  : options.length === 0
+                    ? "No options available"
+                    : placeholder
+              }
+              value={
+                isOpen
+                  ? searchQuery
+                  : selectedOption
+                    ? selectedOption.label
+                    : ""
+              }
+              onChange={e => {
                 setSearchQuery(e.target.value);
                 setIsOpen(true);
               }}
-              onClick={(e) => {
+              onClick={e => {
                 e.stopPropagation();
                 setIsOpen(true);
               }}
             />
           ) : (
             /* Static Text Trigger Variant */
-            <TruncatedTooltip content={selectedOption?.label || ""} enabled={showTooltip && !!selectedOption}>
-              <span className="truncate text-zinc-100 flex-1 text-left min-w-0">
-                {selectedOption ? selectedOption.label : (options.length === 0 ? "No options available" : placeholder)}
+            <TruncatedTooltip
+              content={selectedOption?.label || ""}
+              enabled={showTooltip && !!selectedOption}
+            >
+              <span className="truncate text-black flex-1 text-left min-w-0 font-medium">
+                {selectedOption
+                  ? selectedOption.label
+                  : options.length === 0
+                    ? "No options available"
+                    : placeholder}
               </span>
             </TruncatedTooltip>
           )}
         </div>
 
         {/* Right Caret Icon Area */}
-        <div className="flex items-center pr-3 pl-1 text-zinc-400 shrink-0 h-full">
+        <div className="flex items-center pr-3 pl-1 text-black shrink-0 h-full">
           {loading ? (
             <Loader2 size={16} className="animate-spin text-sky-500" />
           ) : (
@@ -403,7 +456,7 @@ export function SelectInput({
               size={16}
               className={cn(
                 "transition-transform duration-200",
-                isOpen && "rotate-180 text-white"
+                isOpen && "rotate-180",
               )}
             />
           )}
@@ -417,29 +470,29 @@ export function SelectInput({
             ref={refs.setFloating}
             style={floatingStyles}
             onKeyDown={handleKeyDown}
-            className="z-[9999] overflow-hidden rounded-lg border border-zinc-800 bg-zinc-950 p-1 shadow-2xl flex flex-col"
+            className="z-[9999] overflow-hidden rounded-lg border-[1.5px] border-black bg-white p-1 shadow-2xl flex flex-col"
           >
             {/* Search Position: Dropdown layout input header */}
             {searchable && searchPosition === "dropdown" && (
-              <div className="flex items-center gap-2 px-2 py-1.5 border-b border-zinc-900 mb-1 select-none">
-                <Search size={14} className="text-zinc-500 shrink-0" />
+              <div className="flex items-center gap-2 px-2 py-1.5 border-b border-gray-200 mb-1 select-none">
+                <Search size={14} className="text-black shrink-0" />
                 <input
                   ref={dropdownInputRef}
                   type="text"
                   placeholder="Search options..."
-                  className="w-full bg-transparent border-none text-xs text-zinc-200 placeholder:text-zinc-600 outline-none p-0 flex-1"
+                  className="w-full bg-transparent border-none text-xs text-black placeholder:text-gray-400 outline-none p-0 flex-1 font-medium"
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  onClick={(e) => e.stopPropagation()}
+                  onChange={e => setSearchQuery(e.target.value)}
+                  onClick={e => e.stopPropagation()}
                 />
                 {searchQuery && (
                   <button
-                    onClick={(e) => {
+                    onClick={e => {
                       e.stopPropagation();
                       setSearchQuery("");
                       dropdownInputRef.current?.focus();
                     }}
-                    className="text-zinc-500 hover:text-zinc-300 p-0.5 rounded outline-none shrink-0"
+                    className="text-black bg-black/10 p-1 cursor-pointer hover:text-red-500 hover:bg-red-500/10 rounded outline-none shrink-0"
                   >
                     <X size={12} />
                   </button>
@@ -453,20 +506,20 @@ export function SelectInput({
               className="max-h-60 overflow-y-auto flex flex-col gap-0.5 no-scrollbar"
             >
               {options.length === 0 ? (
-                <div className="px-3 py-2 text-zinc-500 text-xs text-left select-none">
+                <div className="px-3 py-2 text-gray-500 text-xs text-left select-none">
                   No options available
                 </div>
               ) : filteredOptions.length === 0 ? (
-                <div className="px-3 py-2 text-zinc-500 text-xs text-left select-none">
+                <div className="px-3 py-2 text-gray-500 text-xs text-left select-none">
                   No results found
                 </div>
               ) : (
-                 filteredOptions.map((item, index) => {
+                filteredOptions.map((item, index) => {
                   if (item.isHeader) {
                     return (
                       <div
                         key={item.id}
-                        className="px-3 py-1.5 text-[10px] font-bold text-zinc-500 tracking-wider uppercase text-left select-none pointer-events-none mt-1 border-t border-zinc-900/50 first:mt-0 first:border-none"
+                        className="px-3 py-1.5 text-[10px] font-bold text-black tracking-wider uppercase text-left select-none pointer-events-none mt-1 border-t border-gray-200/50 first:mt-0 first:border-none"
                       >
                         {item.label}
                       </div>
@@ -482,9 +535,14 @@ export function SelectInput({
                       onClick={() => selectOption(item)}
                       className={cn(
                         "flex items-center justify-between gap-3 px-3 py-2 rounded-md text-sm select-none cursor-pointer transition-colors duration-75",
-                        isSelected && "text-sky-400 font-medium bg-zinc-900/60",
-                        isHighlighted && !isSelected && "bg-zinc-900 text-white",
-                        !isHighlighted && !isSelected && "text-zinc-300 hover:bg-zinc-900/40 hover:text-white"
+                        isSelected &&
+                          "text-sky-600 font-semibold bg-sky-500/10",
+                        isHighlighted &&
+                          !isSelected &&
+                          "bg-black/5 text-black",
+                        !isHighlighted &&
+                          !isSelected &&
+                          "text-black hover:bg-black/5",
                       )}
                     >
                       <span className="flex-1 whitespace-normal break-words text-left">
@@ -492,7 +550,7 @@ export function SelectInput({
                       </span>
 
                       {isSelected && (
-                        <Check size={14} className="text-sky-400 shrink-0" />
+                        <Check size={14} className="text-sky-600 shrink-0" />
                       )}
                     </div>
                   );

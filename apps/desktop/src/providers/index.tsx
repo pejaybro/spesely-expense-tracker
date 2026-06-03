@@ -1,28 +1,62 @@
-import type { Provider as Props } from "@/root.config";
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, type ReactNode } from "react";
 import { Modal, SidePanel } from "../components/base/";
 import { APP_PROVIDER_TYPE } from "../utils";
 
-const AppContext = createContext<Props.AppContextProps | undefined>(undefined);
-export const AppProvider = ({ children }: Props.ProviderProps) => {
+/* ─────────────────────────────────────────────
+   Types
+   ───────────────────────────────────────────── */
+
+export namespace Provider {
+  export interface BaseProps {
+    children: ReactNode;
+    id: string;
+    type: string;
+    content: ReactNode;
+    custom: () => ReactNode;
+    providerContent: (helpers: { close: () => void }) => ReactNode;
+    options?: {
+      [key: string]: unknown;
+      onSide?: "left" | "right" | undefined;
+    };
+  }
+  export interface AppContextProps {
+    open: (
+      type: BaseProps["type"],
+      content?: BaseProps["providerContent"],
+      options?: BaseProps["options"],
+    ) => void;
+    close: (id: BaseProps["id"]) => void;
+  }
+  export interface ProviderProps {
+    children: BaseProps["children"];
+  }
+}
+
+/* ─────────────────────────────────────────────
+   Component & Context
+   ───────────────────────────────────────────── */
+
+const AppContext = createContext<Provider.AppContextProps | undefined>(undefined);
+
+export const AppProvider = ({ children }: Provider.ProviderProps) => {
   const [stack, setStack] = useState<
     {
-      id: Props.BaseProps["id"];
-      type: Props.BaseProps["type"];
-      content?: Props.BaseProps["providerContent"];
-      options?: Props.BaseProps["options"];
+      id: Provider.BaseProps["id"];
+      type: Provider.BaseProps["type"];
+      content?: Provider.BaseProps["providerContent"];
+      options?: Provider.BaseProps["options"];
     }[]
   >([]);
 
   const open = (
-    type: Props.BaseProps["type"],
-    content?: Props.BaseProps["providerContent"],
-    options?: Props.BaseProps["options"],
+    type: Provider.BaseProps["type"],
+    content?: Provider.BaseProps["providerContent"],
+    options?: Provider.BaseProps["options"],
   ) => {
     const id = Math.random().toString();
     setStack((prev) => [...prev, { id, type, content, options }]);
   };
-  const close = (id: Props.BaseProps["id"]) => {
+  const close = (id: Provider.BaseProps["id"]) => {
     setStack((prev) => prev.filter((i) => i.id !== id));
   };
 

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import dayjs from "@/root.config";
-import { Flex, Btn } from "@/src/components/base";
+import { Flex, Button } from "@/src/components/base";
 import { ChevronLeft, ChevronRight, Minus, Square, X } from "lucide-react";
 
 import { useNavigate, useLocation } from "react-router-dom";
@@ -64,7 +64,7 @@ export const WindowTitleBar = () => {
         noGap
         className="px-2.5 window-no-drag"
       >
-        <Btn
+        <Button
           variant="solid"
           onClick={() => navigate(-1)}
           disabled={!canGoBack}
@@ -73,8 +73,8 @@ export const WindowTitleBar = () => {
           }`}
         >
           <ChevronLeft size={16} />
-        </Btn>
-        <Btn
+        </Button>
+        <Button
           variant="solid"
           onClick={() => navigate(1)}
           disabled={!canGoForward}
@@ -83,33 +83,33 @@ export const WindowTitleBar = () => {
           }`}
         >
           <ChevronRight size={16} />
-        </Btn>
+        </Button>
       </Flex>
 
       {/* ======================================= */}
       {/* ANCHOR : RIGHT SECTION */}
       <Flex direction="row" items="center" className="gap-1 window-no-drag">
-        <Btn
+        <Button
           variant="solid"
           className="w-8 px-0 bg-transparent! hover:bg-white/10!"
           onClick={() => window.electronAPI.minimize()}
         >
           <Minus size={16} />
-        </Btn>
-        <Btn
+        </Button>
+        <Button
           variant="solid"
           className="w-8 px-0 bg-transparent! hover:bg-white/10!"
           onClick={() => window.electronAPI.maximize()}
         >
           <Square size={12} />
-        </Btn>
-        <Btn
+        </Button>
+        <Button
           variant="solid"
           className="w-8 px-0 bg-transparent! hover:bg-red-600!"
           onClick={() => window.electronAPI.close()}
         >
           <X size={16} />
-        </Btn>
+        </Button>
       </Flex>
     </Flex>
   );

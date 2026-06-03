@@ -19,10 +19,9 @@ export * from "../../packages/lib";
  *? Props and types
  *============================================
  */
-export type {
-  FlexProps,
-  ButtonProps,
-  GridProps,
-  GridCols,
-  Provider,
-} from "types";
+export type { FlexProps } from "./src/components/base/layout/flex";
+export type { ButtonProps } from "./src/components/base/button/btn";
+export type { GridProps, GridCols } from "./src/components/base/layout/grid";
+export type { Provider } from "./src/providers/index";
+
+

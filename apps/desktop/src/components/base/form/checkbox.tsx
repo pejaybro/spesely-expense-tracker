@@ -1,19 +1,40 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Check } from "lucide-react";
 import { cn } from "@/src/utils";
 
-interface CheckboxProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "onChange"> {
+/*
+ * ============================================================================
+ * Types & Interfaces
+ * ============================================================================
+ */
+
+/* Prop configuration for the Checkbox component */
+export interface CheckboxProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "onChange"> {
+  /* Title label of the checkbox */
   label?: string;
+  /* Help or descriptive text for the checkbox */
   description?: string;
+  /* Validation error message specific to this checkbox */
   error?: string;
+  /* Controls placement of label relative to the checkbox square */
   labelPlacement?: "top" | "left" | "right";
+  /* Sizing parameter for the label container width */
   labelWidth?: string;
+  /* Horizontal alignment of the text label */
   "labelAlign-X"?: "left" | "center" | "right";
+  /* Vertical alignment of the text label */
   "labelAlign-Y"?: "top" | "middle" | "bottom";
+  /* Visual border radius variant */
   variant?: "rounded" | "curved" | "square" | "circle";
-  activeColor?: string;
+  /* Callback triggered on selection change */
   onChange?: (checked: boolean) => void;
 }
+
+/*
+ * ============================================================================
+ * Checkbox Component
+ * ============================================================================
+ */
 
 export const Checkbox = ({
   label,
@@ -24,7 +45,6 @@ export const Checkbox = ({
   "labelAlign-X": labelAlignX,
   "labelAlign-Y": labelAlignY = "middle",
   variant = "rounded",
-  activeColor = "bg-white",
   onChange,
   className,
   id,
@@ -32,11 +52,12 @@ export const Checkbox = ({
 }: CheckboxProps) => {
   const checkboxId = id || React.useId();
   
-  // Support both controlled and uncontrolled states
+  /* Managed checked selection states supporting controlled and uncontrolled modes */
   const [internalChecked, setInternalChecked] = useState(props.defaultChecked || false);
   const isControlled = props.checked !== undefined;
   const checked = isControlled ? props.checked : internalChecked;
 
+  /* Form event delegation and local state synchrony on changes */
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (props.disabled) return;
     const newChecked = e.target.checked;
@@ -51,11 +72,13 @@ export const Checkbox = ({
 
   return (
     <div className={cn("flex flex-col gap-1.5", className)}>
+      {/* Checkbox Input and Selection Wrapper Label */}
       <label
         htmlFor={checkboxId}
         className={cn(
           "group flex cursor-pointer select-none transition-all duration-200 gap-4",
           labelPlacement === "top" && "flex-col",
+          /* labelPlacement 'left' aligns the checkbox dot to the extreme right end */
           labelPlacement === "left" && cn("flex-row-reverse justify-between w-full", yAlignmentClass),
           labelPlacement === "right" && cn("flex-row justify-start", yAlignmentClass),
           props.disabled && "opacity-50 cursor-not-allowed"
@@ -70,19 +93,56 @@ export const Checkbox = ({
             checked={checked} 
             onChange={handleChange} 
           />
-          <div className={cn("w-5 h-5 border-2 transition-all duration-200 flex items-center justify-center bg-black", borderRadius, checked ? cn(activeColor, "border-transparent shadow-lg scale-110") : "border-gray-800 group-hover:border-gray-600", "peer-focus-visible:ring-4 peer-focus-visible:ring-white/10")}>
-            <Check size={12} strokeWidth={4} className={cn("transition-all duration-200 transform", checked ? "scale-100 opacity-100" : "scale-50 opacity-0", activeColor.includes("white") ? "text-black" : "text-white")} />
+          {/* Outer checkbox border and container */}
+          <div
+            className={cn(
+              "w-5 h-5 transition-all duration-200 flex items-center justify-center border-[1.5px] border-black",
+              borderRadius,
+              checked
+                ? "bg-white scale-110"
+                : "bg-white",
+              "peer-focus-visible:ring-4 peer-focus-visible:ring-sky-500/10 peer-focus-visible:border-sky-500"
+            )}
+          >
+            {/* Checked checkmark icon indicator */}
+            <Check
+              size={12}
+              strokeWidth={4}
+              className={cn(
+                "transition-all duration-200 transform",
+                checked ? "scale-100 opacity-100" : "scale-50 opacity-0",
+                "text-black"
+              )}
+            />
           </div>
         </div>
 
+        {/* Text Area (Option labels and descriptive help texts) */}
         {(label || description) && (
           <div className={cn("flex flex-col gap-0.5 min-w-0", isSideLabel ? (labelWidth || "flex-1") : "w-full", xAlignment === "left" && "items-start text-left", xAlignment === "right" && "items-end text-right", xAlignment === "center" && "items-center text-center")}>
-            {label && <span className="text-sm font-medium text-white whitespace-normal break-words w-full capitalize">{label}{props.required && <span className="text-red-500 ml-1 font-black">*</span>}</span>}
-            {description && <span className="text-xs text-gray-400 leading-tight whitespace-normal break-words w-full">{description}</span>}
+            {label && (
+              <span className="whitespace-normal break-words w-full capitalize text-sm font-medium text-black">
+                {label}
+                {props.required && (
+                  <span className="ml-1 font-black text-red-500">*</span>
+                )}
+              </span>
+            )}
+            {description && (
+              <span className="leading-tight whitespace-normal break-words w-full text-xs text-black">
+                {description}
+              </span>
+            )}
           </div>
         )}
       </label>
-      {error && <span className="text-xs font-medium text-red-500 ml-1 italic tracking-tight animate-in fade-in slide-in-from-top-1">{error}</span>}
+
+      {/* Option Validation Error Message */}
+      {error && (
+        <span className="text-xs font-medium ml-1 italic tracking-tight animate-in fade-in slide-in-from-top-1 text-red-500">
+          {error}
+        </span>
+      )}
     </div>
   );
 };

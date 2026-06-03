@@ -23,7 +23,12 @@ interface TooltipProps {
   direction?: Placement;
   /** Whether the tooltip should be disabled */
   disabled?: boolean;
+  /** Custom class for the reference wrapper element */
+  wrapperClassName?: string;
+  /** If true, the reference wrapper spans 100% width instead of shrink-wrapping */
+  fullWidth?: boolean;
 }
+
 
 /**
  * A custom Tooltip component built with Floating UI for professional positioning
@@ -35,6 +40,8 @@ export const Tooltip = ({
   className,
   direction = "top",
   disabled = false,
+  wrapperClassName,
+  fullWidth = false,
 }: TooltipProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -87,7 +94,10 @@ export const Tooltip = ({
       <div
         ref={refs.setReference}
         {...getReferenceProps()}
-        className="w-full flex items-center min-w-0"
+        className={cn(
+          fullWidth ? "w-full flex items-center min-w-0" : "w-fit inline-flex items-center min-w-0",
+          wrapperClassName
+        )}
       >
         {children}
       </div>
@@ -100,7 +110,7 @@ export const Tooltip = ({
             style={floatingStyles}
             {...getFloatingProps()}
             className={cn(
-              "z-9999 px-2 py-1 text-xs font-medium text-tooltip-text bg-tooltip-background rounded-sm max-w-xs whitespace-normal break-words pointer-events-none",
+              "z-9999 px-2 py-1 text-xs font-medium text-black bg-gray-100 rounded-sm max-w-xs whitespace-normal break-words pointer-events-none",
               isOpen ? "opacity-100 scale-100" : "opacity-0 scale-95",
               className,
             )}

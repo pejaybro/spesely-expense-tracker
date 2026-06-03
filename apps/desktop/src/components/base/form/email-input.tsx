@@ -17,21 +17,6 @@ interface EmailInputProps extends React.ComponentProps<typeof Input> {
 
 /*
  * ============================================================================
- * Style Theme Configuration
- * ============================================================================
- */
-
-const EMAIL_STYLE = {
-  /* Status icon styling */
-  successIcon: "text-green-500",
-  warningIcon: "text-amber-500",
-
-  /* Sizing parameter */
-  iconSize: 18,
-};
-
-/*
- * ============================================================================
  * EmailInput Component
  * ============================================================================
  */
@@ -48,7 +33,7 @@ export const EmailInput = ({
     <Input
       autoComplete="email"
       type="email"
-      leftIcon={<Mail size={EMAIL_STYLE.iconSize} />}
+      leftIcon={<Mail size={18} />}
       {...props}
       value={value}
       onChange={onChange}
@@ -56,9 +41,9 @@ export const EmailInput = ({
         /* Render check circle on success, alert circle on format errors */
         showValidationIcon && value ? (
           isValid ? (
-            <CheckCircle2 size={EMAIL_STYLE.iconSize} className={EMAIL_STYLE.successIcon} />
+            <CheckCircle2 size={18} className="text-green-500" />
           ) : (
-            <AlertCircle size={EMAIL_STYLE.iconSize} className={EMAIL_STYLE.warningIcon} />
+            <AlertCircle size={18} className="text-amber-500" />
           )
         ) : (
           props.rightIcon

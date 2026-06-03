@@ -1,7 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { cn } from "@/src/utils";
-import { Checkbox } from "./checkbox";
+import { Checkbox, type CheckboxProps } from "./checkbox";
 
+/*
+ * ============================================================================
+ * Types & Interfaces
+ * ============================================================================
+ */
+
+/* Represents an individual checkbox item configuration */
 interface CheckboxOption {
   id?: string;
   label: string;
@@ -11,22 +18,46 @@ interface CheckboxOption {
   indicator?: React.ReactNode | "bullet" | "number";
 }
 
-interface CheckboxGroupProps {
+/* Prop configuration for the parent CheckboxGroup component extending CheckboxProps */
+interface CheckboxGroupProps extends Omit<
+  CheckboxProps,
+  | "label"
+  | "description"
+  | "value"
+  | "onChange"
+  | "defaultValue"
+  | "options"
+  | "error"
+> {
+  /* Title label of the group */
   label?: string;
+  /* Help or descriptive text for the entire group */
   description?: string;
+  /* Group-level validation error message */
   error?: string;
+  /* Support single selection or multiple checkbox checks */
   type?: "single" | "multiple";
+  /* Controlled selection value(s) */
   value?: string | string[];
+  /* Default initial selection value(s) */
   defaultValue?: string | string[];
+  /* Callback triggered on selection change */
   onChange?: (value: any) => void;
+  /* Array of checkbox option objects */
   options: CheckboxOption[];
-  className?: string;
-  labelPlacement?: "top" | "left" | "right";
+  /* Visual width class for the label area */
   labelWidth?: string;
-  "labelAlign-X"?: "left" | "center" | "right";
-  "labelAlign-Y"?: "top" | "middle" | "bottom";
+  /* Horizontal alignment of the group label */
+  labelAlign?: "left" | "center" | "right";
+  /* Group-level bullets or numerical index prefix markers */
   indicator?: "dots" | "numbers" | React.ReactNode;
 }
+
+/*
+ * ============================================================================
+ * CheckboxGroup Component
+ * ============================================================================
+ */
 
 export const CheckboxGroup = ({
   label,
@@ -38,80 +69,50 @@ export const CheckboxGroup = ({
   onChange,
   options = [],
   className,
-  labelPlacement = "top",
-  labelWidth = "w-32",
-  "labelAlign-X": labelAlignX,
-  "labelAlign-Y": labelAlignY = "top",
+  labelWidth = "w-full",
+  labelAlign = "left",
   indicator,
+  ...props
 }: CheckboxGroupProps) => {
-  const [internalValue, setInternalValue] = useState<string | string[]>(
-    value || defaultValue || (type === "multiple" ? [] : ""),
-  );
+  /* Pure Controlled State: Source value directly from parent-provided props */
+  const activeValue = value !== undefined ? value : (defaultValue || (type === "multiple" ? [] : ""));
 
-  useEffect(() => {
-    if (value !== undefined) setInternalValue(value);
-  }, [value]);
-
+  /* Appends/removes option keys in array for multi-mode, or toggles value for single-mode */
   const handleCheckboxChange = (optionValue: string) => {
     let newValue: string | string[];
 
     if (type === "single") {
-      newValue = internalValue === optionValue ? "" : optionValue;
+      newValue = activeValue === optionValue ? "" : optionValue;
     } else {
-      const currentValues = Array.isArray(internalValue) ? internalValue : [];
+      const currentValues = Array.isArray(activeValue) ? activeValue : [];
       newValue = currentValues.includes(optionValue)
-        ? currentValues.filter((v) => v !== optionValue)
+        ? currentValues.filter(v => v !== optionValue)
         : [...currentValues, optionValue];
     }
 
-    if (value === undefined) setInternalValue(newValue);
     onChange?.(newValue);
   };
 
-  const isSideLabel = labelPlacement === "left" || labelPlacement === "right";
-  
-  const xAlignment = labelAlignX || (
-    labelPlacement === "left" ? "left" : 
-    labelPlacement === "right" ? "right" : "left"
-  );
-
-  const yAlignmentClass = 
-    labelAlignY === "top" ? "items-start" :
-    labelAlignY === "bottom" ? "items-end" : "items-center";
-
   return (
-    <div
-      className={cn(
-        "flex w-full",
-        labelPlacement === "top" && "flex-col gap-3",
-        labelPlacement === "left" && cn("flex-row gap-6", yAlignmentClass),
-        labelPlacement === "right" && cn("flex-row-reverse gap-6", yAlignmentClass),
-        className,
-      )}
-    >
-      {/* Group Label Area */}
+    <div className={cn("flex w-full flex-col gap-3", className)}>
+      {/* Group Label Area (contains label and description) */}
       {(label || description) && (
-        <div
-          className={cn(
-            "flex flex-col shrink-0",
-            isSideLabel ? labelWidth : "w-full",
-          )}
-        >
+        <div className={cn("flex flex-col shrink-0", labelWidth)}>
           <div
             className={cn(
               "flex flex-col",
-              xAlignment === "left" && "items-start text-left",
-              xAlignment === "right" && "items-end text-right",
-              xAlignment === "center" && "items-center text-center",
+              labelAlign === "left" && "items-start text-left",
+              labelAlign === "right" && "items-end text-right",
+              labelAlign === "center" && "items-center text-center",
             )}
           >
             {label && (
-              <span className="text-sm font-bold tracking-tight text-white uppercase">
+              <span className="tracking-tight uppercase text-sm font-bold text-black">
                 {label}
               </span>
             )}
             {description && (
-              <span className="text-[11px] text-gray-400 font-medium mt-0.5 leading-tight">
+              <span className="mt-0.5 leading-tight text-[11px] font-medium text-black">
                 {description}
               </span>
             )}
@@ -125,21 +126,39 @@ export const CheckboxGroup = ({
           {options.map((option, index) => {
             const isChecked =
               type === "single"
-                ? internalValue === option.value
-                : Array.isArray(internalValue) && internalValue.includes(option.value);
+                ? activeValue === option.value
+                : Array.isArray(activeValue) &&
+                  activeValue.includes(option.value);
 
+            /* Resolves bullet, number index, or custom indicators */
             const optIndicator = option.indicator || indicator;
             let indicatorNode = null;
             if (optIndicator === "bullet" || optIndicator === "dots") {
-              indicatorNode = <div className="w-1.5 h-1.5 rounded-full bg-white shrink-0 mt-2" />;
-            } else if (optIndicator === "number" || optIndicator === "numbers") {
-              indicatorNode = <span className="text-sm font-bold text-gray-500 shrink-0 mt-0.5 w-4 text-center">{index + 1}.</span>;
+              indicatorNode = (
+                <div className="w-1.5 h-1.5 rounded-full bg-white shrink-0 mt-2" />
+              );
+            } else if (
+              optIndicator === "number" ||
+              optIndicator === "numbers"
+            ) {
+              indicatorNode = (
+                <span className="text-sm font-bold shrink-0 mt-0.5 w-4 text-center text-gray-500">
+                  {index + 1}.
+                </span>
+              );
             } else if (optIndicator) {
-              indicatorNode = <div className="shrink-0 mt-0.5 flex items-center justify-center text-sm font-medium text-gray-500">{optIndicator}</div>;
+              indicatorNode = (
+                <div className="shrink-0 mt-0.5 flex items-center justify-center text-sm font-medium text-gray-500">
+                  {optIndicator}
+                </div>
+              );
             }
 
             return (
-              <div key={option.id || option.value || index} className="flex gap-3 items-start">
+              <div
+                key={option.id || option.value || index}
+                className="flex gap-3 items-start"
+              >
                 {indicatorNode}
                 <Checkbox
                   id={option.id}
@@ -149,14 +168,16 @@ export const CheckboxGroup = ({
                   checked={isChecked}
                   onChange={() => handleCheckboxChange(option.value)}
                   className="shrink-0 flex-1"
+                  {...props}
                 />
               </div>
             );
           })}
         </div>
 
+        {/* Group Validation Error Message (displayed only once) */}
         {error && (
-          <span className="text-[10px] font-medium text-red-500 mt-1.5 ml-1 block animate-in fade-in slide-in-from-top-1">
+          <span className="text-[10px] font-medium mt-1.5 ml-1 block animate-in fade-in slide-in-from-top-1 text-red-500">
             {error}
           </span>
         )}
@@ -164,3 +185,51 @@ export const CheckboxGroup = ({
     </div>
   );
 };
+
+/*
+ * ============================================================================
+ * State Lifting Explanation & Usage Guide
+ * ============================================================================
+ *
+ * 1. What state was lifted up?
+ *    The selection states (`internalValue` single string or array of strings) 
+ *    have been completely lifted out of the local component scope. The local 
+ *    `useState` hook and lifecycle `useEffect` synchronization logic have 
+ *    been completely removed.
+ *
+ * 2. How to work with this pure controlled component (Standard React State):
+ *    Define an array state and its setter in the parent component:
+ *
+ *    const [selectedItems, setSelectedItems] = useState(["design"]);
+ *
+ *    Then render the component:
+ *    <CheckboxGroup
+ *      label="Interests"
+ *      type="multiple"
+ *      value={selectedItems}
+ *      onChange={setSelectedItems}
+ *      options={[
+ *        { label: "Technology", value: "technology" },
+ *        { label: "Design", value: "design" }
+ *      ]}
+ *    />
+ *
+ * 3. React Hook Form Integration:
+ *    When using with React Hook Form, wrap this component inside a <Controller>:
+ *
+ *    <Controller
+ *      name="interests"
+ *      control={control}
+ *      render={({ field }) => (
+ *        <CheckboxGroup
+ *          label="Interests"
+ *          value={field.value}
+ *          onChange={field.onChange}
+ *          options={[
+ *            { label: "Technology", value: "technology" },
+ *            { label: "Design", value: "design" }
+ *          ]}
+ *        />
+ *      )}
+ *    />
+ */

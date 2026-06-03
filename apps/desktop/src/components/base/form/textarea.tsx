@@ -1,26 +1,52 @@
-import React, { useState, useRef, useLayoutEffect, useEffect } from "react";
+import React, { useState, useRef, useLayoutEffect } from "react";
 import { cn } from "@/src/utils";
 
-interface TextAreaProps
-  extends Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, "prefix"> {
+/*
+ * ============================================================================
+ * Types & Interfaces for TextArea Component
+ * ============================================================================
+ */
+interface TextAreaProps extends Omit<
+  React.TextareaHTMLAttributes<HTMLTextAreaElement>,
+  "prefix"
+> {
+  /** Main label displayed above or next to the textarea */
   label?: string;
+  /** Helper description text shown below the label */
   description?: string;
+  /** Validation error message that triggers error styling and displays at the bottom */
   error?: string;
+  /** Corner style variant for the input container */
   variant?: "rounded" | "curved" | "square";
-  isFloating?: boolean;
+  /** Position of the label relative to the textarea input box */
   labelPlacement?: "top" | "left" | "right";
+  /** Explicit width constraints when using horizontal/side labels */
   labelWidth?: string;
+  /** Horizontal alignment of the label text */
   "labelAlign-X"?: "left" | "center" | "right";
+  /** Vertical alignment of side labels relative to the input container */
   "labelAlign-Y"?: "top" | "middle" | "bottom";
+  /** Auto-resizes the height of the textarea based on content length */
   autoResize?: boolean;
+  /** Maximum height constraint when autoResize is enabled */
   maxHeight?: string;
+  /** Native resize behavior constraint */
   allowResize?: "none" | "both" | "vertical" | "horizontal";
+  /** Controls displaying character, word, or both counters in the bottom right corner */
   showCount?: "characters" | "words" | "both" | "none";
+  /** Enforces a strict word count limit on user inputs */
   maxWordLimit?: number;
+  /** Additional tailwind custom classes for the outer wrapper */
   wrapperClassName?: string;
+  /** Additional tailwind custom classes for the textarea element */
   inputClassName?: string;
 }
 
+/*
+ * ============================================================================
+ * TextArea Component (ForwardRef Enabled)
+ * ============================================================================
+ */
 export const TextArea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
   (
     {
@@ -28,7 +54,6 @@ export const TextArea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
       description,
       error,
       variant = "curved",
-      isFloating = false,
       labelPlacement = "top",
       labelWidth = "w-32",
       "labelAlign-X": labelAlignX,
@@ -52,34 +77,30 @@ export const TextArea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
     const [internalHasContent, setInternalHasContent] = useState(
       !!props.defaultValue || !!props.value,
     );
-    const [leftElementWidth, setLeftElementWidth] = useState(0);
     const [wordCount, setWordCount] = useState(0);
     const [charCount, setCharCount] = useState(0);
-    const textAreaRef = useRef<HTMLTextAreaElement>(null);
     const internalRef = useRef<HTMLTextAreaElement>(null);
 
-    // Merge refs
+    // Merge outer forwarded ref with our internal ref for autoResize calculations
     const setRefs = (node: HTMLTextAreaElement) => {
-      if (typeof ref === "function") ref(node);
-      else if (ref) (ref as any).current = node;
+      if (typeof ref === "function") {
+        ref(node);
+      } else if (ref) {
+        (ref as any).current = node;
+      }
       (internalRef as any).current = node;
     };
 
+    // Calculate height adjustment on text change if autoResize is enabled
     useLayoutEffect(() => {
       if (autoResize && internalRef.current) {
         internalRef.current.style.height = "auto";
         const newHeight = internalRef.current.scrollHeight;
-        internalRef.current.style.height = maxHeight 
-          ? `${Math.min(newHeight, parseInt(maxHeight))}px` 
+        internalRef.current.style.height = maxHeight
+          ? `${Math.min(newHeight, parseInt(maxHeight))}px`
           : `${newHeight}px`;
       }
     }, [props.value, internalHasContent, autoResize, maxHeight]);
-
-    const hasValue =
-      (props.value !== undefined && props.value !== "") ||
-      (props.defaultValue !== undefined && props.defaultValue !== "") ||
-      internalHasContent;
-    const isActive = isFocused || hasValue;
 
     const handleFocus = (e: React.FocusEvent<HTMLTextAreaElement>) => {
       setIsFocused(true);
@@ -94,7 +115,8 @@ export const TextArea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
 
     const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
       const val = e.target.value;
-      
+
+      // Enforce word limits if configured
       if (maxWordLimit) {
         const words = val.trim().split(/\s+/).filter(Boolean);
         if (words.length > maxWordLimit) return;
@@ -103,21 +125,28 @@ export const TextArea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
       setInternalHasContent(val !== "");
       setCharCount(val.length);
       setWordCount(val.trim().split(/\s+/).filter(Boolean).length);
-      
+
       onChange?.(e);
     };
 
     const isSideLabel = labelPlacement === "left" || labelPlacement === "right";
 
     const xAlignment =
-      labelAlignX ||
-      (labelPlacement === "left" ? "left" : labelPlacement === "right" ? "right" : "left");
+      labelAlignX || (labelPlacement === "left" ? "right" : "left");
 
     const yAlignmentClass =
-      labelAlignY === "top" ? "items-start" : labelAlignY === "bottom" ? "items-end" : "items-center";
+      labelAlignY === "top"
+        ? "items-start"
+        : labelAlignY === "bottom"
+          ? "items-end"
+          : "items-center";
 
     const radiusClass =
-      variant === "square" ? "rounded-none" : variant === "curved" ? "rounded-lg" : "rounded-full";
+      variant === "square"
+        ? "rounded-none"
+        : variant === "curved"
+          ? "rounded-lg"
+          : "rounded-full";
 
     return (
       <div
@@ -125,11 +154,13 @@ export const TextArea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
           "flex w-full",
           labelPlacement === "top" && "flex-col gap-1.5",
           labelPlacement === "left" && cn("flex-row gap-4", yAlignmentClass),
-          labelPlacement === "right" && cn("flex-row-reverse gap-4", yAlignmentClass),
+          labelPlacement === "right" &&
+            cn("flex-row-reverse gap-4", yAlignmentClass),
           className,
         )}
       >
-        {label && !isFloating && (
+        {/* Standard Label Element */}
+        {label && (
           <div
             className={cn(
               "flex flex-col",
@@ -146,37 +177,30 @@ export const TextArea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
                 xAlignment === "center" && "items-center text-center",
               )}
             >
-              <span className="text-sm font-medium tracking-tight text-white">{label}</span>
+              <span className="text-md font-medium text-black">
+                {label}
+              </span>
               {description && (
-                <span className="text-xs text-gray-400 font-medium mt-0.5">{description}</span>
+                <span className="text-xs text-black font-medium mt-0.5">
+                  {description}
+                </span>
               )}
             </div>
           </div>
         )}
 
+        {/* Input Wrapper Group */}
         <div className="flex-1 flex flex-col relative group">
-          {label && isFloating && (
-            <span
-              className={cn(
-                "absolute transition-all duration-200 pointer-events-none font-medium tracking-tight z-10 block truncate",
-                isActive
-                  ? "-top-4 left-6 right-auto text-sm bg-black px-1.5 text-sky-500 max-w-[calc(100%-1.5rem)]"
-                  : "top-4 text-md text-gray-400 px-4 left-0 right-0",
-              )}
-            >
-              {label}
-            </span>
-          )}
-
+          {/* Styled wrapper container for borders and states */}
           <div
             className={cn(
-              "relative w-full bg-black border transition-all duration-200 min-h-[40px]",
+              "relative w-full bg-white border-[1.5px] border-black transition-all duration-200 min-h-[80px]",
               radiusClass,
               isFocused
-                ? "border-sky-500 ring-4 ring-sky-500/10 shadow-lg"
-                : "border-gray-800 hover:border-gray-600",
-              error ? "border-red-500 ring-4 ring-red-500/10" : "",
-              wrapperClassName
+                ? "border-sky-500 ring-4 ring-sky-500/10 shadow-sm"
+                : "hover:border-gray-800",
+              error ? "border-red-600 ring-4 ring-red-600/10" : "",
+              wrapperClassName,
             )}
           >
             <textarea
@@ -185,33 +209,38 @@ export const TextArea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
               onFocus={handleFocus}
               onBlur={handleBlur}
               onChange={handleChange}
-              placeholder={isFloating && !isActive ? "" : props.placeholder}
+              placeholder={props.placeholder}
               style={{ resize: allowResize }}
               className={cn(
-                "w-full bg-transparent border-none text-md text-white outline-none p-4",
+                "w-full bg-transparent border-none text-md text-black outline-none p-2.5 pb-1",
+                "placeholder:text-black/40 placeholder:text-sm placeholder:font-medium",
                 autoResize && "overflow-hidden",
-                inputClassName
+                inputClassName,
               )}
             />
 
-            {(showCount !== "none") && (
-              <div className="absolute bottom-2 right-4 flex gap-3 pointer-events-none">
+            {/* Display character/word counters in a dedicated footer row to prevent overlap */}
+            {showCount !== "none" && (
+              <div className="flex justify-end gap-3 px-4 pb-2 select-none pointer-events-none">
                 {(showCount === "characters" || showCount === "both") && (
-                  <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">
-                    {charCount}{props.maxLength ? ` / ${props.maxLength}` : ""} CHR
+                  <span className="text-[10px] font-semibold text-black/40 uppercase">
+                    {charCount}
+                    {props.maxLength ? ` / ${props.maxLength}` : ""} CHR
                   </span>
                 )}
                 {(showCount === "words" || showCount === "both") && (
-                  <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">
-                    {wordCount}{maxWordLimit ? ` / ${maxWordLimit}` : ""} WRD
+                  <span className="text-[10px] font-semibold text-black/40 uppercase">
+                    {wordCount}
+                    {maxWordLimit ? ` / ${maxWordLimit}` : ""} WRD
                   </span>
                 )}
               </div>
             )}
           </div>
 
+          {/* Validation Error Message Display */}
           {error && (
-            <span className="text-xs font-medium text-red-500 mt-1.5 ml-1 block animate-in fade-in slide-in-from-top-1">
+            <span className="text-xs font-medium text-red-600 mt-1.5 ml-1 block animate-in fade-in slide-in-from-top-1">
               {error}
             </span>
           )}

@@ -1,23 +1,7 @@
-/**
- *============================================
- *? Types
- *============================================
+/*
+ * Flex types have been moved into:
+ * apps/desktop/src/components/base/layout/flex.tsx
+ *
+ * FlexAlign, FlexJustify, FlexDirection, and FlexProps are exported directly
+ * from that file and re-exported via root.config.ts.
  */
-
-export type FlexAlign = "start" | "center" | "end" | "stretch";
-export type FlexJustify = "start" | "center" | "end" | "between" | "around";
-export type FlexDirection = "row" | "column";
-
-/**
- *============================================
- *? Interfaces
- *============================================
- */
-export interface FlexProps extends React.HTMLAttributes<HTMLDivElement> {
-  children?: React.ReactNode;
-  items?: FlexAlign;
-  justify?: FlexJustify;
-  noGap?: boolean;
-  direction?: FlexDirection;
-  wrap?: boolean;
-}

@@ -1,17 +1,22 @@
-import React, { useState } from "react";
+import React from "react";
 import { cn } from "@/src/utils";
 
 interface SwitchProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "type" | "onChange"> {
+  /* Title label of the switch toggle */
   label?: string;
+  /* Help or descriptive text for the switch */
   description?: string;
+  /* Validation error message specific to this switch */
   error?: string;
+  /* Controls placement of label relative to the switch toggle */
   labelPlacement?: "top" | "left" | "right";
+  /* Sizing parameter for the label container width */
   labelWidth?: string;
+  /* Horizontal alignment of the text label */
   "labelAlign-X"?: "left" | "center" | "right";
+  /* Vertical alignment of the text label */
   "labelAlign-Y"?: "top" | "middle" | "bottom";
-  activeColor?: string; 
-  inactiveColor?: string; 
-  thumbColor?: string; 
+  /* Callback triggered on switch selection change */
   onChange?: (checked: boolean) => void;
 }
 
@@ -23,9 +28,6 @@ export const Switch = ({
   labelWidth,
   "labelAlign-X": labelAlignX,
   "labelAlign-Y": labelAlignY = "middle",
-  activeColor = "bg-white",
-  inactiveColor = "bg-gray-900",
-  thumbColor = "bg-black",
   onChange,
   className,
   id,
@@ -33,17 +35,14 @@ export const Switch = ({
 }: SwitchProps) => {
   const switchId = id || React.useId();
   
-  // Support both controlled and uncontrolled states
-  const [internalChecked, setInternalChecked] = useState(props.defaultChecked || false);
-  const isControlled = props.checked !== undefined;
-  const checked = isControlled ? props.checked : internalChecked;
+  /* Pure Controlled State: Read checked directly from parent-provided props */
+  const checked = props.checked || false;
 
   const handleToggle = (e: React.MouseEvent | React.KeyboardEvent) => {
     if (props.disabled) return;
     e.preventDefault();
-    const nextState = !checked;
-    if (!isControlled) setInternalChecked(nextState);
-    onChange?.(nextState);
+    /* Immediately notify parent of the state transition */
+    onChange?.(!checked);
   };
 
   const isSideLabel = labelPlacement === "left" || labelPlacement === "right";
@@ -72,15 +71,22 @@ export const Switch = ({
             checked={checked} 
             readOnly 
           />
-          <div className={cn("w-[44px] h-[24px] rounded-full transition-all duration-200 ease-in-out p-1", checked ? activeColor : inactiveColor, "peer-focus-visible:ring-4 peer-focus-visible:ring-white/10")}>
-            <div className={cn("w-[16px] h-[16px] rounded-full shadow-sm transition-all duration-200 ease-in-out transform", thumbColor, checked ? "translate-x-[20px]" : "translate-x-0")} />
+          <div className={cn(
+            "w-[44px] h-[24px] rounded-full transition-all duration-200 ease-in-out border-[1.5px] border-black relative",
+            checked ? "bg-black" : "bg-black/10",
+            "peer-focus-visible:ring-4 peer-focus-visible:ring-sky-500/10 peer-focus-visible:border-sky-500"
+          )}>
+            <div className={cn(
+              "w-4 h-4 rounded-full transition-all duration-200 ease-in-out absolute top-[2.5px] left-[3.5px]",
+              checked ? "bg-white translate-x-[18px]" : "bg-black translate-x-0"
+            )} />
           </div>
         </div>
 
         {(label || description) && (
           <div className={cn("flex flex-col gap-0.5 min-w-0", isSideLabel ? (labelWidth || "flex-1") : "w-full", xAlignment === "left" && "items-start text-left", xAlignment === "right" && "items-end text-right", xAlignment === "center" && "items-center text-center")}>
-            {label && <span className="text-sm font-medium text-white whitespace-normal break-words w-full">{label}{props.required && <span className="text-red-500 ml-1 font-black">*</span>}</span>}
-            {description && <span className="text-xs text-gray-400 leading-tight whitespace-normal break-words w-full">{description}</span>}
+            {label && <span className="text-sm font-medium text-black whitespace-normal break-words w-full">{label}{props.required && <span className="text-red-500 ml-1 font-black">*</span>}</span>}
+            {description && <span className="text-xs text-black leading-tight whitespace-normal break-words w-full">{description}</span>}
           </div>
         )}
       </label>
@@ -88,3 +94,41 @@ export const Switch = ({
     </div>
   );
 };
+
+/*
+ * ============================================================================
+ * State Lifting Explanation & Usage Guide
+ * ============================================================================
+ *
+ * 1. What state was lifted up?
+ *    The selection/toggle state (`checked` boolean) has been completely lifted
+ *    out of the local component scope. The local `useState` hook and corresponding
+ *    effects have been removed.
+ *
+ * 2. How to work with this pure controlled component (Standard React State):
+ *    Define a boolean state and its setter in the parent component:
+ *
+ *    const [isActive, setIsActive] = useState(false);
+ *
+ *    Then render the component:
+ *    <Switch
+ *      label="Toggle Active State"
+ *      checked={isActive}
+ *      onChange={setIsActive}
+ *    />
+ *
+ * 3. React Hook Form Integration:
+ *    When using with React Hook Form, wrap this component inside a <Controller>:
+ *
+ *    <Controller
+ *      name="subscribe"
+ *      control={control}
+ *      render={({ field }) => (
+ *        <Switch
+ *          label="Subscribe"
+ *          checked={field.value}
+ *          onChange={field.onChange}
+ *        />
+ *      )}
+ *    />
+ */

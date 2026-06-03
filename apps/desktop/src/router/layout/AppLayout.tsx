@@ -1,4 +1,4 @@
-import { Btn, Flex, Tooltip } from "@/src/components/base";
+import { Button, Flex, Tooltip } from "@/src/components/base";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import {
   LayoutDashboard,
@@ -112,7 +112,7 @@ export const AppLayout = () => {
               disabled={isExpanded}
               direction="right"
             >
-              <Btn
+              <Button
                 onClick={() => setExpandMenu(!expandMenu)}
                 // Disabled on desktop to keep it open
                 className={cn(
@@ -132,7 +132,7 @@ export const AppLayout = () => {
                     Spesely Menu
                   </span>
                 )}
-              </Btn>
+              </Button>
             </Tooltip>
 
             {/* Nav Items */}

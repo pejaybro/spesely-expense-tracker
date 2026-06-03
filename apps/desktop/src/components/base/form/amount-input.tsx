@@ -26,19 +26,6 @@ interface AmountInputProps extends React.ComponentProps<typeof Input> {
 
 /*
  * ============================================================================
- * Style Theme Configuration
- * ============================================================================
- */
-
-const AMOUNT_STYLE = {
-  /* Stepper button color styling and hover cursor rules */
-  btn: "bg-black text-white cursor-pointer",
-  /* Divider border color configuration */
-  divider: "border-r border-gray-100 dark:border-gray-800",
-};
-
-/*
- * ============================================================================
  * AmountInput Component
  * ============================================================================
  */
@@ -237,20 +224,20 @@ export const AmountInput = ({
               <div
                 className={cn(
                   "flex items-center gap-1",
-                  props.rightIcon && `${AMOUNT_STYLE.divider} pr-2 mr-1`
+                  props.rightIcon && "border-r border-gray-250 pr-2 mr-1"
                 )}
               >
                 <button
                   type="button"
                   onClick={handleDecrement}
-                  className={cn("p-0.5 rounded transition-colors", AMOUNT_STYLE.btn)}
+                  className="p-0.5 rounded transition-colors bg-black text-white cursor-pointer hover:bg-gray-800"
                 >
                   <Minus size={14} />
                 </button>
                 <button
                   type="button"
                   onClick={handleIncrement}
-                  className={cn("p-0.5 rounded transition-colors", AMOUNT_STYLE.btn)}
+                  className="p-0.5 rounded transition-colors bg-black text-white cursor-pointer hover:bg-gray-800"
                 >
                   <Plus size={14} />
                 </button>

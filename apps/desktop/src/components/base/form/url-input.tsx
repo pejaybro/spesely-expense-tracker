@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Input } from "./input";
 import { Link, CheckCircle2, AlertCircle } from "lucide-react";
-import { cn } from "@/src/utils";
 
 interface URLInputProps extends React.ComponentProps<typeof Input> {
   showValidationIcon?: boolean;
@@ -76,7 +75,7 @@ export const URLInput = ({
         )
       }
       className={className}
-      wrapperClassName={cn(value && !isValid && "border-amber-500 ring-4 ring-amber-500/10")}
+     
     />
   );
 };

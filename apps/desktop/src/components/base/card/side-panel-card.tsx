@@ -1,5 +1,5 @@
 import { X } from "lucide-react";
-import { Btn } from "../button";
+import { Button } from "../button";
 import { Flex } from "../layout";
 import { cn } from "@/src/utils";
 
@@ -54,9 +54,9 @@ export function SidePanelCard({
             <span className="text-sm opacity-60">{description}</span>
           )}
         </Flex>
-        <Btn variant="solid-icon" rounded="full" onClick={close}>
+        <Button variant="solid-icon" rounded="full" onClick={close}>
           <X strokeWidth={2.5} />
-        </Btn>
+        </Button>
       </Flex>
 
       {/* ── Scrollable body ────────────────────────────────────── */}

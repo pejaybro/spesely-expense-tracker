@@ -20,7 +20,7 @@ import {
   FileInput,
 } from "@/src/components/base/form";
 import { SelectInput, MultiSelectInput } from "@/src/components/base/select-dropdown";
-import { Btn, Flex } from "@/src/components/base";
+import { Button, Flex } from "@/src/components/base";
 
 interface FormData {
   fullName: string;
@@ -441,9 +441,9 @@ export const DailyExpense = () => {
         </div>
 
         <Flex justify="end" className="mt-4 pt-4 border-t border-gray-800">
-          <Btn type="submit" className="px-6 py-2 bg-white text-black hover:bg-gray-200 transition-colors font-bold rounded-xl shadow-lg cursor-pointer">
+          <Button type="submit" className="px-6 py-2 bg-white text-black hover:bg-gray-200 transition-colors font-bold rounded-xl shadow-lg cursor-pointer">
             Submit Expense
-          </Btn>
+          </Button>
         </Flex>
       </form>
     </div>

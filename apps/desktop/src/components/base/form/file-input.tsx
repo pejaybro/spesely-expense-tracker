@@ -3,17 +3,34 @@ import { Upload, X, FileText, Image as ImageIcon } from "lucide-react";
 import { cn } from "@/src/utils";
 import { Input } from "./input";
 
-interface FileInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "type"> {
+/*
+ * ============================================================================
+ * Types & Interfaces
+ * ============================================================================
+ */
+
+/* Prop configuration for the FileInput component */
+interface FileInputProps extends Omit<
+  React.InputHTMLAttributes<HTMLInputElement>,
+  "type"
+> {
+  /* Title label of the file input */
   label?: string;
+  /* Validation error message */
   error?: string;
+  /* Visual template variant */
   variant?: "field" | "dropzone" | "field-2";
+  /* Sizing shape template for the dropzone variants */
   dropzoneVariant?: "rectangle" | "square" | "narrow";
-  maxFileSize?: number; // In MB
+  /* Maximum allowed file size limit (in MB) */
+  maxFileSize?: number;
 }
 
-
-
-
+/*
+ * ============================================================================
+ * FileInput Component
+ * ============================================================================
+ */
 
 export const FileInput = ({
   label,
@@ -26,11 +43,18 @@ export const FileInput = ({
   accept,
   ...props
 }: FileInputProps) => {
+  /* Tracks the currently selected File object */
   const [file, setFile] = useState<File | null>(null);
+  /* Manages dragging state overlay during drop events */
   const [isDragging, setIsDragging] = useState(false);
-  const [internalError, setInternalError] = useState<string | undefined>(undefined);
+  /* Stores any local file format or size validation errors */
+  const [internalError, setInternalError] = useState<string | undefined>(
+    undefined,
+  );
+  /* References the hidden native file input element */
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  /* Processes selected files and enforces file size constraints */
   const handleFiles = (files: FileList | null) => {
     const selectedFile = files?.[0];
     setInternalError(undefined);
@@ -44,30 +68,35 @@ export const FileInput = ({
     }
   };
 
+  /* Invokes file processor on native file change event */
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     handleFiles(e.target.files);
     onChange?.(e);
   };
 
+  /* Drag over callback enabling drop interactions */
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(true);
   };
 
+  /* Drag leave callback removing dragging state background highlights */
   const handleDragLeave = () => {
     setIsDragging(false);
   };
 
+  /* Drop handler capturing dropped file instances */
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
     handleFiles(e.dataTransfer.files);
   };
 
+  /* Paste handler capturing file streams from system clipboards */
   const handlePaste = (e: React.ClipboardEvent) => {
     const items = e.clipboardData.items;
     const files: File[] = [];
-    
+
     for (let i = 0; i < items.length; i++) {
       if (items[i].kind === "file") {
         const file = items[i].getAsFile();
@@ -80,8 +109,8 @@ export const FileInput = ({
     }
   };
 
+  /* Resets current selection and clears native input buffers */
   const handleClear = (e: React.MouseEvent) => {
-
     e.stopPropagation();
     setFile(null);
     setInternalError(undefined);
@@ -92,19 +121,21 @@ export const FileInput = ({
 
   const displayError = error || internalError;
 
+  /* Simulates mouse click event on native hidden input tag */
   const triggerInput = () => {
     fileInputRef.current?.click();
   };
 
   const inputId = React.useId();
 
+  /* Template option mapping for traditional Input fields and double action bars */
   if (variant === "field" || variant === "field-2") {
     return (
-      <div 
-        className="flex flex-col w-full gap-1.5 outline-none" 
+      <div
+        className="flex flex-col w-full gap-1.5 outline-none"
         onPaste={handlePaste}
         tabIndex={0}
-        onKeyDown={(e) => {
+        onKeyDown={e => {
           if ((e.key === "Delete" || e.key === "Backspace") && file) {
             e.preventDefault();
             handleClear(e as unknown as React.MouseEvent);
@@ -122,7 +153,8 @@ export const FileInput = ({
           className="hidden"
           onChange={handleFileChange}
         />
-        
+
+        {/* Template variant 1: Custom read-only base input mimicking file paths */}
         {variant === "field" ? (
           <Input
             label={label}
@@ -134,74 +166,86 @@ export const FileInput = ({
             leftIcon={<Upload size={18} />}
             rightIcon={
               file && (
-                <button onClick={handleClear} className="hover:text-red-500 transition-colors">
-                  <X size={16} />
+                <button
+                  onClick={handleClear}
+                  className="bg-black text-white hover:bg-red-500 rounded-full p-1 hover:text-white transition-colors cursor-pointer"
+                >
+                  <X size={14} strokeWidth={2.5} />
                 </button>
               )
             }
-            className={cn("cursor-pointer", className)}
           />
         ) : (
+          /* Template variant 2: split-action bar with inline selection button */
           <div className="flex flex-col gap-1.5">
             {label && (
-              <label className="text-sm font-medium text-black dark:text-white ml-1">
+              <label className="text-sm font-medium text-black ml-1">
                 {label}
-                {props.required && <span className="text-red-500 ml-1">*</span>}
+                {props.required && (
+                  <span className="text-red-500  ml-1">*</span>
+                )}
               </label>
             )}
-              <div 
-                className={cn(
-                  "flex items-center w-full h-10 rounded-xl border bg-black overflow-hidden transition-all duration-200 focus-within:ring-2 focus-within:ring-sky-500/20 focus-within:border-sky-500",
-                  displayError ? "border-red-500" : "border-gray-800",
-                  className
-                )}
-              >
-              <div 
-                onClick={triggerInput}
-                className="flex-1 h-full flex items-center px-3 cursor-pointer truncate text-sm text-white"
+            <div
+              className={cn(
+                "flex items-center w-full h-10 rounded-xl border-[1.5px] overflow-hidden transition-all duration-200 focus-within:ring-2 focus-within:ring-sky-500/20  bg-black focus-within:border-sky-500",
+                displayError ? "border-red-500" : "border-gray-800",
+                className,
+              )}
+            >
+              <div
+                
+                className="flex-1 h-full flex items-center px-3 truncate text-sm text-white"
               >
                 {file ? (
                   <span className="truncate">{file.name}</span>
                 ) : (
-                  <span className="text-gray-400">{props.placeholder || "No file selected"}</span>
+                  <span className="text-white">
+                    {props.placeholder || "No file selected"}
+                  </span>
                 )}
               </div>
-              
+
               <div className="flex items-center h-full">
                 {file && (
-                  <button 
-                    onClick={handleClear} 
-                    className="p-1.5 text-gray-400 hover:text-red-500 transition-colors mr-1 cursor-pointer"
+                  <button
+                    onClick={handleClear}
+                    className="p-1 bg-white rounded-full hover:text-red-500 transition-colors mr-1.5 cursor-pointer"
                   >
-                    <X size={16} />
+                    <X size={14} strokeWidth={2.5} />
                   </button>
                 )}
 
                 <button
                   type="button"
                   onClick={triggerInput}
-                  className="h-full px-4 flex items-center text-xs font-medium bg-white text-black hover:bg-gray-200 transition-colors border-l border-gray-800"
+                  className="h-full px-4 flex items-center text-xs font-medium border-l-[1.5px] border-gray-800 bg-white text-black cursor-pointer"
                 >
                   {file ? "Replace" : "Select a File"}
                 </button>
               </div>
             </div>
-            {displayError && <span className="text-xs text-red-500 ml-1 font-medium">{displayError}</span>}
+            {displayError && (
+              <span className="text-xs text-red-500 ml-1 font-medium">
+                {displayError}
+              </span>
+            )}
           </div>
         )}
       </div>
     );
   }
 
+  /* Default template dropzone layout variant supporting drag, drop, and paste actions */
   return (
     <div className="flex flex-col w-full gap-1.5">
       {label && (
-        <label className="text-sm font-medium text-white ml-1">
+        <label className="text-sm font-medium text-black ml-1">
           {label}
           {props.required && <span className="text-red-500 ml-1">*</span>}
         </label>
       )}
-      
+
       <div
         onClick={triggerInput}
         onDragOver={handleDragOver}
@@ -209,7 +253,7 @@ export const FileInput = ({
         onDrop={handleDrop}
         onPaste={handlePaste}
         tabIndex={0}
-        onKeyDown={(e) => {
+        onKeyDown={e => {
           if (e.key === "Enter" || e.key === " ") {
             e.preventDefault();
             triggerInput();
@@ -218,21 +262,17 @@ export const FileInput = ({
             handleClear(e as unknown as React.MouseEvent);
           }
         }}
-
         className={cn(
-          "group relative flex flex-col items-center justify-center w-full p-4 rounded-2xl border transition-all cursor-pointer outline-none focus-within:ring-2 focus-within:ring-sky-500/20 focus-within:border-sky-500",
-          "bg-black hover:bg-gray-900/50",
-          file ? "border-sky-500 bg-sky-500/10" : "border-gray-800 border-dashed hover:border-sky-500",
-          isDragging && "border-sky-500 bg-sky-900/20",
+          "group relative flex flex-col items-center justify-center w-full p-4 rounded-2xl border transition-all cursor-pointer outline-none focus-within:ring-2 focus-within:ring-sky-500/20 focus-within:border-sky-500 bg-black",
+          file && "border-sky-500 bg-sky-500/10",
+          isDragging && "border-sky-500 bg-sky-500/10",
           displayError && "border-red-500 bg-red-500/10",
-          // Shape variants
+          /* Sizing templates */
           dropzoneVariant === "rectangle" && "min-h-[120px]",
           dropzoneVariant === "square" && "aspect-square",
           dropzoneVariant === "narrow" && "min-h-[48px] p-2",
-          className
+          className,
         )}
-
-
       >
         <input
           {...props}
@@ -244,16 +284,22 @@ export const FileInput = ({
           onChange={handleFileChange}
         />
 
+        {/* Selected file info card display view */}
         {file ? (
-          <div className={cn(
-            "flex items-center w-full gap-4",
-            dropzoneVariant === "square" && "flex-col justify-center text-center gap-2",
-            dropzoneVariant === "narrow" && "gap-2"
-          )}>
-            <div className={cn(
-              "rounded-xl bg-gray-800 flex items-center justify-center text-sky-500 shadow-sm border border-gray-700 shrink-0",
-              dropzoneVariant === "narrow" ? "w-8 h-8" : "w-12 h-12"
-            )}>
+          <div
+            className={cn(
+              "flex items-center w-full gap-4",
+              dropzoneVariant === "square" &&
+                "flex-col justify-center text-center gap-2",
+              dropzoneVariant === "narrow" && "gap-2",
+            )}
+          >
+            <div
+              className={cn(
+                "flex items-center justify-center rounded-xl shrink-0 text-sky-500 bg-black",
+                dropzoneVariant === "narrow" ? "w-8 h-8" : "w-12 h-12",
+              )}
+            >
               {file.type.startsWith("image/") ? (
                 <ImageIcon size={dropzoneVariant === "narrow" ? 16 : 24} />
               ) : (
@@ -261,20 +307,24 @@ export const FileInput = ({
               )}
             </div>
 
-            
-            <div className={cn(
-              "flex flex-col flex-1 min-w-0",
-              dropzoneVariant === "square" ? "w-full px-2 items-center" : "items-start"
-            )}>
-              <span className={cn(
-                "text-sm font-medium text-white truncate block w-full",
-                dropzoneVariant === "square" ? "text-center" : "text-left"
-              )}>
+            <div
+              className={cn(
+                "flex flex-col flex-1 min-w-0",
+                dropzoneVariant === "square"
+                  ? "w-full px-2 items-center"
+                  : "items-start",
+              )}
+            >
+              <span
+                className={cn(
+                  "truncate block w-full text-sm font-medium text-black",
+                  dropzoneVariant === "square" ? "text-center" : "text-left",
+                )}
+              >
                 {file.name}
               </span>
 
-
-              <span className="text-xs text-gray-500">
+              <span className="text-xs text-black">
                 {(file.size / 1024 / 1024).toFixed(2)} MB
               </span>
             </div>
@@ -282,31 +332,37 @@ export const FileInput = ({
             <button
               type="button"
               onClick={handleClear}
-              className="p-2 rounded-full bg-gray-800 hover:bg-red-500 hover:text-white transition-all shadow-sm cursor-pointer"
+              className="p-2 rounded-full transition-all cursor-pointer bg-black text-white hover:bg-red-500"
             >
               <X size={14} />
             </button>
           </div>
         ) : (
-          <div className={cn(
-            "flex items-center gap-2 pointer-events-none transition-all",
-            dropzoneVariant === "narrow" ? "flex-row w-full" : "flex-col"
-          )}>
-            <div className={cn(
-              "rounded-full bg-sky-500/10 flex items-center justify-center text-sky-400 group-hover:scale-110 transition-transform shrink-0",
-              dropzoneVariant === "narrow" ? "w-8 h-8" : "w-10 h-10"
-            )}>
+          /* Empty / Unselected state display view */
+          <div
+            className={cn(
+              "flex items-center gap-2 pointer-events-none transition-all",
+              dropzoneVariant === "narrow" ? "flex-row w-full" : "flex-col",
+            )}
+          >
+            <div
+              className={cn(
+                "rounded-full flex items-center justify-center group-hover:scale-110 transition-transform shrink-0 text-black bg-white",
+                dropzoneVariant === "narrow" ? "w-8 h-8" : "w-10 h-10",
+              )}
+            >
               <Upload size={dropzoneVariant === "narrow" ? 16 : 20} />
             </div>
-            <div className={cn(
-              "flex flex-col min-w-0",
-              dropzoneVariant === "narrow" ? "items-start" : "items-center"
-            )}>
-
+            <div
+              className={cn(
+                "flex flex-col min-w-0",
+                dropzoneVariant === "narrow" ? "items-start" : "items-center",
+              )}
+            >
               <span className="text-sm font-medium text-white">
                 {isDragging ? "Drop your file here" : "Click or drag to upload"}
               </span>
-              <span className="text-xs text-gray-500">
+              <span className="text-xs text-white">
                 {accept ? `Supports: ${accept}` : "All file types supported"}
               </span>
             </div>
@@ -315,10 +371,10 @@ export const FileInput = ({
       </div>
 
       {displayError && (
-        <span className="text-xs text-red-500 ml-1 font-medium">{displayError}</span>
+        <span className="text-xs text-red-500 ml-1 font-medium">
+          {displayError}
+        </span>
       )}
     </div>
   );
 };
-
-

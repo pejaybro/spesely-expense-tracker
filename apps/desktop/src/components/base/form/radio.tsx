@@ -1,19 +1,38 @@
 import React, { useState } from "react";
 import { cn } from "@/src/utils";
 
-interface RadioProps extends Omit<
+/*
+ * ============================================================================
+ * Types & Interfaces
+ * ============================================================================
+ */
+
+/* Prop configuration for the Radio button component */
+export interface RadioProps extends Omit<
   React.InputHTMLAttributes<HTMLInputElement>,
   "type"
 > {
+  /* Title label of the radio option */
   label?: string;
+  /* Help or descriptive text for the radio option */
   description?: string;
+  /* Validation error message specific to this option */
   error?: string;
+  /* Controls alignment of label relative to the radio dot */
   labelPlacement?: "top" | "left" | "right";
+  /* Sizing parameter for the label container width */
   labelWidth?: string;
+  /* Horizontal alignment of the text label */
   "labelAlign-X"?: "left" | "center" | "right";
+  /* Vertical alignment of the text label */
   "labelAlign-Y"?: "top" | "middle" | "bottom";
-  activeColor?: string;
 }
+
+/*
+ * ============================================================================
+ * Radio Component
+ * ============================================================================
+ */
 
 export const Radio = ({
   label,
@@ -23,20 +42,20 @@ export const Radio = ({
   labelWidth,
   "labelAlign-X": labelAlignX,
   "labelAlign-Y": labelAlignY = "middle",
-  activeColor = "bg-white",
   className,
   id,
   ...props
 }: RadioProps) => {
   const radioId = id || React.useId();
 
-  // Support both controlled and uncontrolled states
+  /* Managed selection states supporting controlled and uncontrolled modes */
   const [internalChecked, setInternalChecked] = useState(
     props.defaultChecked || false,
   );
   const isControlled = props.checked !== undefined;
   const checked = isControlled ? props.checked : internalChecked;
 
+  /* Form event delegation and local state synchrony on changes */
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (props.disabled) return;
     const newChecked = e.target.checked;
@@ -56,13 +75,15 @@ export const Radio = ({
 
   return (
     <div className={cn("flex flex-col gap-1.5", className)}>
+      {/* Radio Input and Selection Wrapper Label */}
       <label
         htmlFor={radioId}
         className={cn(
           "group flex cursor-pointer select-none transition-all duration-200 gap-2",
           labelPlacement === "top" && "flex-col",
+          /* labelPlacement 'left' aligns the radio button to the extreme right end */
           labelPlacement === "left" &&
-            cn("flex-row-reverse justify-end", yAlignmentClass),
+            cn("flex-row-reverse justify-between w-full", yAlignmentClass),
           labelPlacement === "right" &&
             cn("flex-row justify-start", yAlignmentClass),
           props.disabled && "opacity-50 cursor-not-allowed",
@@ -77,25 +98,25 @@ export const Radio = ({
             checked={checked}
             onChange={handleChange}
           />
+          {/* Outer circle indicator border */}
           <div
             className={cn(
-              "w-5 h-5 rounded-full border-2 transition-all duration-300 flex items-center justify-center bg-black",
-              checked
-                ? "border-white shadow-lg scale-110"
-                : "border-gray-800 group-hover:border-gray-600",
-              "peer-focus-visible:ring-4 peer-focus-visible:ring-white/10",
+              "w-5 h-5 rounded-full border-[1.5px] border-black flex items-center justify-center bg-white",
+              checked && "scale-110",
+              "peer-focus-visible:ring-4 peer-focus-visible:ring-sky-500/10 peer-focus-visible:border-sky-500"
             )}
           >
+            {/* Inner selected dot */}
             <div
               className={cn(
-                "w-2.5 h-2.5 rounded-full transition-all duration-300 transform",
-                activeColor,
-                checked ? "opacity-100 scale-100" : "opacity-0 scale-50",
+                "w-2.5 h-2.5 rounded-full bg-black",
+                checked ? "opacity-100 scale-100" : "opacity-0 scale-100",
               )}
             />
           </div>
         </div>
 
+        {/* Text Area (Option labels and descriptive help texts) */}
         {(label || description) && (
           <div
             className={cn(
@@ -107,23 +128,27 @@ export const Radio = ({
             )}
           >
             {label && (
-              <span className="text-sm font-medium text-white whitespace-normal break-words w-full">
+              <span className="whitespace-normal break-words w-full text-sm font-medium text-black">
                 {label}
                 {props.required && (
-                  <span className="text-red-500 ml-1 font-black">*</span>
+                  <span className="ml-1 font-black text-red-500">
+                    *
+                  </span>
                 )}
               </span>
             )}
             {description && (
-              <span className="text-xs text-gray-400 leading-tight whitespace-normal break-words w-full">
+              <span className="leading-tight whitespace-normal break-words w-full text-xs text-black">
                 {description}
               </span>
             )}
           </div>
         )}
       </label>
+
+      {/* Option Validation Error Message */}
       {error && (
-        <span className="text-xs font-medium text-red-500 ml-1 italic tracking-tight animate-in fade-in slide-in-from-top-1">
+        <span className="text-xs font-medium ml-1 italic tracking-tight animate-in fade-in slide-in-from-top-1 text-red-500">
           {error}
         </span>
       )}

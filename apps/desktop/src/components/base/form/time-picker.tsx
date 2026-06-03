@@ -27,7 +27,6 @@ interface TimePickerProps {
   isTypeable?: boolean;
   placeholder?: string;
   variant?: "rounded" | "curved" | "square";
-  isFloating?: boolean;
   labelPlacement?: "top" | "left" | "right";
   labelWidth?: string;
   "labelAlign-X"?: "left" | "center" | "right";
@@ -46,7 +45,6 @@ export const TimePicker = ({
   isTypeable = false,
   placeholder,
   variant = "curved",
-  isFloating = false,
   labelPlacement = "top",
   labelWidth = "w-32",
   "labelAlign-X": labelAlignX,
@@ -282,11 +280,10 @@ export const TimePicker = ({
   const borderRadius = variant === "square" ? "rounded-none" : variant === "curved" ? "rounded-lg" : "rounded-full";
 
   const hasError = internalError || !!errorProp;
-  const isActive = isFocused || isOpen || !!value;
 
   return (
     <div className={cn("flex w-full", labelPlacement === "top" && "flex-col gap-1.5", labelPlacement === "left" && cn("flex-row gap-4", yAlignmentClass), labelPlacement === "right" && cn("flex-row-reverse gap-4", yAlignmentClass), className)}>
-      {label && !isFloating && (
+      {label && (
         <div className={cn("flex flex-col", isSideLabel ? "shrink-0" : "w-full", labelAlignY === "top" && isSideLabel && "mt-2.5")}>
           <div className={cn(
             isSideLabel ? labelWidth : "w-full", 
@@ -295,29 +292,13 @@ export const TimePicker = ({
             xAlignment === "right" && "items-end text-right", 
             xAlignment === "center" && "items-center text-center"
           )}>
-            <span className="text-sm font-medium tracking-tight text-white">{label}</span>
-            {description && <span className="text-[11px] text-gray-400 font-medium mt-0.5">{description}</span>}
+            <span className="text-sm font-medium text-black">{label}</span>
+            {description && <span className="text-[11px] text-black font-medium mt-0.5">{description}</span>}
           </div>
         </div>
       )}
 
       <div className="flex-1 relative group">
-        {label && isFloating && (
-          <span 
-            className={cn(
-              "absolute transition-all duration-200 pointer-events-none font-medium tracking-tight z-10 block truncate",
-              isActive 
-                ? "-top-4 left-6 right-auto text-sm bg-black px-1.5 text-sky-500 max-w-[calc(100%-1.5rem)]" 
-                : cn(
-                    "top-1/2 -translate-y-1/2 text-[13px] text-gray-400",
-                    "left-11 right-8"
-                  )
-            )}
-          >
-            {label}
-          </span>
-        )}
-
         {isTypeable ? (
           <div className="relative flex items-center">
             <input
@@ -328,15 +309,15 @@ export const TimePicker = ({
               onKeyDown={handleKeyDown}
               onFocus={handleFocus}
               onBlur={() => setIsFocused(false)}
-              placeholder={isFloating ? "" : displayFormat.toLowerCase()}
+              placeholder={displayFormat.toLowerCase()}
               className={cn(
-                "flex items-center w-full pl-11 pr-2 h-10 border transition-all duration-200 bg-black text-md text-white outline-none placeholder:text-gray-600",
+                "flex items-center w-full pl-10 pr-2 h-9 border-[1.5px] border-black transition-all duration-200 bg-white text-md text-black outline-none placeholder:text-black/40 placeholder:text-sm placeholder:font-medium font-medium",
                 borderRadius,
-                isFocused ? "border-sky-500 ring-4 ring-sky-500/10 shadow-lg" : "border-gray-800 hover:border-gray-600",
+                isFocused ? "border-sky-500 ring-4 ring-sky-500/10 shadow-lg" : "hover:border-gray-800",
                 hasError && "border-red-500 ring-4 ring-red-500/10 text-red-500"
               )}
             />
-            <Clock size={16} className={cn("absolute left-2.5 transition-colors", hasError ? "text-red-400" : "text-gray-400")} />
+            <Clock size={16} className={cn("absolute left-3 transition-colors", hasError ? "text-red-500" : "text-black")} />
           </div>
         ) : (
           <button
@@ -346,19 +327,19 @@ export const TimePicker = ({
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
             className={cn(
-              "flex items-center gap-3 pr-2 w-full h-10 border transition-all duration-200 bg-black font-medium text-white cursor-pointer",
+              "flex items-center pr-2 w-full h-9 border-[1.5px] border-black transition-all duration-200 bg-white font-medium text-black cursor-pointer",
               borderRadius,
-              isOpen ? "border-sky-500 ring-4 ring-sky-500/10 shadow-lg" : "border-gray-800 hover:border-gray-600",
+              isOpen ? "border-sky-500 ring-4 ring-sky-500/10" : "hover:border-gray-800",
               errorProp && "border-red-500 ring-4 ring-red-500/10"
             )}
           >
             <div className="flex items-center pl-2.25 pr-2 shrink-0">
-              <Clock size={16} className="text-gray-400" />
+              <Clock size={16} className="text-black" />
             </div>
-            <span className={cn("text-md flex-1 text-left truncate", !value && "text-gray-600")}>
-              {(value && (!isFloating || isActive)) ? format(value, displayFormat) : (isFloating ? "" : (placeholder || "Select Time"))}
+            <span className={cn("text-md flex-1 text-left truncate text-black", !value && "text-gray-400")}>
+              {value ? format(value, displayFormat) : (placeholder || "Select Time")}
             </span>
-            <ChevronDown size={14} className={cn("text-gray-400 transition-transform duration-200", isOpen && "rotate-180")} />
+            <ChevronDown size={14} className={cn("text-black transition-transform duration-200", isOpen && "rotate-180")} />
           </button>
         )}
 
@@ -369,18 +350,18 @@ export const TimePicker = ({
                 ref={refs.setFloating}
                 style={floatingStyles}
                 {...getFloatingProps()}
-                className="z-[9999] bg-black border border-gray-800 rounded-3xl shadow-2xl animate-in fade-in duration-200 p-2 flex gap-1 h-[280px]"
+                className="z-[9999] bg-white border-[1.5px] border-black rounded-xl shadow-2xl animate-in fade-in duration-200 p-2 flex gap-1 h-[280px]"
               >
                 {/* Hour Column */}
                 <div className="flex flex-col overflow-y-auto custom-scrollbar px-1">
-                   <div className="text-[10px] font-black tracking-widest text-gray-500 uppercase p-2 sticky top-0 bg-black">Hour</div>
+                   <div className="text-[10px] font-semibold tracking-widest text-black uppercase p-2 sticky top-0 bg-white">Hour</div>
                    {hours.map(h => (
                      <button
                        key={h}
                        onClick={() => handleTimeSelect(h, currentMinute || 0, currentSecond || 0, currentPeriod)}
                        className={cn(
                          "w-10 h-10 shrink-0 flex items-center justify-center rounded-lg text-sm font-bold transition-all cursor-pointer",
-                         currentHour === h ? "bg-white text-black shadow-lg" : "hover:bg-gray-800 text-white"
+                         currentHour === h ? "bg-black text-white shadow-lg" : "hover:bg-black/5 text-black"
                        )}
                      >
                        {h.toString().padStart(2, "0")}
@@ -389,15 +370,15 @@ export const TimePicker = ({
                 </div>
 
                 {/* Minute Column */}
-                <div className="flex flex-col overflow-y-auto custom-scrollbar px-1 border-l border-gray-800">
-                   <div className="text-[10px] font-black tracking-widest text-gray-500 uppercase p-2 sticky top-0 bg-black">Min</div>
+                <div className="flex flex-col overflow-y-auto custom-scrollbar px-1 border-l border-black">
+                   <div className="text-[10px] font-semibold tracking-widest text-black uppercase p-2 sticky top-0 bg-white">Min</div>
                    {minutes.map(m => (
                      <button
                        key={m}
                        onClick={() => handleTimeSelect(currentHour || (is12Hour ? 12 : 0), m, currentSecond || 0, currentPeriod)}
                        className={cn(
                          "w-10 h-10 shrink-0 flex items-center justify-center rounded-lg text-sm font-bold transition-all cursor-pointer",
-                         currentMinute === m ? "bg-white text-black shadow-lg" : "hover:bg-gray-800 text-white"
+                         currentMinute === m ? "bg-black text-white shadow-lg" : "hover:bg-black/5 text-black"
                        )}
                      >
                        {m.toString().padStart(2, "0")}
@@ -407,34 +388,34 @@ export const TimePicker = ({
 
                 {/* Seconds Column */}
                 {showSeconds && (
-                  <div className="flex flex-col overflow-y-auto custom-scrollbar px-1 border-l border-gray-800">
-                    <div className="text-[10px] font-black tracking-widest text-gray-500 uppercase p-2 sticky top-0 bg-black">Sec</div>
-                    {secs.map(s => (
-                      <button
-                        key={s}
-                        onClick={() => handleTimeSelect(currentHour || (is12Hour ? 12 : 0), currentMinute || 0, s, currentPeriod)}
-                        className={cn(
-                          "w-10 h-10 shrink-0 flex items-center justify-center rounded-lg text-sm font-bold transition-all cursor-pointer",
-                          currentSecond === s ? "bg-white text-black shadow-lg" : "hover:bg-gray-800 text-white"
-                        )}
-                      >
-                        {s.toString().padStart(2, "0")}
-                      </button>
-                    ))}
-                  </div>
+                   <div className="flex flex-col overflow-y-auto custom-scrollbar px-1 border-l border-black">
+                     <div className="text-[10px] font-semibold tracking-widest text-black uppercase p-2 sticky top-0 bg-white">Sec</div>
+                     {secs.map(s => (
+                       <button
+                         key={s}
+                         onClick={() => handleTimeSelect(currentHour || (is12Hour ? 12 : 0), currentMinute || 0, s, currentPeriod)}
+                         className={cn(
+                           "w-10 h-10 shrink-0 flex items-center justify-center rounded-lg text-sm font-bold transition-all cursor-pointer",
+                           currentSecond === s ? "bg-black text-white shadow-lg" : "hover:bg-black/5 text-black"
+                         )}
+                       >
+                         {s.toString().padStart(2, "0")}
+                       </button>
+                     ))}
+                   </div>
                 )}
 
                 {/* AM/PM Column */}
                 {is12Hour && (
-                  <div className="flex flex-col px-1 border-l border-gray-800">
-                    <div className="text-[10px] font-black tracking-widest text-gray-500 uppercase p-2">Per</div>
+                  <div className="flex flex-col px-1 border-l border-black">
+                    <div className="text-[10px] font-semibold tracking-widest text-black uppercase p-2">Per</div>
                     {["AM", "PM"].map(p => (
                       <button
                         key={p}
                         onClick={() => handleTimeSelect(currentHour || 12, currentMinute || 0, currentSecond || 0, p)}
                         className={cn(
-                          "w-12 h-10 shrink-0 flex items-center justify-center rounded-lg text-[11px] font-black tracking-widest transition-all cursor-pointer",
-                          currentPeriod === p ? "bg-sky-500 text-white shadow-lg" : "hover:bg-gray-800 text-white"
+                          "w-12 h-10 shrink-0 flex items-center justify-center rounded-lg text-[11px] font-bold tracking-widest transition-all cursor-pointer",
+                          currentPeriod === p ? "bg-black text-white shadow-lg" : "hover:bg-black/10 text-black"
                         )}
                       >
                         {p}
@@ -450,3 +431,5 @@ export const TimePicker = ({
     </div>
   );
 };
+
+TimePicker.displayName = "TimePicker";

@@ -1,7 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { cn } from "@/src/utils";
-import { Radio } from "./radio";
+import { Radio, type RadioProps } from "./radio";
 
+/*
+ * ============================================================================
+ * Types & Interfaces
+ * ============================================================================
+ */
+
+/* Represents an individual radio item configuration */
 export interface RadioOption {
   id?: string;
   label: string;
@@ -10,22 +17,42 @@ export interface RadioOption {
   disabled?: boolean;
 }
 
-interface RadioGroupProps {
-  name?: string;
+/* Prop configuration for the parent RadioGroup component */
+interface RadioGroupProps extends Omit<
+  RadioProps,
+  | "label"
+  | "description"
+  | "value"
+  | "onChange"
+  | "defaultValue"
+  | "options"
+  | "error"
+> {
+  /* Title label of the group */
   label?: string;
+  /* Help or descriptive text for the entire group */
   description?: string;
-  error?: string;
-  value?: string;
-  defaultValue?: string;
-  onChange?: (value: string) => void;
+  /* Array of radio option objects */
   options: RadioOption[];
-  className?: string;
-  labelPlacement?: "top" | "left" | "right";
+  /* Controlled selection value */
+  value?: string;
+  /* Default initial selection value */
+  defaultValue?: string;
+  /* Callback triggered on selection change */
+  onChange?: (value: string) => void;
+  /* Visual width class for the label area */
   labelWidth?: string;
-  "labelAlign-X"?: "left" | "center" | "right";
-  "labelAlign-Y"?: "top" | "middle" | "bottom";
-  indicator?: "dots" | "numbers" | React.ReactNode;
+  /* Horizontal alignment of the group label */
+  labelAlign?: "left" | "center" | "right";
+  /* Group-level validation error message */
+  error?: string;
 }
+
+/*
+ * ============================================================================
+ * RadioGroup Component
+ * ============================================================================
+ */
 
 export const RadioGroup = ({
   name,
@@ -37,72 +64,41 @@ export const RadioGroup = ({
   onChange,
   options = [],
   className,
-  labelPlacement = "top",
-  labelWidth = "w-32",
-  "labelAlign-X": labelAlignX,
-  "labelAlign-Y": labelAlignY = "top",
-  indicator,
+  labelWidth = "w-full",
+  labelAlign = "left",
+  ...props
 }: RadioGroupProps) => {
   const uniqueName = React.useId();
   const groupName = name || uniqueName;
 
-  const [internalValue, setInternalValue] = useState<string>(
-    value || defaultValue || "",
-  );
+  /* Pure Controlled State: Source value directly from parent-provided props */
+  const activeValue = value !== undefined ? value : (defaultValue || "");
 
-  useEffect(() => {
-    if (value !== undefined) setInternalValue(value);
-  }, [value]);
-
-  const handleRadioChange = (id: string) => {
-    if (value === undefined) setInternalValue(id);
-    onChange?.(id);
+  /* Updates selected option and propagates changes back up */
+  const handleRadioChange = (optionValue: string) => {
+    onChange?.(optionValue);
   };
 
-  const isSideLabel = labelPlacement === "left" || labelPlacement === "right";
-  
-  const xAlignment = labelAlignX || (
-    labelPlacement === "left" ? "left" : 
-    labelPlacement === "right" ? "right" : "left"
-  );
-
-  const yAlignmentClass = 
-    labelAlignY === "top" ? "items-start" :
-    labelAlignY === "bottom" ? "items-end" : "items-center";
-
   return (
-    <div
-      className={cn(
-        "flex w-full",
-        labelPlacement === "top" && "flex-col gap-3",
-        labelPlacement === "left" && cn("flex-row gap-6", yAlignmentClass),
-        labelPlacement === "right" && cn("flex-row-reverse gap-6", yAlignmentClass),
-        className,
-      )}
-    >
-      {/* Group Label Area */}
+    <div className={cn("flex w-full flex-col gap-3", className)}>
+      {/* Group Label Area (contains label and description) */}
       {(label || description) && (
-        <div
-          className={cn(
-            "flex flex-col shrink-0",
-            isSideLabel ? labelWidth : "w-full",
-          )}
-        >
+        <div className={cn("flex flex-col shrink-0", labelWidth)}>
           <div
             className={cn(
               "flex flex-col",
-              xAlignment === "left" && "items-start text-left",
-              xAlignment === "right" && "items-end text-right",
-              xAlignment === "center" && "items-center text-center",
+              labelAlign === "left" && "items-start text-left",
+              labelAlign === "right" && "items-end text-right",
+              labelAlign === "center" && "items-center text-center",
             )}
           >
             {label && (
-              <span className="text-sm font-bold tracking-tight text-white uppercase">
+              <span className="tracking-tight uppercase text-sm font-bold text-black">
                 {label}
               </span>
             )}
             {description && (
-              <span className="text-[11px] text-gray-400 font-medium mt-0.5 leading-tight">
+              <span className="mt-0.5 leading-tight text-[11px] font-medium text-black">
                 {description}
               </span>
             )}
@@ -110,36 +106,17 @@ export const RadioGroup = ({
         </div>
       )}
 
-      {/* Radio Items Area */}
+      {/* Radio Items Area (loops options and forwards rest parameters) */}
       <div className="flex-1 flex flex-col gap-1.5">
         <div className="flex gap-4 flex-col">
           {options.map((option, index) => {
-            const isChecked = internalValue === option.value;
-
-            let renderIndicator: React.ReactNode = null;
-            if (indicator === "dots") {
-              renderIndicator = <div className="w-1.5 h-1.5 rounded-full bg-white shrink-0" />;
-            } else if (indicator === "numbers") {
-              renderIndicator = (
-                <span className="text-sm font-bold text-gray-500 shrink-0 w-4 text-center">
-                  {index + 1}.
-                </span>
-              );
-            } else if (indicator !== undefined) {
-              renderIndicator = (
-                <div className="shrink-0 flex items-center justify-center text-sm font-medium text-gray-500">
-                  {indicator}
-                </div>
-              );
-            }
+            const isChecked = activeValue === option.value;
 
             return (
-              <div key={option.id || option.value || index} className="flex items-center gap-3 w-full">
-                {renderIndicator && (
-                  <div className="flex items-center justify-center shrink-0">
-                    {renderIndicator}
-                  </div>
-                )}
+              <div
+                key={option.id || option.value || index}
+                className="flex items-center gap-3 w-full"
+              >
                 <Radio
                   name={groupName}
                   label={option.label}
@@ -149,14 +126,16 @@ export const RadioGroup = ({
                   onChange={() => handleRadioChange(option.value)}
                   className="flex-1 min-w-0"
                   value={option.value}
+                  {...props}
                 />
               </div>
             );
           })}
         </div>
 
+        {/* Group Validation Error Message (displayed only once) */}
         {error && (
-          <span className="text-[10px] font-medium text-red-500 mt-1.5 ml-1 block animate-in fade-in slide-in-from-top-1">
+          <span className="text-[10px] font-medium mt-1.5 ml-1 block animate-in fade-in slide-in-from-top-1 text-red-500">
             {error}
           </span>
         )}
@@ -164,3 +143,49 @@ export const RadioGroup = ({
     </div>
   );
 };
+
+/*
+ * ============================================================================
+ * State Lifting Explanation & Usage Guide
+ * ============================================================================
+ *
+ * 1. What state was lifted up?
+ *    The selected option state (`internalValue` string) has been lifted out of the
+ *    local group scope. The local `useState` hook and lifecycle `useEffect` 
+ *    synchronization logic have been completely removed.
+ *
+ * 2. How to work with this pure controlled component (Standard React State):
+ *    Define a string state and its setter in the parent component:
+ *
+ *    const [selectedOpt, setSelectedOpt] = useState("email");
+ *
+ *    Then render the component:
+ *    <RadioGroup
+ *      label="Notification Preference"
+ *      value={selectedOpt}
+ *      onChange={setSelectedOpt}
+ *      options={[
+ *        { label: "Email", value: "email" },
+ *        { label: "SMS", value: "sms" }
+ *      ]}
+ *    />
+ *
+ * 3. React Hook Form Integration:
+ *    When using with React Hook Form, wrap this component inside a <Controller>:
+ *
+ *    <Controller
+ *      name="notificationPref"
+ *      control={control}
+ *      render={({ field }) => (
+ *        <RadioGroup
+ *          label="Notification Preferences"
+ *          value={field.value}
+ *          onChange={field.onChange}
+ *          options={[
+ *            { label: "Email", value: "email" },
+ *            { label: "SMS", value: "sms" }
+ *          ]}
+ *        />
+ *      )}
+ *    />
+ */

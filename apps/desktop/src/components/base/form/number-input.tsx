@@ -26,21 +26,6 @@ interface NumberInputProps extends React.ComponentProps<typeof Input> {
 
 /*
  * ============================================================================
- * Style Theme Configuration
- * ============================================================================
- */
-
-const NUMBER_STYLE = {
-  /* Color classes for hover states and text */
-  btn: "text-white bg-black",
-  /* Style class applied to negative value text states */
-  negativeText: "text-red-500 font-medium focus-within:border-red-500 focus-within:ring-red-500/20",
-  /* Divider border layout colors */
-  divider: "border-r border-gray-100 dark:border-gray-800",
-};
-
-/*
- * ============================================================================
  * NumberInput Component
  * ============================================================================
  */
@@ -165,7 +150,7 @@ export const NumberInput = ({
       type="text"
       value={value}
       onChange={handleInternalChange}
-      className={cn(isNegativeValue && NUMBER_STYLE.negativeText, className)}
+      className={cn(isNegativeValue && "text-red-500 font-medium focus-within:border-red-500 focus-within:ring-red-500/20", className)}
       rightIcon={
         (showSteppers || props.rightIcon) && (
           <div className="flex items-center gap-1.5 pl-2 ml-1">
@@ -173,26 +158,20 @@ export const NumberInput = ({
               <div
                 className={cn(
                   "flex items-center gap-1",
-                  props.rightIcon && `${NUMBER_STYLE.divider} pr-2 mr-1`,
+                  props.rightIcon && "border-r border-gray-250 pr-2 mr-1",
                 )}
               >
                 <button
                   type="button"
                   onClick={handleDecrement}
-                  className={cn(
-                    "p-0.5 rounded transition-colors",
-                    NUMBER_STYLE.btn,
-                  )}
+                  className="p-0.5 rounded transition-colors text-white bg-black hover:bg-gray-800"
                 >
                   <Minus size={14} />
                 </button>
                 <button
                   type="button"
                   onClick={handleIncrement}
-                  className={cn(
-                    "p-0.5 rounded transition-colors",
-                    NUMBER_STYLE.btn,
-                  )}
+                  className="p-0.5 rounded transition-colors text-white bg-black hover:bg-gray-800"
                 >
                   <Plus size={14} />
                 </button>

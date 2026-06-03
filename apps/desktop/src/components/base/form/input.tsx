@@ -6,8 +6,7 @@ import { cn } from "@/src/utils";
  * Types & Interfaces
  * ============================================================================
  */
-
-interface InputProps extends Omit<
+export interface InputProps extends Omit<
   React.InputHTMLAttributes<HTMLInputElement>,
   "prefix"
 > {
@@ -35,47 +34,7 @@ interface InputProps extends Omit<
   "labelAlign-X"?: "left" | "center" | "right";
   /** Custom vertical cross-axis alignments for side label layout blocks */
   "labelAlign-Y"?: "top" | "middle" | "bottom";
-  /** Renders phone input calling code prefix styles */
-  countryCode?: string;
 }
-
-/*
- * ============================================================================
- * Component Style Theme Configuration
- * ============================================================================
- */
-
-const INPUT_STYLE = {
-  // Colors & Formats
-  bg: "bg-white",
-  inputBoxFormat: "rounded-lg w-full",
-  textFormat: " tracking-normal text-md font-medium text-black",
-  placeholderFormat: "placeholder:text-gray-300 placeholder:truncate",
-
-  // Focus & Default Border/Ring Config
-  borderWidth: "border-[1.5px]",
-  ringWidth: "ring-[2px]",
-  borderDefault: "border-gray-300",
-  borderFocus: "border-sky-500",
-  ringFocus: "ring-sky-500/15",
-
-  // Validation Error Styling
-  borderError: "border-red-600",
-  ringError: "ring-red-600/15",
-  errorTextFormat: "text-red-600 text-xs font-medium",
-
-  // Icon & Decorator Color Accents
-  iconLeft: "text-black",
-  iconRight: "text-black",
-
-  // Label & Helper text styling
-  labelFormat: "text-md font-medium tracking-tight text-black",
-  descriptionFormat: "text-xs text-black font-medium mt-0.5",
-
-  /* Static Prefix / Suffix styling */
-  suffixFormat: "font-medium",
-  prefixFormat: "font-medium",
-};
 
 /*
  * ============================================================================
@@ -98,7 +57,6 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
       labelWidth = "w-32",
       "labelAlign-X": labelAlignX,
       "labelAlign-Y": labelAlignY = "middle",
-      countryCode,
       ...props
     },
     ref,
@@ -119,29 +77,22 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
 
       /* Sanitization rules for numbers (Forces float formats, locks max value limits) */
       if (props.type === "number") {
-        val = val.replace(/[^0-9.]/g, "");
-        const parts = val.split(".");
-        if (parts.length > 2) val = parts[0] + "." + parts.slice(1).join("");
-        if (val.includes(".")) {
-          const [intP, decP] = val.split(".");
-          val = `${intP}.${decP.slice(0, 2)}`;
+        const cleanVal = val.replace(/[^0-9.]/g, "");
+        const dots = cleanVal.split(".").length - 1;
+        if (dots > 1) {
+          e.target.value = prevValueRef.current;
+          return;
         }
-        if (props.max !== undefined && Number(val) > Number(props.max)) {
-          val = prevValueRef.current;
-        }
-        e.target.value = val;
-      } else if (props.type === "tel") {
-      /* Sanitization rules for telephone digits (enforces numeric digits + maxLength check) */
-        val = val.replace(/\D/g, "");
-        const maxLen = props.maxLength || 10;
-        if (val.length > maxLen) {
-          val = val.slice(0, maxLen);
-        }
-        e.target.value = val;
+        val = cleanVal;
       }
 
-      /* Sync refs and call external parent listeners */
-      prevValueRef.current = e.target.value;
+      /* Sanitization rules for tel (Allows numeric dialing codes and keys) */
+      if (props.type === "tel") {
+        val = val.replace(/[^0-9+\s()-]/g, "");
+      }
+
+      prevValueRef.current = val;
+      e.target.value = val;
       props.onChange?.(e);
     };
 
@@ -152,15 +103,8 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
      */
 
     const isSideLabel = labelPlacement === "left" || labelPlacement === "right";
-
     const xAlignment =
-      labelAlignX ||
-      (labelPlacement === "left"
-        ? "left"
-        : labelPlacement === "right"
-          ? "right"
-          : "left");
-
+      labelAlignX || (labelPlacement === "left" ? "right" : "left");
     const yAlignmentClass =
       labelAlignY === "top"
         ? "items-start"
@@ -202,9 +146,9 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
                 xAlignment === "center" && "items-center text-center",
               )}
             >
-              <span className={cn(INPUT_STYLE.labelFormat)}>{label}</span>
+              <span className="text-md font-medium text-black">{label}</span>
               {description && (
-                <span className={cn(INPUT_STYLE.descriptionFormat)}>
+                <span className="text-xs text-black font-medium mt-0.5">
                   {description}
                 </span>
               )}
@@ -218,30 +162,24 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
           <div
             className={cn(
               "flex items-center transition-all duration-200 gap-0",
-              INPUT_STYLE.inputBoxFormat,
-              INPUT_STYLE.borderWidth,
-              INPUT_STYLE.bg,
-              INPUT_STYLE.borderDefault,
-              `focus-within:${INPUT_STYLE.borderFocus} focus-within:${INPUT_STYLE.ringWidth} focus-within:${INPUT_STYLE.ringFocus}`,
+              "rounded-lg w-full border-[1.5px] bg-white border-black h-9",
+              "focus-within:border-sky-500 focus-within:ring-4 focus-within:ring-sky-500/10",
               error
-                ? `${INPUT_STYLE.borderError} ${INPUT_STYLE.ringWidth} ${INPUT_STYLE.ringError}`
+                ? "border-red-600 focus-within:border-red-600 focus-within:ring-red-600/10"
                 : "",
+              props.readOnly && "cursor-pointer",
             )}
           >
-            {/* Left Content Decorators (Icon / Prefix / Country Calling Code) */}
-            {(leftIcon || prefix || countryCode) && (
+            {/* Left Content Decorators (Icon / Prefix) */}
+            {(leftIcon || prefix) && (
               <div
                 className={cn(
                   "flex items-center pl-2 pr-2 shrink-0 gap-1.5",
-                  INPUT_STYLE.iconLeft,
+                  "text-black",
                 )}
               >
                 {leftIcon}
-                {(prefix || countryCode) && (
-                  <span className={cn(INPUT_STYLE.prefixFormat)}>
-                    {countryCode || prefix}
-                  </span>
-                )}
+                {prefix && <span className="font-medium">{prefix}</span>}
               </div>
             )}
 
@@ -265,10 +203,11 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
               placeholder={props.placeholder}
               className={cn(
                 "flex-1 w-full min-w-0 bg-transparent border-none outline-none h-full py-1.5 truncate",
-                INPUT_STYLE.textFormat,
-                INPUT_STYLE.placeholderFormat,
+                "text-md font-medium text-black",
+                "placeholder:text-black/40 placeholder:text-sm placeholder:font-medium placeholder:truncate",
                 !(leftIcon || prefix) && "pl-2",
                 !(rightIcon || suffix) && "pr-2",
+                props.readOnly && "cursor-pointer",
               )}
             />
 
@@ -277,12 +216,10 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
               <div
                 className={cn(
                   "flex items-center pr-2.25 pl-2 shrink-0",
-                  INPUT_STYLE.iconRight,
+                  "text-black",
                 )}
               >
-                {suffix && (
-                  <span className={cn(INPUT_STYLE.suffixFormat)}>{suffix}</span>
-                )}
+                {suffix && <span className="font-medium">{suffix}</span>}
                 {rightIcon && (
                   <div
                     onClick={onRightIconClick}
@@ -302,7 +239,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
           {error && (
             <span
               className={cn(
-                INPUT_STYLE.errorTextFormat,
+                "text-red-600 text-xs font-medium",
                 "mt-1.5 ml-1 block animate-in fade-in slide-in-from-top-1",
               )}
             >
