@@ -23,7 +23,7 @@ import {
   Flex,
   Button,
   BtnStyles,
-  toast,
+  Spinner,
 } from "@/src/components/base";
 import { AtSign } from "lucide-react";
 import { useMemo, useEffect } from "react";
@@ -107,51 +107,7 @@ export const Dashboard = () => {
     defaultValues,
   });
 
-  useEffect(() => {
-    // Trigger 4 types of toasts with infinite duration
-    toast.success({
-      title: "Successfully Loaded Dashboard",
-      description: "This is a success toast message that stays open.",
-      duration: Infinity,
-      showClose: true,
-    });
-    toast.info({
-      title: "System Update Available",
-      description: "This is an info toast message that stays open.",
-      duration: Infinity,
-      showClose: true,
-    });
-    toast.warning({
-      title: "Low Budget Warning",
-      description: "This is a warning toast message that stays open.",
-      duration: Infinity,
-      showClose: true,
-    });
-    toast.error({
-      title: "Connection Failed",
-      description: "This is an error toast message that stays open.",
-      duration: Infinity,
-      showClose: true,
-    });
-    // Trigger 5th custom toast with custom React node content
-    toast.custom({
-      content: (id) => (
-        <div className="p-4 flex flex-col gap-1.5 text-left w-full">
-          <div className="flex items-center justify-between w-full">
-            <span className="text-xs font-bold text-violet-400">✨ Custom Node Title</span>
-            <button
-              onClick={() => toast.dismiss(id)}
-              className="text-[10px] bg-red-500/10 hover:bg-red-500/20 text-red-500 px-1.5 py-0.5 rounded cursor-pointer transition-colors font-semibold"
-            >
-              Close
-            </button>
-          </div>
-          <p className="text-[11px] text-gray-300">This is a custom React node layout. You can click "Close" to dismiss it.</p>
-        </div>
-      ),
-      duration: Infinity,
-    });
-  }, []);
+
 
   const foodOptions = useMemo(() => [
     { id: "pizza", label: "Pizza", key: "pizza" },
@@ -615,99 +571,22 @@ export const Dashboard = () => {
         </Button>
       </Flex>
     </form>
-
-    {/* Toast Showcase */}
-    <Flex direction="column" className="w-full max-w-md gap-4 mt-8 p-4 bg-dark-c1 border border-chalk-10 rounded-lg">
-      <h2 className="text-lg font-bold">Toast Notification Showcase</h2>
-      <p className="text-xs text-gray-400">Click the buttons below to trigger infinite duration toasts of each type.</p>
-      <Flex direction="row" className="gap-2 flex-wrap">
-        <Button
-          variant="success"
-          onClick={() =>
-            toast.success({
-              title: "Success Toast",
-              description: "This success toast stays open until dismissed.",
-              duration: Infinity,
-              showClose: true,
-            })
-          }
-        >
-          Success
-        </Button>
-        <Button
-          variant="primary"
-          onClick={() =>
-            toast.info({
-              title: "Info Toast",
-              description: "This info toast stays open until dismissed.",
-              duration: Infinity,
-              showClose: true,
-            })
-          }
-        >
-          Info
-        </Button>
-        <Button
-          variant="warning"
-          onClick={() =>
-            toast.warning({
-              title: "Warning Toast",
-              description: "This warning toast stays open until dismissed.",
-              duration: Infinity,
-              showClose: true,
-            })
-          }
-        >
-          Warning
-        </Button>
-        <Button
-          variant="danger"
-          onClick={() =>
-            toast.error({
-              title: "Error Toast",
-              description: "This error toast stays open until dismissed.",
-              duration: Infinity,
-              showClose: true,
-            })
-          }
-        >
-          Error
-        </Button>
-        <Button
-          variant="black"
-          onClick={() =>
-            toast.custom({
-              content: (id) => (
-                <div className="p-4 flex flex-col gap-2 text-left w-full">
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-xs font-bold text-violet-400">✨ Custom Node Toast</span>
-                  </div>
-                  <p className="text-[11px] text-gray-300">You can click the button below to dismiss this toast dynamically!</p>
-                  <Flex direction="row" className="gap-2">
-                    <Button
-                      variant="primary-soft"
-                      rounded="sm"
-                      onClick={() => alert("Action inside custom toast!")}
-                    >
-                      Action
-                    </Button>
-                    <Button
-                      variant="danger-soft"
-                      rounded="sm"
-                      onClick={() => toast.dismiss(id)}
-                    >
-                      Dismiss Toast
-                    </Button>
-                  </Flex>
-                </div>
-              ),
-              duration: Infinity,
-            })
-          }
-        >
-          Custom
-        </Button>
-      </Flex>
+    {/* Spinner Showcase */}
+    <Flex direction="column" className="w-full max-w-md gap-4 mt-8 p-6 bg-gray-900 border border-gray-800 rounded-xl shadow-2xl">
+      <h2 className="text-lg font-bold text-white">Spinner Variants</h2>
+      <p className="text-xs text-gray-400">Preview of each built-in loading spinner type.</p>
+      <div className="grid grid-cols-3 gap-4 mt-2">
+        {(["ring", "dots", "pulse", "bars", "orbit", "ripple", "dots-ring", "dots-step", "text-dots"] as const).map((variant) => (
+          <div key={variant} className="flex flex-col items-center justify-center p-4 bg-gray-950 rounded-lg border border-gray-800/50 gap-3">
+            <div className="h-10 flex items-center justify-center text-white">
+              <Spinner variant={variant} size="md" />
+            </div>
+            <span className="text-[10px] font-semibold tracking-wider uppercase text-gray-500 text-center select-all">
+              {variant}
+            </span>
+          </div>
+        ))}
+      </div>
     </Flex>
 
     {/* ── Button variant showcase ─────────────── */}

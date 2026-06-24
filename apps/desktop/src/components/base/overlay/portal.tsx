@@ -5,13 +5,22 @@ interface PortalProps {
   children: ReactNode;
 }
 export function Portal({ children }: PortalProps) {
-  const [container] = useState(document.createElement("div"));
+  const [container, setContainer] = useState<HTMLDivElement | null>(null);
+
   useEffect(() => {
-    container.id = "dynamic-portal";
-    document.body.appendChild(container);
+    const div = document.createElement("div");
+    div.id = "dynamic-portal";
+    document.body.appendChild(div);
+    setContainer(div);
+
     return () => {
-      document.body.removeChild(container);
+      if (div.parentNode) {
+        document.body.removeChild(div);
+      }
     };
-  }, [container]);
+  }, []);
+
+  if (!container) return null;
+
   return createPortal(children, container);
 }
