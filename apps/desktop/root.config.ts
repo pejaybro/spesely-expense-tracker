@@ -20,7 +20,7 @@ export * from "../../packages/lib";
  *============================================
  */
 export type { FlexProps } from "./src/components/base/layout/flex";
-export type { ButtonProps } from "./src/components/base/button/btn";
+export type { ButtonProps } from "./src/components/base/button/button";
 export type { GridProps, GridCols } from "./src/components/base/layout/grid";
 export type { Provider } from "./src/providers/index";
 

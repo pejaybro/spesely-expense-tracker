@@ -1,4 +1,4 @@
-import { Btn, Tooltip } from "@/src/components/base";
+import { Button } from "@/src/components/base";
 import { cn } from "@/src/utils";
 
 export interface MenuBtnProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -20,7 +20,7 @@ export const MenuBtn = ({
   ...props
 }: MenuBtnProps) => {
   return (
-    <Btn
+    <Button
       {...props}
       variant="menu"
       rounded="md"
@@ -40,6 +40,6 @@ export const MenuBtn = ({
       >
         {name}
       </span>
-    </Btn>
+    </Button>
   );
 };

@@ -29,7 +29,11 @@ export type ButtonVariant =
   | "success-ghost"
   | "warning-ghost"
   | "black-ghost"
-  | "white-ghost";
+  | "white-ghost"
+  /* ── Custom/Backward Compatibility ──────── */
+  | "menu"
+  | "solid"
+  | "solid-icon";
 export type RoundedStyle = "full" | "lg" | "md" | "sm" | "none";
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -85,6 +89,11 @@ const variantMap: Record<ButtonVariant, string> = {
   "warning-ghost": "text-amber-500   bg-transparent hover:bg-current/10 active:bg-current/15",
   "black-ghost":   "text-black       bg-transparent hover:bg-current/10 active:bg-current/15",
   "white-ghost":   "text-white       bg-transparent hover:bg-current/10 active:bg-current/15",
+
+  /* ── Custom/Backward Compatibility ──────── */
+  menu: "",
+  solid: "",
+  "solid-icon": "",
 };
 
 const roundedMap: Record<RoundedStyle, string> = {

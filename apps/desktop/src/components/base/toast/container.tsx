@@ -6,27 +6,82 @@ import {
   AlertCircle,
   AlertTriangle,
   Info,
-  Sparkles,
   X,
 } from "lucide-react";
 import { cn } from "@/src/utils";
 import { Portal } from "../overlay/portal";
 
-function ToastItem({ toast }: { toast: ToastData }) {
+// Dictionary mapping toast types to their respective Lucide icons and Tailwind styles
+const TOAST_STYLES = {
+  success: {
+    Icon: CheckCircle,
+    iconColor: "text-emerald-500",
+    borderColor: "border-emerald-500/20",
+    bgGlow: "shadow-emerald-500/5",
+    accentColor: "bg-emerald-500",
+  },
+  error: {
+    Icon: AlertCircle,
+    iconColor: "text-red-500",
+    borderColor: "border-red-500/20",
+    bgGlow: "shadow-red-500/5",
+    accentColor: "bg-red-500",
+  },
+  warning: {
+    Icon: AlertTriangle,
+    iconColor: "text-amber-500",
+    borderColor: "border-amber-500/20",
+    bgGlow: "shadow-amber-500/5",
+    accentColor: "bg-amber-500",
+  },
+  info: {
+    Icon: Info,
+    iconColor: "text-sky-500",
+    borderColor: "border-sky-500/20",
+    bgGlow: "shadow-sky-500/5",
+    accentColor: "bg-sky-500",
+  },
+} as const;
+
+function ToastItem({
+  toast,
+  placement = "top-right",
+  animationType = "fade",
+}: {
+  toast: ToastData;
+  placement?: "top-right" | "top-left" | "bottom-right" | "bottom-left";
+  animationType?: "slide" | "fade";
+}) {
   const [dragOffset, setDragOffset] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [isDismissing, setIsDismissing] = useState(false);
+  const [animateState, setAnimateState] = useState(false);
+  
   const startXRef = useRef(0);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const isHoveringRef = useRef(false);
+
+  const isLeft = placement.endsWith("-left");
+  const slideOffset = isLeft ? -500 : 500;
+
+  // Helper to trigger the exit animation and remove toast from store after transition
+  const triggerDismiss = (customOffset?: number) => {
+    setIsDismissing(true);
+    if (customOffset !== undefined) {
+      setDragOffset(customOffset);
+    }
+    setTimeout(() => {
+      toastStore.remove(toast.id);
+    }, 400);
+  };
 
   const startTimer = () => {
     if (timerRef.current) clearTimeout(timerRef.current);
+    if (isHoveringRef.current) return;
     const duration = toast.duration ?? 4000;
+    if (duration === Infinity) return;
     timerRef.current = setTimeout(() => {
-      setIsDismissing(true);
-      setTimeout(() => {
-        toastStore.remove(toast.id);
-      }, 200);
+      triggerDismiss();
     }, duration);
   };
 
@@ -42,141 +97,132 @@ function ToastItem({ toast }: { toast: ToastData }) {
     return () => stopTimer();
   }, [toast.id, toast.duration]);
 
-  const handleDragStart = (clientX: number) => {
-    setIsDragging(true);
-    startXRef.current = clientX;
+  // Use requestAnimationFrame to guarantee the browser registers the initial off-screen paint before triggering the transition
+  useEffect(() => {
+    let frame1: number;
+    let frame2: number;
+    frame1 = requestAnimationFrame(() => {
+      frame2 = requestAnimationFrame(() => {
+        setAnimateState(true);
+      });
+    });
+    return () => {
+      cancelAnimationFrame(frame1);
+      if (frame2) cancelAnimationFrame(frame2);
+    };
+  }, []);
+
+  const handleMouseEnter = () => {
+    isHoveringRef.current = true;
     stopTimer();
   };
 
-  const handleDragMove = (clientX: number) => {
+  const handleMouseLeave = () => {
+    isHoveringRef.current = false;
+    startTimer();
+  };
+
+  const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (isDismissing) return;
+    if (e.pointerType === "mouse" && e.button !== 0) return;
+
+    // Prevent dragging when clicking interactive elements (buttons, inputs, links, etc.)
+    const target = e.target as HTMLElement;
+    if (target.closest("button, input, select, textarea, a")) return;
+
+    setIsDragging(true);
+    startXRef.current = e.clientX;
+    stopTimer();
+    e.currentTarget.setPointerCapture(e.pointerId);
+  };
+
+  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
     if (!isDragging) return;
-    const offset = clientX - startXRef.current;
+    const offset = e.clientX - startXRef.current;
     setDragOffset(offset);
   };
 
-  const handleDragEnd = () => {
+  const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
     if (!isDragging) return;
     setIsDragging(false);
+    e.currentTarget.releasePointerCapture(e.pointerId);
 
+    // Dismiss toast if dragged beyond threshold, otherwise snap back
     if (Math.abs(dragOffset) > 100) {
-      setIsDismissing(true);
-      setDragOffset(dragOffset > 0 ? 500 : -500);
-      setTimeout(() => {
-        toastStore.remove(toast.id);
-      }, 200);
+      triggerDismiss(dragOffset > 0 ? 500 : -500);
     } else {
-      if (Math.abs(dragOffset) < 5) {
-        setIsDismissing(true);
-        setTimeout(() => {
-          toastStore.remove(toast.id);
-        }, 200);
-      } else {
-        setDragOffset(0);
-        startTimer();
-      }
+      setDragOffset(0);
+      startTimer();
     }
   };
 
-  const onMouseDown = (e: React.MouseEvent) => {
-    handleDragStart(e.clientX);
+  // Determine transition styles based on active animation option
+  const opacity = Math.max(0, 1 - Math.abs(dragOffset) / 300);
+
+  const opacityStyle = animationType === "slide"
+    ? (isDragging ? opacity : 1)
+    : (isDismissing || !animateState ? 0 : opacity);
+
+  const transformStyle = animationType === "slide"
+    ? (isDismissing
+        ? `translate3d(${dragOffset === 0 ? slideOffset : (dragOffset > 0 ? 500 : -500)}px, 0, 0)`
+        : (!animateState ? `translate3d(${slideOffset}px, 0, 0)` : `translate3d(${dragOffset}px, 0, 0)`))
+    : `translate3d(${dragOffset}px, 0, 0)`;
+
+  const itemStyle = {
+    transform: transformStyle,
+    opacity: opacityStyle,
+    touchAction: "none" as const,
+    willChange: "transform, opacity",
+    transition: isDragging
+      ? "none"
+      : "transform 0.4s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.4s ease-in-out",
   };
 
-  const onMouseMove = (e: React.MouseEvent) => {
-    handleDragMove(e.clientX);
-  };
-
-  const onMouseUpOrLeave = () => {
-    handleDragEnd();
-  };
-
-  const onTouchStart = (e: React.TouchEvent) => {
-    handleDragStart(e.touches[0].clientX);
-  };
-
-  const onTouchMove = (e: React.TouchEvent) => {
-    handleDragMove(e.touches[0].clientX);
-  };
-
-  const onTouchEnd = () => {
-    handleDragEnd();
-  };
-
-  let Icon = Info;
-  let iconColor = toast.iconColor ?? "text-sky-500";
-  let borderColor = toast.borderColor ?? "border-sky-500/20";
-  let bgGlow = toast.bgGlow ?? "shadow-sky-500/5";
-  let accentColor = toast.accentColor ?? "bg-sky-500";
-
-  switch (toast.type) {
-    case "success":
-      Icon = CheckCircle;
-      iconColor = toast.iconColor ?? "text-emerald-500";
-      borderColor = toast.borderColor ?? "border-emerald-500/20";
-      bgGlow = toast.bgGlow ?? "shadow-emerald-500/5";
-      accentColor = toast.accentColor ?? "bg-emerald-500";
-      break;
-    case "error":
-      Icon = AlertCircle;
-      iconColor = toast.iconColor ?? "text-red-500";
-      borderColor = toast.borderColor ?? "border-red-500/20";
-      bgGlow = toast.bgGlow ?? "shadow-red-500/5";
-      accentColor = toast.accentColor ?? "bg-red-500";
-      break;
-    case "warning":
-      Icon = AlertTriangle;
-      iconColor = toast.iconColor ?? "text-amber-500";
-      borderColor = toast.borderColor ?? "border-amber-500/20";
-      bgGlow = toast.bgGlow ?? "shadow-amber-500/5";
-      accentColor = toast.accentColor ?? "bg-amber-500";
-      break;
-    case "custom":
-      Icon = Sparkles;
-      iconColor = toast.iconColor ?? "text-violet-500";
-      borderColor = toast.borderColor ?? "border-violet-500/20";
-      bgGlow = toast.bgGlow ?? "shadow-violet-500/5";
-      accentColor = toast.accentColor ?? "bg-violet-500";
-      break;
-    case "info":
-    default:
-      Icon = Info;
-      iconColor = toast.iconColor ?? "text-sky-500";
-      borderColor = toast.borderColor ?? "border-sky-500/20";
-      bgGlow = toast.bgGlow ?? "shadow-sky-500/5";
-      accentColor = toast.accentColor ?? "bg-sky-500";
-      break;
+  // Return custom component directly, avoiding standard layout properties
+  if (toast.type === "custom") {
+    return (
+      <div
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={handlePointerUp}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        style={itemStyle}
+        className={cn(
+          "relative overflow-hidden min-w-[320px] max-w-[400px] rounded-xl border backdrop-blur-md shadow-2xl flex items-start",
+          "select-none cursor-pointer active:cursor-grabbing",
+          "bg-gray-950/95 border-violet-500/20 shadow-violet-500/5",
+        )}
+      >
+        {typeof toast.content === "function" ? toast.content(toast.id!) : toast.content}
+      </div>
+    );
   }
 
-  const opacity = Math.max(0, 1 - Math.abs(dragOffset) / 300);
+  // Standard toast style configuration mapping
+  const typeKey = (toast.type && toast.type in TOAST_STYLES) ? (toast.type as keyof typeof TOAST_STYLES) : "info";
+  const { Icon, iconColor, borderColor, bgGlow, accentColor } = TOAST_STYLES[typeKey];
 
   return (
     <div
-      onMouseDown={onMouseDown}
-      onMouseMove={onMouseMove}
-      onMouseUp={onMouseUpOrLeave}
-      onMouseLeave={onMouseUpOrLeave}
-      onTouchStart={onTouchStart}
-      onTouchMove={onTouchMove}
-      onTouchEnd={onTouchEnd}
-      style={{
-        transform: `translateX(${dragOffset}px)`,
-        opacity: isDismissing ? 0 : opacity,
-        transition: isDragging
-          ? "none"
-          : "transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
-      }}
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
+      onPointerCancel={handlePointerUp}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      style={itemStyle}
       className={cn(
         "relative overflow-hidden min-w-[320px] max-w-[400px] rounded-xl border backdrop-blur-md p-4 shadow-2xl flex gap-3 items-start",
         "select-none cursor-pointer active:cursor-grabbing",
-        isDismissing
-          ? "animate-out fade-out slide-out-to-right duration-200"
-          : "animate-in slide-in-from-right fade-in duration-300",
-        toast.bgColor ?? "bg-gray-950/95",
+        "bg-gray-950/95",
         borderColor,
         bgGlow,
-        toast.className,
       )}
     >
-      {accentColor && accentColor !== "bg-transparent" && (
+      {accentColor && (
         <div
           className={cn("absolute left-0 top-0 bottom-0 w-[3px]", accentColor)}
         />
@@ -195,19 +241,13 @@ function ToastItem({ toast }: { toast: ToastData }) {
 
       <div className="flex-1 flex flex-col gap-0.5 pointer-events-none">
         <h3
-          className={cn(
-            "font-semibold text-sm tracking-tight leading-tight pr-4",
-            toast.titleColor ?? "text-white",
-          )}
+          className="font-semibold text-sm tracking-tight leading-tight pr-4 text-white"
         >
           {toast.title}
         </h3>
         {toast.description && (
           <p
-            className={cn(
-              "text-xs font-medium mt-1 leading-normal",
-              toast.descriptionColor ?? "text-gray-400",
-            )}
+            className="text-xs font-medium mt-1 leading-normal text-gray-400"
           >
             {toast.description}
           </p>
@@ -218,10 +258,7 @@ function ToastItem({ toast }: { toast: ToastData }) {
         <button
           onClick={e => {
             e.stopPropagation();
-            setIsDismissing(true);
-            setTimeout(() => {
-              toastStore.remove(toast.id);
-            }, 200);
+            triggerDismiss();
           }}
           className="text-gray-500 hover:text-white transition-colors p-1 rounded-md hover:bg-gray-900 shrink-0 relative z-10"
         >
@@ -232,7 +269,17 @@ function ToastItem({ toast }: { toast: ToastData }) {
   );
 }
 
-export function ToastContainer() {
+interface ToastContainerProps {
+  placement?: "top-right" | "top-left" | "bottom-right" | "bottom-left";
+  "animation-type"?: "slide" | "fade";
+  animationType?: "slide" | "fade";
+}
+
+export function ToastContainer({
+  placement = "top-right",
+  "animation-type": animationTypeHyphen,
+  animationType = animationTypeHyphen ?? "fade",
+}: ToastContainerProps) {
   const [toasts, setToasts] = useState<ToastData[]>(toastStore.getToasts());
 
   useEffect(() => {
@@ -240,17 +287,25 @@ export function ToastContainer() {
     return unsubscribe;
   }, []);
 
+  const placementClasses = {
+    "top-right": "fixed top-4 right-4 flex-col",
+    "top-left": "fixed top-4 left-4 flex-col",
+    "bottom-right": "fixed bottom-4 right-4 flex-col-reverse",
+    "bottom-left": "fixed bottom-4 left-4 flex-col-reverse",
+  };
+
+  const containerClass = placementClasses[placement] || placementClasses["top-right"];
+
   return (
     <Portal>
-      <div
-        className="
-          fixed top-4 right-4
-          z-[9999]
-          flex flex-col gap-3
-        "
-      >
+      <div className={cn("z-[9999] flex gap-3", containerClass)}>
         {toasts.map(toast => (
-          <ToastItem key={toast.id} toast={toast} />
+          <ToastItem
+            key={toast.id}
+            toast={toast}
+            placement={placement}
+            animationType={animationType}
+          />
         ))}
       </div>
     </Portal>

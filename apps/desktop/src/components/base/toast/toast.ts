@@ -32,6 +32,10 @@ export const toast = Object.assign(
       return createToast({ ...options, type: "warning" });
     },
 
+    custom: (options: { content: React.ReactNode | ((id: string) => React.ReactNode); id?: string; duration?: number; dismiss?: string }) => {
+      return createToast({ ...options, type: "custom" });
+    },
+
     dismiss: (id: string) => {
       toastStore.remove(id);
     },

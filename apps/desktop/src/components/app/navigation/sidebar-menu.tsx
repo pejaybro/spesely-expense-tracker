@@ -109,7 +109,7 @@ export const SidebarMenu = ({ config, isExpanded, onItemClick, tooltipsDisabled 
     const hasSubmenu = !!item.children;
     const isSubmenuOpen = !!expandedMenus[item.id];
 
-    if (hasSubmenu && !isExpanded) {
+    if (item.children && !isExpanded) {
       return (
         <div key={item.id} className="flex flex-col gap-1.5 w-full">
           {item.children.map(child => (
@@ -159,7 +159,7 @@ export const SidebarMenu = ({ config, isExpanded, onItemClick, tooltipsDisabled 
           </Button>
         </Tooltip>
 
-        {isExpanded && isSubmenuOpen && (
+        {isExpanded && isSubmenuOpen && item.children && (
           <div className="pl-4 flex flex-col gap-1 mt-0.5 border-l border-chalk-20/40 ml-4.5">
             {item.children.map(child => (
               <MenuBtn
