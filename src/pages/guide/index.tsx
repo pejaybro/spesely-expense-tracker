@@ -145,7 +145,7 @@ export const Guide = () => {
         items="stretch"
         className="w-full max-w-md gap-6"
       >
-        <h1 className="text-2xl font-bold">Component Guide</h1>
+        <h1 className="text-5xl font-black tracking-tight">Component Guide</h1>
 
         {/* Username Input registered with React Hook Form */}
         <Input

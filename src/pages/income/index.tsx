@@ -1,9 +1,10 @@
+import { Flex } from "@/src/components/base";
+
 export const Income = () => {
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex flex-col gap-2">
-        <h1 className="text-5xl font-black tracking-tight">Income</h1>
-      </div>
-    </div>
+    <Flex direction="column" justify="center" items="center" className="w-full h-full flex-1">
+      <h1 className="text-5xl font-black tracking-tight">Income</h1>
+      <p className="text-sm text-gray-500 mt-2">Content goes here...</p>
+    </Flex>
   );
 };
