@@ -13,7 +13,7 @@ import {
   ChevronDown,
 } from "lucide-react";
 import { SelectInput } from "../select-dropdown/select-input";
-const DateUtils = {};
+import * as DateUtils from "../../../packages/lib";
 import {
   useFloating,
   autoUpdate,
