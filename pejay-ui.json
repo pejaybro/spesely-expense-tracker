@@ -1,0 +1,247 @@
+{
+  "baseDir": "src/pejay-ui",
+  "installed": {
+    "overlays/tooltip": {
+      "files": [
+        "components/overlays/tooltip.tsx",
+        "components/overlays/readme.tooltip.md"
+      ],
+      "utils": []
+    },
+    "spinner": {
+      "files": [
+        "spinner/spinner.tsx",
+        "spinner/spinner.css",
+        "spinner/README.md"
+      ],
+      "utils": []
+    },
+    "button": {
+      "files": [
+        "components/button/Button.tsx",
+        "components/button/README.md"
+      ],
+      "utils": [
+        "cn.ts"
+      ]
+    },
+    "form/input": {
+      "files": [
+        "components/form/input.tsx",
+        "components/form/readme.input.md"
+      ],
+      "utils": [
+        "cn.ts"
+      ]
+    },
+    "form/amount-input": {
+      "files": [
+        "components/form/amount-input.tsx",
+        "components/form/readme.amount-input.md"
+      ],
+      "utils": [
+        "cn.ts"
+      ]
+    },
+    "form/checkbox": {
+      "files": [
+        "components/form/checkbox.tsx",
+        "components/form/readme.checkbox.md"
+      ],
+      "utils": [
+        "cn.ts"
+      ]
+    },
+    "form/checkbox-group": {
+      "files": [
+        "components/form/checkbox-group.tsx",
+        "components/form/readme.checkbox-group.md"
+      ],
+      "utils": [
+        "cn.ts"
+      ]
+    },
+    "dropdown/select-input": {
+      "files": [
+        "components/select-dropdown/select-input.tsx",
+        "components/select-dropdown/README.md"
+      ],
+      "utils": [
+        "cn.ts"
+      ]
+    },
+    "form/date-picker": {
+      "files": [
+        "components/form/date-picker.tsx",
+        "components/form/readme.date-picker.md"
+      ],
+      "utils": [
+        "cn.ts"
+      ]
+    },
+    "form/date-range-picker": {
+      "files": [
+        "components/form/date-range-picker.tsx",
+        "components/form/readme.date-range-picker.md"
+      ],
+      "utils": [
+        "cn.ts"
+      ]
+    },
+    "form/email-input": {
+      "files": [
+        "components/form/email-input.tsx",
+        "components/form/readme.email-input.md"
+      ],
+      "utils": [
+        "cn.ts"
+      ]
+    },
+    "form/file-input": {
+      "files": [
+        "components/form/file-input.tsx",
+        "components/form/readme.file-input.md"
+      ],
+      "utils": [
+        "cn.ts"
+      ]
+    },
+    "form/number-input": {
+      "files": [
+        "components/form/number-input.tsx",
+        "components/form/readme.number-input.md"
+      ],
+      "utils": [
+        "cn.ts"
+      ]
+    },
+    "form/password-input": {
+      "files": [
+        "components/form/password-input.tsx",
+        "components/form/readme.password-input.md"
+      ],
+      "utils": [
+        "cn.ts"
+      ]
+    },
+    "form/phone-input": {
+      "files": [
+        "components/form/phone-input.tsx",
+        "components/form/readme.phone-input.md"
+      ],
+      "utils": [
+        "cn.ts"
+      ]
+    },
+    "form/radio": {
+      "files": [
+        "components/form/radio.tsx",
+        "components/form/readme.radio.md"
+      ],
+      "utils": [
+        "cn.ts"
+      ]
+    },
+    "form/radio-group": {
+      "files": [
+        "components/form/radio-group.tsx",
+        "components/form/readme.radio-group.md"
+      ],
+      "utils": [
+        "cn.ts"
+      ]
+    },
+    "form/range-slider": {
+      "files": [
+        "components/form/range-slider.tsx",
+        "components/form/readme.range-slider.md"
+      ],
+      "utils": [
+        "cn.ts"
+      ]
+    },
+    "form/switch": {
+      "files": [
+        "components/form/switch.tsx",
+        "components/form/readme.switch.md"
+      ],
+      "utils": [
+        "cn.ts"
+      ]
+    },
+    "form/textarea": {
+      "files": [
+        "components/form/textarea.tsx",
+        "components/form/readme.textarea.md"
+      ],
+      "utils": [
+        "cn.ts"
+      ]
+    },
+    "form/time-picker": {
+      "files": [
+        "components/form/time-picker.tsx",
+        "components/form/readme.time-picker.md"
+      ],
+      "utils": [
+        "cn.ts"
+      ]
+    },
+    "form/time-range-picker": {
+      "files": [
+        "components/form/time-range-picker.tsx",
+        "components/form/readme.time-range-picker.md"
+      ],
+      "utils": [
+        "cn.ts"
+      ]
+    },
+    "form/url-input": {
+      "files": [
+        "components/form/url-input.tsx",
+        "components/form/readme.url-input.md"
+      ],
+      "utils": [
+        "cn.ts"
+      ]
+    },
+    "overlays/portal": {
+      "files": [
+        "components/overlays/portal.tsx"
+      ],
+      "utils": []
+    },
+    "dropdown/multiselect-input": {
+      "files": [
+        "components/select-dropdown/multiselect-input.tsx"
+      ],
+      "utils": [
+        "cn.ts"
+      ]
+    },
+    "skeleton": {
+      "files": [
+        "components/skeleton/skeleton.tsx",
+        "components/skeleton/types.ts",
+        "components/skeleton/skeleton.css",
+        "components/skeleton/README.md"
+      ],
+      "utils": [
+        "cn.ts"
+      ]
+    },
+    "toast": {
+      "files": [
+        "components/toast/README.md",
+        "components/toast/container.tsx",
+        "components/toast/index.ts",
+        "components/toast/store.ts",
+        "components/toast/toast.ts",
+        "components/toast/types.ts"
+      ],
+      "utils": [
+        "cn.ts"
+      ]
+    }
+  }
+}

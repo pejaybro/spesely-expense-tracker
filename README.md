@@ -1,70 +1,73 @@
-# Spesely - Simply, Manage Finances. 🚀
+# React + TypeScript + Vite
 
-A modern application for managing expenses, budgets, and recurring payments with secure authentication, premium UI components, and efficient offline-first data handling. Built to scale from a native Windows desktop app (Electron) to a full-stack mobile and web ecosystem.
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
----
+Currently, two official plugins are available:
 
-## 🧭 Planned Phases
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-We are building Spesely in a phased approach to ensure a rock-solid foundation and seamless cross-platform experience.
+## React Compiler
 
-### • Phase 1: Windows Desktop App (The Core)
-The initial launch targets the **Microsoft Store** as a native Windows application. This version focuses on the **Offline-First** experience, ensuring your data is stored locally on your device for maximum speed and privacy.
+The React Compiler is currently not compatible with SWC. See [this issue](https://github.com/vitejs/vite-plugin-react/issues/428) for tracking the progress.
 
-### • Phase 2: Android App
-Expanding our ecosystem to mobile. We will bring the same premium UI and intuitive tracking to Android devices, allowing for quick expense logging on the go.
+## Expanding the ESLint configuration
 
-### • Phase 3: Web App
-A full-featured web version of Spesely for access from any browser, bridging the gap between desktop and mobile with a unified cloud-sync experience.
+If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
 
-### • Phase 4: iOS Compatibility
-Finalizing our cross-platform vision by bringing Spesely to the Apple ecosystem, ensuring a consistent and beautiful experience on iPhones and iPads.
+```js
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
 
----
+      // Remove tseslint.configs.recommended and replace with this
+      tseslint.configs.recommendedTypeChecked,
+      // Alternatively, use this for stricter rules
+      tseslint.configs.strictTypeChecked,
+      // Optionally, add this for stylistic rules
+      tseslint.configs.stylisticTypeChecked,
 
-## 💻 Tech Stack (The Foundation)
+      // Other configs...
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
+```
 
-Spesely is built using a modern and high-performance technology stack designed for scalability.
+You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
 
-*   **Desktop (Windows)**: Developed using **Electron + React**, providing a native-like desktop experience with a highly responsive and custom UI.
-*   **Web App**: Built with **React (Vite)** for lightning-fast performance and modern build tooling.
-*   **Backend (Future Sync)**: A robust **Node.js + Express** server will eventually handle cross-device synchronization and secure user data management.
-*   **Mobile (Android/iOS)**: Planned transition to **React Native** to share code across platforms while maintaining native performance.
-*   **Local Storage (Phase 1)**: Powered by **SQLite**. This ensures an **offline-first** architecture where your data lives on your device, not just in the cloud.
-*   **Backup & Sync**: Integrated with **Google Drive**, providing a secure and user-controlled way to backup and restore your financial data.
+```js
+// eslint.config.js
+import reactX from 'eslint-plugin-react-x'
+import reactDom from 'eslint-plugin-react-dom'
 
----
-
-## ✨ Key Features (Currently Scaffolding)
-
-*   **Premium Dashboard**: A high-level overview of your financial health with real-time analytics.
-*   **Daily Expense Logging**: Quick and intuitive tracking of your day-to-day spending.
-*   **Income Management**: Monitor various revenue streams and salary deposits.
-*   **Budgeting & Goals**: Set spending limits and track your progress toward major financial milestones.
-*   **Trip & Travel**: Dedicated tools for managing costs during your adventures.
-*   **Subscription Tracker**: Never lose track of recurring payments and automated bills.
-
----
-
-## 🛠️ Getting Started (Developer Mode)
-
-To run the project locally in a development environment:
-
-1.  **Clone the repository**:
-    ```bash
-    git clone https://github.com/pejaybro/spesely-expense-tracker.git
-    ```
-2.  **Install everything**:
-    ```bash
-    # This installs dependencies for the root and all apps/packages automatically
-    npm install
-    ```
-3.  **Run the Desktop app**:
-    ```bash
-    # Starts the Electron dev environment from the root
-    npm run electron-dev
-    ```
-
----
-
-*Spesely - Simply, Manage Finances.*
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+      // Enable lint rules for React
+      reactX.configs['recommended-typescript'],
+      // Enable lint rules for React DOM
+      reactDom.configs.recommended,
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
+```
