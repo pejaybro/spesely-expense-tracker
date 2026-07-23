@@ -1,5 +1,18 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Flex, DatePicker } from "@/src/components/base";
+import { SelectInput } from "../../pejay-ui/components";
+import { MoveDown, TrendingUp } from "lucide-react";
+import {
+  startOfMonth,
+  endOfMonth,
+  startOfWeek,
+  endOfWeek,
+  eachDayOfInterval,
+  isSameMonth,
+  isToday as isTodayDateFns,
+  format,
+} from "date-fns";
+import { cn } from "../../pejay-ui/utils/cn";
 import {
   DollarSign,
   Calendar,
@@ -13,7 +26,46 @@ import {
   PlusCircle,
 } from "lucide-react";
 
+const demoOptions = [
+  { id: "1", label: "label-1", key: "value-1" },
+  { id: "2", label: "label-2", key: "value-2" },
+  { id: "3", label: "label-3", key: "value-3" },
+];
+
 export const Dashboard = () => {
+  const [selectedDemoOption, setSelectedDemoOption] = useState<any>(demoOptions[0]);
+
+  // Generate current month's grid (padded to full weeks) using date-fns
+  const heatmapWeeks = useMemo(() => {
+    const today = new Date();
+    const monthStart = startOfMonth(today);
+    const monthEnd = endOfMonth(today);
+
+    // Start of the first week of the month (starting on Monday)
+    const gridStart = startOfWeek(monthStart, { weekStartsOn: 1 });
+    // End of the last week of the month (ending on Sunday)
+    const gridEnd = endOfWeek(monthEnd, { weekStartsOn: 1 });
+
+    const allDays = eachDayOfInterval({ start: gridStart, end: gridEnd });
+
+    // Chunk allDays into weeks (7 days each)
+    const weeks: { date: Date; isCurrentMonth: boolean; isToday: boolean; }[][] = [];
+    for (let i = 0; i < allDays.length; i += 7) {
+      const week = allDays.slice(i, i + 7).map((date) => {
+        const currentMonth = isSameMonth(date, today);
+        return {
+          date,
+          isCurrentMonth: currentMonth,
+          isToday: isTodayDateFns(date),
+        };
+      });
+      weeks.push(week);
+    }
+    return weeks;
+  }, []);
+
+  const weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+
   // --- FORM VERSION 1 STATES ---
   const [type, setType] = useState<"expense" | "income">("expense");
   const [title, setTitle] = useState("");
@@ -1039,6 +1091,373 @@ export const Dashboard = () => {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ======================================================== */}
+      {/* SECTION: DEMO WIDGETS AND COMPONENTS                     */}
+      {/* ======================================================== */}
+      <div className="flex flex-col gap-6 mt-10">
+        <h2 className="text-xl font-bold text-zinc-300 border-b border-zinc-800 pb-2">UI Component Demos</h2>
+        
+        <div className="flex flex-col min-w-80 max-w-80 gap-2">
+          <div className="flex flex-col bg-[#4397ff] rounded-full py-2.5 px-4 ">
+            <div className="flex gap-2 items-center">
+              <div className="flex flex-1 text-[24px]">some text</div>
+              <div className="p-1.5 border border-white rounded-full">
+                <MoveDown size={16} strokeWidth={3} />
+              </div>
+            </div>
+          </div>
+          <div className="flex flex-col bg-[#0a3c7a] rounded-2xl p-5 ">
+            <div className="flex gap-2 justify-between items-center">
+              <div className="size-10 bg-white rounded-full" />
+              <div className="text-md font-medium border rounded-full px-3 py-0.5">
+                $200
+              </div>
+            </div>
+            <div className="flex text-[24px]">Title Text</div>
+            <div className="flex text-sm text-zinc-400">
+              some description text
+            </div>
+          </div>
+        </div>
+
+        <div className="flex rounded-2xl bg-[#212121] p-5 w-max border border-zinc-800/40 select-none shadow-lg gap-5">
+          <div className="flex flex-col">
+            <div className="flex justify-between text-sm mb-2.5">
+              <div>
+                <span>{format(new Date(), "MMM / yyyy")}</span>
+              </div>
+              <div>
+                <div className="flex items-center">
+                  <div className="flex -space-x-2">
+                    {[1,2,3,4].map((item) => (
+                      <div
+                        key={item}
+                        className="size-4 rounded-full border-3 border-[#212121] bg-white shadow-md"
+                      />
+                    ))}
+                  </div>
+                  +100
+                </div>
+              </div>
+            </div>
+            <div className="flex">
+              {/* Left Day Names Column */}
+              <div className="flex flex-col gap-1 justify-between pr-3 py-0.5 text-white font-medium">
+                {weekdays.map((day) => (
+                  <span
+                    key={day}
+                    className="text-[12px] h-5 flex items-center leading-none"
+                  >
+                    {day}
+                  </span>
+                ))}
+              </div>
+
+              {/* Heatmap Grid Weeks */}
+              <div className="flex gap-1.5 py-0.5">
+                {heatmapWeeks.map((week, wIndex) => (
+                  <div key={wIndex} className="flex flex-col gap-1">
+                    {week.map((day: any, dIndex: any) => {
+                      // If it is in the current month, style it as unfilled theme color, otherwise dark grey
+                      const bgClass = day.isCurrentMonth
+                        ? "bg-[#343434]"
+                        : "bg-[#131313]";
+
+                      return (
+                        <div
+                          key={dIndex}
+                          title={`${day.date.toDateString()}`}
+                          className={`w-9 h-5 rounded-sm ${bgClass} transition-transform duration-150 hover:scale-110 cursor-pointer ${
+                            day.isToday ? "ring-1 ring-white/60" : ""
+                          }`}
+                        />
+                      );
+                    })}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+          <div className="flex flex-col items-center justify-between max-w-40">
+            <span className="text-md">{format(new Date(), "EEEE")}</span>
+            <div className="text-[80px] font-semibold">
+              {format(new Date(), "d")}
+            </div>
+            <span className="border-l-4 border-amber-600 pl-2">
+              some example text is here to write.
+            </span>
+          </div>
+        </div>
+
+        <div className="flex flex-col rounded-2xl bg-[#212121] p-5 w-max border border-zinc-800/40 select-none shadow-lg">
+          <div className="flex justify-between text-sm mb-2">
+            <div>Current Month</div>
+            <div>Total counts</div>
+          </div>
+          <div className="flex">
+            {/* Left Day Names Column */}
+            <div className="flex flex-col gap-1 justify-between pr-3 py-0.5 text-white font-medium">
+              {weekdays.map((day) => (
+                <span
+                  key={day}
+                  className="text-[12px] h-5 flex items-center leading-none"
+                >
+                  {day}
+                </span>
+              ))}
+            </div>
+
+            {/* Heatmap Grid Weeks */}
+            <div className="flex gap-1.5 py-0.5">
+              {heatmapWeeks.map((week, wIndex) => (
+                <div key={wIndex} className="flex flex-col gap-1">
+                  {week.map((day: any, dIndex: any) => {
+                    // If it is in the current month, style it as unfilled theme color, otherwise dark grey
+                    const bgClass = day.isCurrentMonth
+                      ? "bg-[#343434]"
+                      : "bg-[#131313]";
+
+                    return (
+                      <div
+                        key={dIndex}
+                        title={`${day.date.toDateString()}`}
+                        className={`w-9 h-5 rounded-sm ${bgClass} transition-transform duration-150 hover:scale-110 cursor-pointer ${
+                          day.isToday ? "ring-1 ring-white/60" : ""
+                        }`}
+                      />
+                    );
+                  })}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="flex flex-col rounded-2xl bg-zinc-800 p-5 max-w-md">
+          {/* top bar */}
+          <div className="flex w-full justify-between">
+            <div>{selectedDemoOption.label}</div>
+            <div>
+              <SelectInput
+                defaultValue={demoOptions[0].key}
+                options={demoOptions}
+                onChange={(_, option) => setSelectedDemoOption(option)}
+              />
+            </div>
+          </div>
+          {/* main content */}
+          <div className="flex w-full">
+            <span className="text-[58px] font-black ">$12,34,50,00</span>
+          </div>
+          {/* bottom bar */}
+          <div className="flex w-full justify-between">
+            <div></div>
+            <div className="flex gap-1 items-center">
+              <span>12%</span>
+              <TrendingUp size={16} />
+            </div>
+          </div>
+        </div>
+
+        <div className="flex flex-col rounded-2xl bg-zinc-800 p-5 max-w-md">
+          {/* top bar */}
+          <div className="flex w-full justify-between items-center">
+            <div>{selectedDemoOption.label}</div>
+            <div>
+              <div className="flex gap-0.5 items-center bg-[#2d68ff] text-sm p-1 rounded-md">
+                {demoOptions.map((op) => {
+                  return (
+                    <div
+                      key={op.id}
+                      onClick={() => setSelectedDemoOption(op)}
+                      className={cn(
+                        "rounded-sm hover:bg-[#252525] cursor-pointer px-2 py-1",
+                        selectedDemoOption.id === op.id && "bg-[#252525]",
+                      )}
+                    >
+                      {op.label}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+          {/* main content */}
+          <div className="flex w-full">
+            <span className="text-[58px] font-black ">$12,34,50,00</span>
+          </div>
+          {/* bottom bar */}
+          <div className="flex w-full justify-between">
+            <div></div>
+            <div className="flex gap-1 items-center">
+              <span>12%</span>
+              <TrendingUp size={16} />
+            </div>
+          </div>
+        </div>
+
+        <div className="flex flex-col bg-[#3d35e6] max-w-md overflow-hidden rounded-3xl">
+          <div className="flex flex-col w-full rounded-3xl p-5 bg-zinc-800 text-white h-40">
+            {/* top bar */}
+            <div className="flex w-full justify-between">
+              <div>{selectedDemoOption.label}</div>
+              <div>
+                <SelectInput
+                  defaultValue={demoOptions[0].key}
+                  options={demoOptions}
+                  onChange={(_, option) => setSelectedDemoOption(option)}
+                />
+              </div>
+            </div>
+            {/* main content */}
+            <div className="flex w-full">
+              <span className="text-[58px] font-black ">$12,34,50,00</span>
+            </div>
+          </div>
+          <div>
+            <div className="flex w-full px-5 py-2.5">
+              <div className="flex gap-1 items-center">
+                <span>12%</span>
+                <TrendingUp size={16} />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex flex-col bg-[#3d35e6] max-w-md overflow-hidden rounded-3xl">
+          <div className="flex flex-col w-full rounded-3xl p-5 bg-zinc-800 text-white h-40">
+            {/* top bar */}
+            <div className="flex w-full justify-between">
+              <div>{selectedDemoOption.label}</div>
+              <div>
+                <SelectInput
+                  defaultValue={demoOptions[0].key}
+                  options={demoOptions}
+                  onChange={(_, option) => setSelectedDemoOption(option)}
+                />
+              </div>
+            </div>
+            {/* main content */}
+            <div className="flex w-full">
+              <span className="text-[58px] font-black ">$12,34,50,00</span>
+            </div>
+          </div>
+          <div>
+            <div className="flex w-full px-5 py-2">
+              <div className="flex gap-2 text-sm bg-amber-700 p-1.5 px-2.5 rounded-2xl items-center">
+                <span>Some Text is Here</span>
+                <TrendingUp size={16} />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex flex-col">
+          <div className="flex flex-col rounded-3xl bg-zinc-800 p-5 max-w-md pb-8">
+            {/* top bar */}
+            <div className="flex w-full justify-between">
+              <div>left-text</div>
+              <div>right-text</div>
+            </div>
+            {/* main content */}
+            <div className="flex w-full">
+              <span className="text-[58px] font-black ">$12,34,50,00</span>
+            </div>
+          </div>
+          <div className="flex flex-col rounded-3xl bg-indigo-700 p-5 max-w-md -mt-3 pb-8">
+            {/* top bar */}
+            <div className="flex w-full justify-between">
+              <div>left-text</div>
+              <div>right-text</div>
+            </div>
+            {/* main content */}
+            <div className="flex w-full">
+              <span className="text-[58px] font-black ">$12,34,50,00</span>
+            </div>
+          </div>
+          <div className="flex flex-col rounded-3xl bg-amber-700 p-5 max-w-md -mt-3">
+            {/* top bar */}
+            <div className="flex w-full justify-between">
+              <div>left-text</div>
+              <div>right-text</div>
+            </div>
+            {/* main content */}
+            <div className="flex w-full">
+              <span className="text-[58px] font-black ">$12,34,50,00</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Standalone Concave Corner Card Demo */}
+        <div className="flex flex-col items-center w-max">
+          <div className="relative w-[320px] h-45">
+            {/* Card background shape using SVG */}
+            <svg
+              className="absolute inset-0 w-full h-full drop-shadow-xl"
+              viewBox="0 0 320 180"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M 0 20 A 20 20 0 0 1 24 0 L 230 0 Q 260 0 260 30 A 30 30 0 0 0 290 60 Q 320 60 320 90 L 320 160 A 20 20 0 0 1 300 180 L 20 180 A 20 20 0 0 1 0 156 L 0 20 Z"
+                fill="#1c1c1e"
+              />
+            </svg>
+
+            {/* Card Content */}
+            <div className="relative z-10 p-6 flex flex-col justify-between h-full">
+              <div className="flex items-center gap-2">
+                <span className=" font-bold tracking-wider text-lg">lumin</span>
+              </div>
+
+              <div className="flex flex-col gap-1">
+                <span className="text-zinc-400 text-[10px] tracking-widest uppercase">
+                  Card Balance
+                </span>
+                <span className="text-2xl font-bold tracking-tight">
+                  $78,122.00
+                </span>
+              </div>
+            </div>
+
+            {/* Corner Icon Button (Notch Control) */}
+            <button className="absolute top-0 right-0 w-12 h-12 rounded-full bg-zinc-800 border border-zinc-700/50 hover:bg-zinc-700 hover:border-zinc-600 transition-colors flex items-center justify-center text-white z-20 shadow-lg cursor-pointer">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <line x1="4" y1="21" x2="4" y2="14" />
+                <line x1="4" y1="10" x2="4" y2="3" />
+                <line x1="12" y1="21" x2="12" y2="12" />
+                <line x1="12" y1="8" x2="12" y2="3" />
+                <line x1="20" y1="21" x2="20" y2="16" />
+                <line x1="20" y1="12" x2="20" y2="3" />
+                <line x1="2" y1="14" x2="6" y2="14" />
+                <line x1="10" y1="8" x2="14" y2="8" />
+                <line x1="18" y1="16" x2="22" y2="16" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        {/* Overlapping Solid Filled Circles Demo */}
+        <div className="flex flex-col items-center justify-center p-8 bg-[#1a1a1a] rounded-3xl max-w-md w-full">
+          <div className="flex -space-x-8">
+            <div className="w-14 h-14 rounded-full border-5 border-[#1a1a1a] bg-white shadow-md" />
+            <div className="w-14 h-14 rounded-full border-5 border-[#1a1a1a] bg-white shadow-md" />
+            <div className="w-14 h-14 rounded-full border-5 border-[#1a1a1a] bg-white shadow-md" />
+            <div className="w-14 h-14 rounded-full border-5 border-[#1a1a1a] bg-white shadow-md" />
           </div>
         </div>
       </div>
