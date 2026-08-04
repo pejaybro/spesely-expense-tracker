@@ -1,6 +1,6 @@
 import { RouterProvider } from "react-router-dom";
 import { router } from "./router";
-import { ToastContainer } from "./components/base";
+import { GlobalScrollProvider, ToastContainer } from "./components/base";
 import {
   RenderRightClickMenu,
   RenderActionFeedback,
@@ -9,10 +9,12 @@ import {
 function App() {
   return (
     <>
-      <RouterProvider router={router} />
-      <ToastContainer />
-      <RenderRightClickMenu />
-      <RenderActionFeedback />
+      <GlobalScrollProvider>
+        <RouterProvider router={router} />
+        <ToastContainer />
+        <RenderRightClickMenu />
+        <RenderActionFeedback />
+      </GlobalScrollProvider>
     </>
   );
 }

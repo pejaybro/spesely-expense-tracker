@@ -1,0 +1,144 @@
+@theme {
+  /* ========================================================================== */
+  /* 1. Dark Shades (1 -> 7: Darkest #030303 -> Lightest #282828) */
+  /* ========================================================================== */
+  --color-dark-1: #030303;
+  --color-dark-2: #050505;
+  --color-dark-3: #0d0d0d;
+  --color-dark-4: #121212;
+  --color-dark-5: #181818;
+  --color-dark-6: #222222;
+  --color-dark-7: #282828;
+
+  /* ========================================================================== */
+  /* 2. Slate Shades (1 -> 7: Darkest #2c2c2c -> Lightest #fafafa) */
+  /* ========================================================================== */
+  --color-slate-1: #2c2c2c;
+  --color-slate-2: #323232;
+  --color-slate-3: #676767;
+  --color-slate-4: #707070;
+  --color-slate-5: #919191;
+  --color-slate-6: #dddddd;
+  --color-slate-7: #fafafa;
+
+  /* ========================================================================== */
+  /* 3. Dashboard Shades (1 -> 7: Darkest #101419 -> Lightest #cdd6e2) */
+  /* ========================================================================== */
+  --color-dash-1: #101419;
+  --color-dash-2: #1c232c;
+  --color-dash-3: #2d3744;
+  --color-dash-4: #455263;
+  --color-dash-5: #637389;
+  --color-dash-6: #8b9bb0;
+  --color-dash-7: #cdd6e2;
+
+  /* ========================================================================== */
+  /* 4. Expense Shades (1 -> 7: Darkest #7425d9 -> Lightest #e0beff) */
+  /* ========================================================================== */
+  --color-exp-1: #7425d9;
+  --color-exp-2: #9a3df2;
+  --color-exp-3: #a04af7;
+  --color-exp-4: #aa5bfc;
+  --color-exp-5: #bc7efd;
+  --color-exp-6: #c892f7;
+  --color-exp-7: #e0beff;
+
+  /* ========================================================================== */
+  /* 5. Income Shades (1 -> 7: Darkest #0c9c5d -> Lightest #81d8a8) */
+  /* ========================================================================== */
+  --color-inc-1: #0c9c5d;
+  --color-inc-2: #089c71;
+  --color-inc-3: #09ab66;
+  --color-inc-4: #16a016;
+  --color-inc-5: #21c27e;
+  --color-inc-6: #4e9f3d;
+  --color-inc-7: #81d8a8;
+
+  /* ========================================================================== */
+  /* 6. Analysis Shades (1 -> 7: Darkest #123c8a -> Lightest #e4effe) */
+  /* ========================================================================== */
+  --color-analysis-1: #123c8a;
+  --color-analysis-2: #247df2;
+  --color-analysis-3: #4995f5;
+  --color-analysis-4: #6ea9f7;
+  --color-analysis-5: #94c0f9;
+  --color-analysis-6: #b9d6fb;
+  --color-analysis-7: #e4effe;
+
+  /* ========================================================================== */
+  /* 7. Repeat & Recurring Shades (1 -> 7: Darkest #026383 -> Lightest #83caf0) */
+  /* ========================================================================== */
+  --color-repeat-1: #026383;
+  --color-repeat-2: #0499c9;
+  --color-repeat-3: #069bcc;
+  --color-repeat-4: #07b0e8;
+  --color-repeat-5: #49b9eb;
+  --color-repeat-6: #69c1ed;
+  --color-repeat-7: #83caf0;
+
+  /* ========================================================================== */
+  /* 8. Trip Shades (1 -> 7: Darkest #702d77 -> Lightest #ffa9cc, NO BLUE) */
+  /* ========================================================================== */
+  --color-trip-1: #702d77;
+  --color-trip-2: #984ca1;
+  --color-trip-3: #f55ba5;
+  --color-trip-4: #f871af;
+  --color-trip-5: #fb85b8;
+  --color-trip-6: #fd97c2;
+  --color-trip-7: #ffa9cc;
+
+  /* ========================================================================== */
+  /* 9. Budgeting Shades (1 -> 7: Darkest #f66e00 -> Lightest #fed28b) */
+  /* ========================================================================== */
+  --color-budget-1: #f66e00;
+  --color-budget-2: #fab025;
+  --color-budget-3: #f7bb16;
+  --color-budget-4: #f7bc4f;
+  --color-budget-5: #fac364;
+  --color-budget-6: #fccb78;
+  --color-budget-7: #fed28b;
+
+  /* ========================================================================== */
+  /* 10. Goals Shades (1 -> 7: Darkest #9e7403 -> Lightest #fff6db) */
+  /* ========================================================================== */
+  --color-goal-1: #9e7403;
+  --color-goal-2: #d9a107;
+  --color-goal-3: #f7bb16;
+  --color-goal-4: #f9c943;
+  --color-goal-5: #fbd770;
+  --color-goal-6: #fde59d;
+  --color-goal-7: #fff6db;
+
+  /* ========================================================================== */
+  /* 11. Guide Shades (1 -> 7: Darkest #4c338a -> Lightest #f4effd) */
+  /* ========================================================================== */
+  --color-guide-1: #4c338a;
+  --color-guide-2: #6c4ab8;
+  --color-guide-3: #8869cf;
+  --color-guide-4: #a58be0;
+  --color-guide-5: #c2aef1;
+  --color-guide-6: #ded2f8;
+  --color-guide-7: #f4effd;
+
+  /* ========================================================================== */
+  /* 12. Settings Shades (1 -> 7: Darkest #20252b -> Lightest #e6eaf0) */
+  /* ========================================================================== */
+  --color-setting-1: #20252b;
+  --color-setting-2: #343c46;
+  --color-setting-3: #4d5764;
+  --color-setting-4: #6a7686;
+  --color-setting-5: #8b97a8;
+  --color-setting-6: #b2bccb;
+  --color-setting-7: #e6eaf0;
+
+  /* ========================================================================== */
+  /* 13. System & Status Colors */
+  /* ========================================================================== */
+  --color-black: #000000;
+  --color-white: #ffffff;
+  --color-warning: #f59e0b;
+  --color-success: #10b981;
+  --color-failed: #f43f5e;
+  --color-error: #dc2626;
+  --color-info: #3b82f6;
+}

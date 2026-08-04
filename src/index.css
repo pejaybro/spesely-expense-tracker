@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "./style/base/font.css";
 @import "./style/base/color.css";
+@import "./style/base/expensetracker-LP-colors.css";
 @import "./style/custom-class.css";
 @import "./style/color-class.css";
 @import "./style/scrollbar.css";

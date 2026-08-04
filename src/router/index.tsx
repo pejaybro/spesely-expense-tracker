@@ -1,44 +1,105 @@
-import { createHashRouter, Navigate } from "react-router-dom";
-import { WindowLayout } from "./layout/WindowLayout";
-import { AppLayout } from "./layout/AppLayout";
+import { createHashRouter, Navigate, type RouteObject } from "react-router-dom";
+import { PATH } from "./path.config";
+import { WindowLayout } from "./layouts/window.layout";
+import { AppLayout } from "./layouts/app.layout";
+import { ErrorLayout } from "./layouts/error.layout";
+
+// Direct component imports (No lazy loading for instant Electron rendering)
 import { Dashboard } from "../pages/dashboard";
 import { Guide } from "../pages/guide";
-import { Settings } from "../pages/settings";
 import { DailyExpense } from "../pages/daily-expense";
 import { Income } from "../pages/income";
-import { Goals } from "../pages/goals";
-import { Budget } from "../pages/budget";
-import { Trips } from "../pages/trips";
-import { RecurringExpense } from "../pages/recurring-expense";
 import { Analytics } from "../pages/analytics";
+import { RecurringExpense } from "../pages/recurring-expense";
+import { Trips } from "../pages/trips";
+import { Budget } from "../pages/budget";
+import { Goals } from "../pages/goals";
+import { Settings } from "../pages/settings";
 import { Auth } from "../pages/auth";
-import { ROUTES } from "./route.config";
 
 /**
- * Modern Data Router Configuration for Electron
+ * Modern Electron Route Configuration
+ * Adapted from pejay-ui react-router scaffold pattern:
+ * - Pure TypeScript architecture (.ts / .tsx)
+ * - Component property syntax (Component: PageComponent)
+ * - Hash routing for Electron file:// protocol compatibility
+ * - Route-level ErrorBoundary isolation
  */
-export const router = createHashRouter([
+const AppRoutes: RouteObject[] = [
   {
-    path: "/",
-    element: (
+    path: PATH.root(),
+    Component: () => (
       <WindowLayout>
         <AppLayout />
       </WindowLayout>
     ),
+    ErrorBoundary: ErrorLayout,
     children: [
-      { index: true, element: <Navigate to={ROUTES.home} replace /> },
-      { path: ROUTES.home, element: <Dashboard /> },
-      { path: ROUTES.guide, element: <Guide /> },
-      { path: ROUTES.expense, element: <DailyExpense /> },
-      { path: ROUTES.income, element: <Income /> },
-      { path: ROUTES.analysis, element: <Analytics /> },
-      { path: ROUTES.repeat, element: <RecurringExpense /> },
-      { path: ROUTES.trip, element: <Trips /> },
-      { path: ROUTES.budget, element: <Budget /> },
-      { path: ROUTES.goal, element: <Goals /> },
-      { path: ROUTES.setting, element: <Settings /> },
-      { path: ROUTES.login, element: <Auth /> },
-      { path: "*", element: <Navigate to={ROUTES.home} replace /> },
+      {
+        index: true,
+        Component: () => <Navigate to={PATH.home()} replace />,
+      },
+      {
+        path: PATH.home(),
+        Component: Dashboard,
+        ErrorBoundary: ErrorLayout,
+      },
+      {
+        path: PATH.guide(),
+        Component: Guide,
+        ErrorBoundary: ErrorLayout,
+      },
+      {
+        path: PATH.expense(),
+        Component: DailyExpense,
+        ErrorBoundary: ErrorLayout,
+      },
+      {
+        path: PATH.income(),
+        Component: Income,
+        ErrorBoundary: ErrorLayout,
+      },
+      {
+        path: PATH.analysis(),
+        Component: Analytics,
+        ErrorBoundary: ErrorLayout,
+      },
+      {
+        path: PATH.repeat(),
+        Component: RecurringExpense,
+        ErrorBoundary: ErrorLayout,
+      },
+      {
+        path: PATH.trip(),
+        Component: Trips,
+        ErrorBoundary: ErrorLayout,
+      },
+      {
+        path: PATH.budget(),
+        Component: Budget,
+        ErrorBoundary: ErrorLayout,
+      },
+      {
+        path: PATH.goal(),
+        Component: Goals,
+        ErrorBoundary: ErrorLayout,
+      },
+      {
+        path: PATH.setting(),
+        Component: Settings,
+        ErrorBoundary: ErrorLayout,
+      },
+      {
+        path: PATH.login(),
+        Component: Auth,
+        ErrorBoundary: ErrorLayout,
+      },
+      {
+        path: PATH.catch_all(),
+        Component: () => <Navigate to={PATH.home()} replace />,
+      },
     ],
   },
-]);
+];
+
+export const router = createHashRouter(AppRoutes);

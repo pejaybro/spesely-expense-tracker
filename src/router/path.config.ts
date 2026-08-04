@@ -1,0 +1,15 @@
+export const PATH = {
+  root: () => "/" as const,
+  home: () => "/dashboard" as const,
+  guide: () => "/guide" as const,
+  expense: () => "/expense" as const,
+  income: () => "/income" as const,
+  analysis: () => "/transactions-analysis" as const,
+  repeat: () => "/recurring-expense" as const,
+  trip: () => "/trip" as const,
+  budget: () => "/budget" as const,
+  goal: () => "/goal" as const,
+  setting: () => "/settings" as const,
+  login: () => "/login" as const,
+  catch_all: () => "*" as const,
+};

@@ -7,7 +7,7 @@ export interface MenuBtnProps extends React.ButtonHTMLAttributes<HTMLButtonEleme
   icon?: React.ReactNode;
   className?: string;
   isMenuExpanded?: boolean;
-  content?: string;
+  tooltipContent?: string | null;
 }
 
 export const MenuBtn = ({
@@ -16,30 +16,27 @@ export const MenuBtn = ({
   icon,
   className,
   isMenuExpanded = false,
-  content,
+  tooltipContent,
   ...props
 }: MenuBtnProps) => {
   return (
     <Button
       {...props}
-      variant="menu"
+      tooltipContent={tooltipContent}
+      tooltipDirection="right"
+      variant="custom"
       rounded="md"
       className={cn(
-        "font-medium w-full menu-btn",
-        // Logic is now simple: if expanded, show full button. If not, show square icon.
+        "font-medium menu-btn gap-0",
         isMenuExpanded
-          ? "justify-start p-2.25 h-9 aspect-auto"
+          ? "justify-start w-full gap-2 p-2.25 h-9 aspect-auto"
           : "justify-center w-auto h-auto aspect-square p-2.25",
         isActive && "active-menu-btn",
         className,
       )}
     >
-      {icon && <span>{icon}</span>}
-      <span
-        className={cn("whitespace-nowrap", isMenuExpanded ? "block" : "hidden")}
-      >
-        {name}
-      </span>
+      {icon && <span className="shrink-0">{icon}</span>}
+      {isMenuExpanded && <span className="whitespace-nowrap">{name}</span>}
     </Button>
   );
 };

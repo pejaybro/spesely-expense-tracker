@@ -15,7 +15,7 @@ import {
 } from "@floating-ui/react";
 import { cn } from "../../utils/cn";
 
-interface TooltipProps {
+export interface TooltipProps {
   children: React.ReactNode | string;
   content?: React.ReactNode | string | null | undefined;
   className?: string;

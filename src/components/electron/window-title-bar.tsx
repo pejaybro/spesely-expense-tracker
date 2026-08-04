@@ -69,7 +69,9 @@ export const WindowTitleBar = () => {
           onClick={() => navigate(-1)}
           disabled={!canGoBack}
           className={`rounded-l-md size-6 px-0 bg-transparent! hover:bg-white/10! ${
-            !canGoBack ? "text-white/20! cursor-default!" : "text-white cursor-pointer!"
+            !canGoBack
+              ? "text-white/20! cursor-default!"
+              : "text-white cursor-pointer!"
           }`}
         >
           <ChevronLeft size={16} />
@@ -79,7 +81,9 @@ export const WindowTitleBar = () => {
           onClick={() => navigate(1)}
           disabled={!canGoForward}
           className={`rounded-r-md size-6 px-0 bg-transparent! hover:bg-white/10! ${
-            !canGoForward ? "text-white/20! cursor-default!" : "text-white cursor-pointer!"
+            !canGoForward
+              ? "text-white/20! cursor-default!"
+              : "text-white cursor-pointer!"
           }`}
         >
           <ChevronRight size={16} />
@@ -90,6 +94,7 @@ export const WindowTitleBar = () => {
       {/* ANCHOR : RIGHT SECTION */}
       <Flex direction="row" items="center" className="gap-1 window-no-drag">
         <Button
+          rounded="none"
           variant="solid"
           className="w-8 px-0 bg-transparent! hover:bg-white/10!"
           onClick={() => window.electronAPI.minimize()}
@@ -97,6 +102,7 @@ export const WindowTitleBar = () => {
           <Minus size={16} />
         </Button>
         <Button
+          rounded="none"
           variant="solid"
           className="w-8 px-0 bg-transparent! hover:bg-white/10!"
           onClick={() => window.electronAPI.maximize()}
@@ -105,6 +111,7 @@ export const WindowTitleBar = () => {
         </Button>
         <Button
           variant="solid"
+          rounded="none"
           className="w-8 px-0 bg-transparent! hover:bg-red-600!"
           onClick={() => window.electronAPI.close()}
         >

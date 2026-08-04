@@ -242,6 +242,49 @@
       "utils": [
         "cn.ts"
       ]
+    },
+    "overlays/scrollbar": {
+      "files": [
+        "components/overlays/custom-scroll-area.tsx",
+        "components/overlays/global-scroll-provider.tsx",
+        "components/overlays/readme.scrollbar.md"
+      ],
+      "utils": []
+    },
+    "react-router-client": {
+      "files": [
+        "../react-router/hook/useRouterSearch.ts",
+        "../react-router/router/guards/private.route.tsx",
+        "../react-router/router/guards/public.route.tsx",
+        "../react-router/router/index.ts",
+        "../react-router/router/layouts/auth.layout.tsx",
+        "../react-router/router/layouts/error.layout.tsx",
+        "../react-router/router/layouts/main.layout.tsx",
+        "../react-router/router/path.ts",
+        "../react-router/routes/not-found/index.tsx",
+        "../react-router/routes/page-auth/index.tsx",
+        "../react-router/routes/page-one/index.tsx",
+        "../react-router/routes/page-one/search.page-one.ts",
+        "../react-router/routes/page-root/index.tsx",
+        "../react-router/routes/page-two/index.tsx",
+        "../react-router/routes/page-two/search.page-two.ts"
+      ],
+      "utils": []
+    },
+    "tanstack-query-client": {
+      "files": [
+        "../tanstack-query/api-base.ts",
+        "../tanstack-query/api-mutations.ts",
+        "../tanstack-query/api-queries.ts",
+        "../tanstack-query/client.ts",
+        "../tanstack-query/module/index.ts",
+        "../tanstack-query/module/keys.ts",
+        "../tanstack-query/module/mappers.ts",
+        "../tanstack-query/module/mutations.ts",
+        "../tanstack-query/module/queries.ts",
+        "../tanstack-query/module/services.ts"
+      ],
+      "utils": []
     }
   }
 }
