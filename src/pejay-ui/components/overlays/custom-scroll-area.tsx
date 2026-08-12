@@ -76,21 +76,32 @@ export const CustomScrollArea = ({
   /* ==========================================================================
    * [1] Scroll Position & Thumb Calculations (Instant 1:1 sync)
    * ========================================================================== */
+  /* ==========================================================================
+   * [1] Scroll Position & Thumb Calculations (Instant 1:1 sync)
+   * ========================================================================== */
   const updateScrollbar = useCallback(() => {
     const el = containerRef.current;
     if (!el) return;
 
     const { scrollTop, scrollHeight, clientHeight } = el;
-    if (scrollHeight <= clientHeight) {
+    if (scrollHeight <= clientHeight + 1) {
       setThumbHeight(0);
       return;
     }
 
+    // Inset track padding: top-1.5 (6px) + bottom-1.5 (6px) = 12px total
+    const trackPadding = 12;
+    const availableTrackHeight = Math.max(0, clientHeight - trackPadding);
+
     const minThumbHeight = 32;
-    const calculatedHeight = Math.max((clientHeight / scrollHeight) * clientHeight, minThumbHeight);
+    const calculatedHeight = Math.max(
+      (clientHeight / scrollHeight) * availableTrackHeight,
+      minThumbHeight
+    );
     const maxScrollTop = scrollHeight - clientHeight;
-    const maxThumbTop = clientHeight - calculatedHeight;
-    const calculatedTop = maxScrollTop > 0 ? (scrollTop / maxScrollTop) * maxThumbTop : 0;
+    const maxThumbTop = availableTrackHeight - calculatedHeight;
+    const calculatedTop =
+      maxScrollTop > 0 ? (scrollTop / maxScrollTop) * maxThumbTop : 0;
 
     setThumbHeight(calculatedHeight);
     setThumbTop(calculatedTop);
@@ -175,10 +186,34 @@ export const CustomScrollArea = ({
     return () => el.removeEventListener("wheel", handleWheel);
   }, [smoothWheel, triggerVisibility, updateScrollbar]);
 
+  /* ==========================================================================
+   * [3.5] ResizeObserver for Container & Content Expand/Collapse
+   * ========================================================================== */
   useEffect(() => {
-    updateScrollbar();
+    const el = containerRef.current;
+    if (!el) return;
+
+    // Use requestAnimationFrame to prevent set-state-in-effect warning
+    const rafId = requestAnimationFrame(() => {
+      updateScrollbar();
+    });
+
+    const resizeObserver = new ResizeObserver(() => {
+      updateScrollbar();
+    });
+
+    resizeObserver.observe(el);
+    if (el.firstElementChild) {
+      resizeObserver.observe(el.firstElementChild);
+    }
+
     window.addEventListener("resize", updateScrollbar);
-    return () => window.removeEventListener("resize", updateScrollbar);
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      resizeObserver.disconnect();
+      window.removeEventListener("resize", updateScrollbar);
+    };
   }, [updateScrollbar]);
 
   /* ==========================================================================

@@ -1,3 +1,5 @@
+import type { APIs } from "../db/interface";
+
 export {};
 
 declare global {
@@ -6,6 +8,6 @@ declare global {
       minimize: () => void;
       maximize: () => void;
       close: () => void;
-    };
+    } & APIs;
   }
 }

@@ -27,6 +27,7 @@ import {
 import { useState, useMemo } from "react";
 import { LegacyDashboard } from "./components/LegacyDashboard";
 import { LegacyDailyExpense } from "./components/LegacyDailyExpense";
+import { DatabasePlayground } from "./components/DatabasePlayground";
 import { AtSign } from "lucide-react";
 import { BtnStyles } from "./btn-styles";
 
@@ -97,9 +98,9 @@ const defaultValues: FormValues = {
 };
 
 export const Guide = () => {
-  const [guideTab, setGuideTab] = useState<"ui" | "dashboard" | "expense">(
-    "ui",
-  );
+  const [guideTab, setGuideTab] = useState<
+    "ui" | "dashboard" | "expense" | "db"
+  >("ui");
 
   /* React Hook Form manages Form state/submission */
   const {
@@ -151,7 +152,7 @@ export const Guide = () => {
       {/* Top Navigation Tabs for Guide Section */}
       <Flex
         direction="row"
-        className="w-full gap-2 pb-4 border-b border-chalk-15"
+        className="w-full gap-2 pb-4 border-b border-chalk-15 flex-wrap"
       >
         <Button
           variant={guideTab === "ui" ? "primary" : "white-ghost"}
@@ -171,10 +172,17 @@ export const Guide = () => {
         >
           Expense Archive
         </Button>
+        <Button
+          variant={guideTab === "db" ? "primary" : "white-ghost"}
+          onClick={() => setGuideTab("db")}
+        >
+          Database & IPC Playground
+        </Button>
       </Flex>
 
       {guideTab === "dashboard" && <LegacyDashboard />}
       {guideTab === "expense" && <LegacyDailyExpense />}
+      {guideTab === "db" && <DatabasePlayground />}
       {guideTab === "ui" && (
         <>
           <form onSubmit={handleSubmit(onSubmit)} className="w-full">

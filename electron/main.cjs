@@ -1,7 +1,10 @@
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = "true";
+const path = require("path");
 const { app, BrowserWindow } = require("electron");
 const CONFIG = require("./config.cjs");
-const { initIPC } = require("./ipc.cjs");
+const { initIPC } = require("./ipc/ipc.cjs");
+const registerIPC_DB = require("./ipc/db-ipc/index.cjs");
+const { initDatabase } = require("./db/database.cjs");
 
 let mainWindow = null;
 let splashWindow = null;
@@ -48,7 +51,28 @@ function createWindow() {
  *=================================================
  */
 
-app.whenReady().then(createWindow);
+app.whenReady().then(() => {
+  const dbPath = path.join(app.getPath("userData"), "spesely-db-v1.sqlite");
+  initDatabase(dbPath);
+  registerIPC_DB();
+  createWindow();
+});
+
+/* 
+# NOTE: after changing the above when ready 
+FLOW becomes
+Electron starts
+      ↓
+app.whenReady()
+      ↓
+Get userData folder
+      ↓
+Create/open sps.sqlite
+      ↓
+Create BrowserWindow
+      ↓
+React starts 
+*/
 
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {

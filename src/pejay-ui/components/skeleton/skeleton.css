@@ -22,8 +22,15 @@
   animation: skeleton-shimmer 1.5s infinite linear;
 }
 
-/* Dark mode override */
-.dark .skeleton-shimmer-bg,
+.dark .skeleton-shimmer-bg {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.05) 25%,
+    rgba(255, 255, 255, 0.10) 37%,
+    rgba(255, 255, 255, 0.05) 63%
+  );
+}
+
 @media (prefers-color-scheme: dark) {
   .skeleton-shimmer-bg {
     background: linear-gradient(

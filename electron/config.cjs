@@ -16,8 +16,8 @@ const CONFIG = {
       webPreferences: {
         contextIsolation: true,
         nodeIntegration: false,
-        sandbox: true,
-        preload: path.join(__dirname, "preload.cjs"),
+        sandbox: false,
+        preload: path.join(__dirname, "preload", "preload.cjs"),
       },
     },
     splash: {
