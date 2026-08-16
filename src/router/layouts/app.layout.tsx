@@ -308,7 +308,7 @@ const NavMenuBlock = ({
   if (isFullscreen) {
     return (
       <Flex direction="row" wrap className="w-full gap-5 content-start">
-        {items.map((item) => (
+        {items.map(item => (
           <NavCard
             key={item.id}
             item={item}
@@ -321,7 +321,7 @@ const NavMenuBlock = ({
 
   return (
     <Flex direction="column" className="w-full gap-1.5">
-      {items.map((item) => (
+      {items.map(item => (
         <MenuBtn
           key={item.id}
           tooltipContent={isCompact ? item.name : undefined}
@@ -434,7 +434,7 @@ const Sidebar = ({
                     />
                   </span>
                 )}
-                <span className="text-md font-medium">Menu</span>
+                <span className="text-md font-medium">Spesely Menu</span>
               </>
             ) : (
               <PanelLeftOpen
@@ -521,7 +521,7 @@ export const AppLayout = ({ features: featuresProp }: AppLayoutProps = {}) => {
         <Sidebar
           layout={layout}
           features={features}
-          navigate={(link) => navigate(link)}
+          navigate={link => navigate(link)}
           currentPath={location.pathname}
         />
 

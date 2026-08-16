@@ -285,6 +285,71 @@
         "../tanstack-query/module/services.ts"
       ],
       "utils": []
+    },
+    "horizontal-tab-menu": {
+      "files": [
+        "components/horizontal-tabs/horizontal-tab-menu.tsx",
+        "components/horizontal-tabs/horizontal-tabs.config.ts",
+        "components/horizontal-tabs/README.md"
+      ],
+      "utils": [
+        "cn.ts"
+      ]
+    },
+    "hotkeys": {
+      "files": [
+        "hotkeys/README.md",
+        "hotkeys/components/HotkeyProvider.tsx",
+        "hotkeys/components/HotkeysHelpModal.tsx",
+        "hotkeys/core/key-matcher.ts",
+        "hotkeys/core/registry.ts",
+        "hotkeys/core/types.ts",
+        "hotkeys/hooks/useHotkey.ts",
+        "hotkeys/index.ts"
+      ],
+      "utils": []
+    },
+    "panels": {
+      "files": [
+        "panels/COMPONENTS.md",
+        "panels/README.md",
+        "panels/components/base-card.tsx",
+        "panels/components/index.ts",
+        "panels/components/modal/backdrop.tsx",
+        "panels/components/modal/modal-card.tsx",
+        "panels/components/modal/modal-raw.tsx",
+        "panels/components/modal/modal.tsx",
+        "panels/components/side-panel/side-panel-card.tsx",
+        "panels/components/side-panel/side-panel-raw.tsx",
+        "panels/components/side-panel/side-panel.tsx",
+        "panels/core/PanelProvider.tsx",
+        "panels/core/constants.ts",
+        "panels/core/form-overlay-registry.ts",
+        "panels/core/index.ts",
+        "panels/core/overlay-close.ts",
+        "panels/core/panel-context.ts",
+        "panels/core/types.ts",
+        "panels/hooks/index.ts",
+        "panels/hooks/useFormDirty.ts",
+        "panels/hooks/useFormOverlayRegistration.ts",
+        "panels/hooks/useFormPanel.tsx",
+        "panels/hooks/useFormTabHandler.ts",
+        "panels/hooks/useHorizontalWheelScroll.ts",
+        "panels/hooks/useModalForm.tsx",
+        "panels/hooks/useOverlay.ts",
+        "panels/index.ts",
+        "panels/vendor-example/by-using-modal/VendorModalPage.tsx",
+        "panels/vendor-example/by-using-modal/useVendorModalForm.tsx",
+        "panels/vendor-example/by-using-modal/vendor-modal-form.tsx",
+        "panels/vendor-example/by-using-modal/vendor-types.ts",
+        "panels/vendor-example/by-using-sidepanel/VendorsPage.tsx",
+        "panels/vendor-example/by-using-sidepanel/useVendorFormPanel.tsx",
+        "panels/vendor-example/by-using-sidepanel/vendor-form.tsx",
+        "panels/vendor-example/by-using-sidepanel/vendor-types.ts"
+      ],
+      "utils": [
+        "cn.ts"
+      ]
     }
   }
 }

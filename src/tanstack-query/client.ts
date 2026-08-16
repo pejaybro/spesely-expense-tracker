@@ -12,4 +12,14 @@ export const electronClient: APIs = {
   get demo() {
     return getElectronAPI().demo;
   },
+  get primaryCategory() {
+    return getElectronAPI().primaryCategory;
+  },
+  get secondaryCategory() {
+    return getElectronAPI().secondaryCategory;
+  },
+  get transaction() {
+    return getElectronAPI().transaction;
+  },
 };
+

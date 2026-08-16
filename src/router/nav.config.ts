@@ -8,6 +8,7 @@ import {
   Calculator,
   Target,
   BookOpen,
+  Settings,
   type LucideIcon,
 } from "lucide-react";
 import { PATH } from "./path.config";
@@ -135,3 +136,14 @@ export const NAV_ITEMS: NavItem[] = [
     hoverBorder: "hover:border-guide-4/60",
   },
 ];
+
+export const SETTINGS_NAV_ITEM: NavItem = {
+  id: 9,
+  subtitle: "PREFERENCES",
+  name: "Settings",
+  icon: Settings,
+  link: PATH.setting(),
+  stat: "System Settings",
+  pillBg: "bg-guide-3",
+  hoverBorder: "hover:border-guide-4/60",
+};

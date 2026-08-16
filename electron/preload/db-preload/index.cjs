@@ -1,6 +1,11 @@
 const demoAPI = require("./demo.preload.cjs");
-const api = {
-  demo: demoAPI,
-};
+const primaryCategoryAPI = require("./primaryCategory.preload.cjs");
+const secondaryCategoryAPI = require("./secondaryCategory.preload.cjs");
+const transactionAPI = require("./transaction.preload.cjs");
 
-module.exports = api;
+module.exports = {
+  demo: demoAPI,
+  primaryCategory: primaryCategoryAPI,
+  secondaryCategory: secondaryCategoryAPI,
+  transaction: transactionAPI,
+};
