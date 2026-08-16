@@ -8,3 +8,4 @@ export * from "./pagination";
 export * from "../../pejay-ui/components/skeleton";
 export * from "../../pejay-ui/components/overlays";
 export * from "../../pejay-ui/components/toast";
+export * from "./table";

@@ -24,6 +24,7 @@ export interface NavItem {
   pillBg: string;
   pillBgBack?: string;
   hoverBorder: string;
+  isActive: boolean;
 }
 
 export const NAV_ITEMS: NavItem[] = [
@@ -38,6 +39,7 @@ export const NAV_ITEMS: NavItem[] = [
     pillBg: "bg-dash-4",
     pillBgBack: "bg-dash-2",
     hoverBorder: "hover:border-dash-5/60",
+    isActive: true,
   },
   {
     id: 1,
@@ -50,6 +52,7 @@ export const NAV_ITEMS: NavItem[] = [
     pillBg: "bg-exp-3",
     pillBgBack: "bg-exp-1",
     hoverBorder: "hover:border-exp-4/60",
+    isActive: true,
   },
   {
     id: 2,
@@ -62,6 +65,7 @@ export const NAV_ITEMS: NavItem[] = [
     pillBg: "bg-inc-3",
     pillBgBack: "bg-inc-1",
     hoverBorder: "hover:border-inc-4/60",
+    isActive: true,
   },
   {
     id: 3,
@@ -74,6 +78,7 @@ export const NAV_ITEMS: NavItem[] = [
     pillBg: "bg-analysis-3",
     pillBgBack: "bg-analysis-1",
     hoverBorder: "hover:border-analysis-4/60",
+    isActive: false,
   },
   {
     id: 4,
@@ -86,6 +91,7 @@ export const NAV_ITEMS: NavItem[] = [
     pillBg: "bg-repeat-3",
     pillBgBack: "bg-repeat-1",
     hoverBorder: "hover:border-repeat-4/60",
+    isActive: false,
   },
   {
     id: 5,
@@ -98,6 +104,7 @@ export const NAV_ITEMS: NavItem[] = [
     pillBg: "bg-trip-4",
     pillBgBack: "bg-trip-2",
     hoverBorder: "hover:border-trip-5/60",
+    isActive: false,
   },
   {
     id: 6,
@@ -110,6 +117,7 @@ export const NAV_ITEMS: NavItem[] = [
     pillBg: "bg-budget-3",
     pillBgBack: "bg-budget-1",
     hoverBorder: "hover:border-budget-4/60",
+    isActive: false,
   },
   {
     id: 7,
@@ -122,6 +130,7 @@ export const NAV_ITEMS: NavItem[] = [
     pillBg: "bg-goal-3",
     pillBgBack: "bg-goal-1",
     hoverBorder: "hover:border-goal-4/60",
+    isActive: false,
   },
   {
     id: 8,
@@ -134,6 +143,7 @@ export const NAV_ITEMS: NavItem[] = [
     pillBg: "bg-guide-3",
     pillBgBack: "bg-guide-1",
     hoverBorder: "hover:border-guide-4/60",
+    isActive: true,
   },
 ];
 
@@ -146,4 +156,5 @@ export const SETTINGS_NAV_ITEM: NavItem = {
   stat: "System Settings",
   pillBg: "bg-guide-3",
   hoverBorder: "hover:border-guide-4/60",
+  isActive: true,
 };

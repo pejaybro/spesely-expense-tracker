@@ -460,7 +460,7 @@ const Sidebar = ({
         <NavMenuBlock
           isFullscreen={isFullscreen}
           isCompact={isCompact}
-          items={NAV_ITEMS}
+          items={NAV_ITEMS.filter((item) => item.isActive)}
           navigate={navigate}
           currentPath={currentPath}
         />

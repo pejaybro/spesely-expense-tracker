@@ -28,6 +28,7 @@ import { useState, useMemo } from "react";
 import { LegacyDashboard } from "./components/LegacyDashboard";
 import { LegacyDailyExpense } from "./components/LegacyDailyExpense";
 import { DatabasePlayground } from "./components/DatabasePlayground";
+import { ExpenseArchiveTable } from "./components/ExpenseArchiveTable";
 import { AtSign } from "lucide-react";
 import { BtnStyles } from "./btn-styles";
 
@@ -181,7 +182,12 @@ export const Guide = () => {
       </Flex>
 
       {guideTab === "dashboard" && <LegacyDashboard />}
-      {guideTab === "expense" && <LegacyDailyExpense />}
+      {guideTab === "expense" && (
+        <div className="flex flex-col gap-10 w-full">
+          <ExpenseArchiveTable />
+          <LegacyDailyExpense />
+        </div>
+      )}
       {guideTab === "db" && <DatabasePlayground />}
       {guideTab === "ui" && (
         <>
