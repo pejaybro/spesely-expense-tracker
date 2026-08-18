@@ -1,4 +1,4 @@
-﻿# 🚀 GitHub Release & Distribution Guide
+# 🚀 GitHub Release & Distribution Guide
 
 This document explains step-by-step how to publish and distribute new versions of **Spesely Expense Tracker** via GitHub Releases.
 
@@ -13,7 +13,10 @@ This document explains step-by-step how to publish and distribute new versions o
 
 ## 🛠️ Step-by-Step Publishing Process
 
-### 1. Build the Latest Installer
+### 1. Set Custom App Icon (Optional)
+Ensure you have added your custom `build/icon.ico` so the installer and app use your branded icon (see [Custom App Icon Guide](app-icon-guide.md)).
+
+### 2. Build the Latest Installer
 Before publishing, ensure your working tree is clean and package the installer:
 
 ```powershell
