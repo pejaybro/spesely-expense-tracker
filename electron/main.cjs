@@ -16,7 +16,7 @@ function createWindow() {
    *=================================
    */
   splashWindow = new BrowserWindow(CONFIG.window.splash);
-  splashWindow.loadFile("splash.html");
+  splashWindow.loadFile(path.join(__dirname, "splash.html"));
 
   /**
    *=================================

@@ -50,7 +50,7 @@ CREATE INDEX IF NOT EXISTS index_secondary_categories
 ON spesely_secondary_categories (primary_category_id);
 
 CREATE INDEX IF NOT EXISTS index_transactions
-ON spesely_transactions (is_expense, date);
+ON spesely_transactions (is_expense, transaction_date);
 
 CREATE INDEX IF NOT EXISTS index_transactions_primary_category_id 
 ON spesely_transactions (primary_category_id);

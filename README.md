@@ -1,73 +1,81 @@
-# React + TypeScript + Vite
+﻿# Spesely - Expense Tracker
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern desktop expense tracker application built with **React**, **TypeScript**, **Tailwind CSS**, and **Electron** powered by **SQLite** (`better-sqlite3`).
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Available NPM Commands
 
-## React Compiler
+Here is the complete reference of all available npm scripts and their purposes:
 
-The React Compiler is currently not compatible with SWC. See [this issue](https://github.com/vitejs/vite-plugin-react/issues/428) for tracking the progress.
+### 🛠️ Development
 
-## Expanding the ESLint configuration
+| Command | Description |
+| :--- | :--- |
+| `npm run dev` | Starts the **Vite development server** (default: `http://localhost:3000`) for web UI development in the browser. |
+| `npm run dev:electron` | **Full Development Mode** — Concurrently starts the Vite frontend server and launches Electron with live hot-reloading (`electronmon`). |
+| `npm run electron` | Launches the Electron desktop shell directly against the active environment. |
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+---
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### 🗄️ Database Management
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+| Command | Description |
+| :--- | :--- |
+| `npm run db-migrate` | **Runs database migrations headlessly** without opening any Electron UI window. Executes all pending SQL files from `electron/db/migrations/`. |
+| `npm run db-reset` | **Wipes the local database** — terminates processes holding file locks and deletes `%APPDATA%\Electron\spesely-db-v1.sqlite` (plus `-wal` and `-shm` files). |
+| `npm run db-reset; npm run db-migrate` | Reset the database and immediately run fresh migrations in one step. |
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+---
+
+### 📦 Build & Packaging
+
+| Command | Description |
+| :--- | :--- |
+| `npm run build` | Runs TypeScript type checking (`tsc -b`) and builds the optimized frontend bundle into `dist/`. |
+| `npm run package` | **Creates the Windows Installer (`.exe`)** — builds frontend assets, compiles native modules, and generates the installer: `release/Spesely-Setup-v1.0.0.exe`. |
+| `npm run package:dir` | Packages an **unpacked** production build in `release/win-unpacked/` for rapid testing without compressing into an installer. |
+| `npm run preview` | Locally serves and previews the production `dist/` build. |
+| `npm run lint` | Runs ESLint to check for code quality and style issues. |
+
+---
+
+## ⚙️ Installer & Packaging Configuration
+
+Configured under the `"build"` block in `package.json`:
+
+- **Installer Output**: `release/Spesely-Setup-v1.0.0.exe` (`artifactName`: `"${productName}-Setup-v${version}.${ext}"`)
+- **Desktop & Start Menu Shortcut**: Labeled **"Spesely"** (`shortcutName`: `"Spesely"`)
+- **Uninstaller**: Labeled **"Spesely"** in Windows Installed Apps (`uninstallDisplayName`: `"Spesely"`)
+- **Start Menu Uninstaller Shortcut**: Enabled (`createUninstallerShortcut`: `true`)
+- **Clean Uninstall**: Completely wipes app data and local database on uninstall (`deleteAppDataOnUninstall`: `true`)
+
+---
+
+## 📁 Project Structure Overview
+
+```
+├── dist/                  # Built frontend assets (HTML, CSS, JS)
+├── electron/
+│   ├── db/                # SQLite initialization and migration runner
+│   │   ├── migrations/    # SQL migration files (*.sql)
+│   │   └── repositories/  # Database data access layer
+│   ├── ipc/               # Electron Main IPC handlers
+│   ├── preload/           # Secure Electron preload scripts
+│   ├── config.cjs         # App & window configurations
+│   └── main.cjs           # Electron main process entry point
+├── release/               # Output folder for packaged installers (.exe)
+├── scripts/               # Standalone dev scripts (migrate, reset, reset-db.sql)
+└── src/                   # React frontend application
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 💻 System Requirements
+- **Node.js**: v20+ recommended
+- **OS**: Windows (x64) for NSIS builds
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+---
+
+## 📚 Documentation
+- 📖 [GitHub Release & Distribution Guide](docs/release-guide.md)
