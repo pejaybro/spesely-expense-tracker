@@ -2,11 +2,13 @@ import React from "react";
 import { cn } from "../../utils/cn";
 
 import { Spinner } from "../../spinner";
-import { Tooltip, type TooltipProps } from "../../components/overlays";
+import { Tooltip } from "../../components/overlays";
 
 /* ─────────────────────────────────────────────
    Types
    ───────────────────────────────────────────── */
+
+type TooltipProps = React.ComponentProps<typeof Tooltip>;
 
 export type ButtonVariant =
   /* ── Solid (filled bg, white text) ──────── */
@@ -125,7 +127,7 @@ const roundedMap: Record<RoundedStyle, string> = {
 const stripInteractive = (classes: string) =>
   classes
     .split(" ")
-    .filter(c => !c.startsWith("hover:") && !c.startsWith("active:"))
+    .filter((c) => !c.startsWith("hover:") && !c.startsWith("active:"))
     .join(" ");
 
 export const Button = ({

@@ -1,5 +1,5 @@
 import { HorizontalTabMenu } from "@/src/pejay-ui/components";
-import { CategoriesSettings } from "./CategoriesSettings";
+import { CategoriesSettings } from "./category-settings";
 
 const TAB_PANELS: Record<string, React.ReactNode> = {
   categories: <CategoriesSettings />,

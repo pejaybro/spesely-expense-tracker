@@ -66,10 +66,16 @@ const primaryCategoryRepository = {
     const db = getDatabase();
     const stmt = db.prepare(
       `UPDATE spesely_primary_categories 
-       SET name = ?, color = ?, updated_at = CURRENT_TIMESTAMP 
+       SET name = COALESCE(?, name), 
+           color = COALESCE(?, color), 
+           updated_at = CURRENT_TIMESTAMP 
        WHERE public_id = ?`
     );
-    stmt.run(category.name, category.color, public_id);
+    stmt.run(
+      category.name !== undefined ? category.name : null,
+      category.color !== undefined ? category.color : null,
+      public_id
+    );
     return db
       .prepare("SELECT * FROM spesely_primary_categories WHERE public_id = ?")
       .get(public_id);

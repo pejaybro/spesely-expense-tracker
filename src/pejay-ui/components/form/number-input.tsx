@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Input, type InputProps } from "./input";
 import { Plus, Minus } from "lucide-react";
 import { cn } from "../../utils/cn";
+import { Input } from "./input";
 
 /*
  * ============================================================================
@@ -9,7 +9,7 @@ import { cn } from "../../utils/cn";
  * ============================================================================
  */
 
-interface NumberInputProps extends InputProps {
+export interface NumberInputProps extends React.ComponentProps<typeof Input> {
   /* Controls visibility of right-side increment/decrement steppers */
   showSteppers?: boolean;
   /* Value delta to apply when stepping up or down */
@@ -142,6 +142,7 @@ export const NumberInput = ({
   };
 
   const isNegativeValue = value.startsWith("-");
+  
 
   return (
     <Input

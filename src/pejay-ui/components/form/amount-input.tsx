@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Input, type InputProps } from "./input";
+import { Input } from "./input";
 import { Plus, Minus } from "lucide-react";
 import { cn } from "../../utils/cn";
 
@@ -9,7 +9,7 @@ import { cn } from "../../utils/cn";
  * ============================================================================
  */
 
-interface AmountInputProps extends InputProps {
+export interface AmountInputProps extends React.ComponentProps<typeof Input> {
   /* Minimum value constraint */
   min?: string | number;
   /* Maximum value constraint */
