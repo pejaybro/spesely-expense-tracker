@@ -5,7 +5,7 @@ const {
   buildValueFilter,
   buildWhereClause,
   buildSortClause,
-} = require("./helpers.cjs");
+} = require("./base.helper.cjs");
 
 /* ==================================================
  * MERGE DATA
@@ -59,6 +59,8 @@ function countRecords({ tableName, whereClause = "", filterParams = [] }) {
 
 function getPaginatedRecords({
   tableName,
+  joinClause = "",
+  selectClause = "*",
   allowedColumns = [],
   searchColumns = [],
   rangeFilters = [],
@@ -113,7 +115,7 @@ function getPaginatedRecords({
   // -------------------------
   const data = db
     .prepare(
-      `SELECT * FROM ${tableName} ${whereClause} ORDER BY ${safeSortBy} ${safeSortOrder} LIMIT ? OFFSET ?`,
+      `SELECT ${selectClause} FROM ${tableName} ${joinClause} ${whereClause} ORDER BY ${safeSortBy} ${safeSortOrder} LIMIT ? OFFSET ?`,
     )
     .all(...filterParams, limit, safeOffset);
 
@@ -137,6 +139,8 @@ function getPaginatedRecords({
 
 function getRecords({
   tableName,
+  joinClause = "",
+  selectClause = "*",
   allowedColumns = [],
   searchColumns = [],
   rangeFilters = [],
@@ -186,7 +190,7 @@ function getRecords({
   // -------------------------
   const data = db
     .prepare(
-      `SELECT * FROM ${tableName} ${whereClause} ORDER BY ${safeSortBy} ${safeSortOrder}`,
+      `SELECT ${selectClause} FROM ${tableName} ${joinClause} ${whereClause} ORDER BY ${safeSortBy} ${safeSortOrder}`,
     )
     .all(...filterParams);
 
@@ -273,16 +277,34 @@ function batchInsert({ tableName, dataArray }) {
  * ==================================================
  */
 
-function updateRecord({ tableName, data, columnName = "id", id }) {
+function updateRecord({
+  tableName,
+  data,
+  columnName = "id",
+  id,
+  whereClause,
+  whereParams = [],
+  touchUpdatedAt = true,
+}) {
   const db = getDatabase();
-  const columns = Object.keys(data);
-  const values = Object.values(data);
+  const updateData =
+    touchUpdatedAt && !("updated_at" in data)
+      ? { ...data, updated_at: Date.now() }
+      : data;
+  const columns = Object.keys(updateData);
+  const values = Object.values(updateData);
   const setClause = columns.map((c) => `${c} = ?`).join(", ");
-  return db
-    .prepare(
-      `UPDATE ${tableName} SET ${setClause} WHERE ${columnName} = ? RETURNING *`,
-    )
-    .get(...values, id);
+
+  const finalWhere = whereClause || `${columnName} = ?`;
+  const finalParams = whereClause
+    ? [...values, ...whereParams]
+    : [...values, id];
+
+  const stmt = db.prepare(
+    `UPDATE ${tableName} SET ${setClause} WHERE ${finalWhere} RETURNING *`,
+  );
+
+  return whereClause ? stmt.all(...finalParams) : stmt.get(...finalParams);
 }
 
 /* ==================================================
@@ -305,8 +327,21 @@ function batchUpdate({ tableName, dataArray, columnName = "id" }) {
  * ==================================================
  */
 
-function deleteRecord({ tableName, columnName = "id", data }) {
+function deleteRecord({
+  tableName,
+  columnName = "id",
+  data,
+  whereClause,
+  whereParams = [],
+}) {
   const db = getDatabase();
+
+  if (whereClause) {
+    return db
+      .prepare(`DELETE FROM ${tableName} WHERE ${whereClause} RETURNING *`)
+      .all(...whereParams);
+  }
+
   const idsList = Array.isArray(data) ? data : [data];
   const placeholders = idsList.map(() => "?").join(", ");
   return db
@@ -337,3 +372,4 @@ module.exports = {
   mergeRecords,
   moveRecords,
 };
+

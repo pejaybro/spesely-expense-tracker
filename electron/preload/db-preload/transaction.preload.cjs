@@ -1,9 +1,9 @@
 const { ipcRenderer } = require("electron");
 
 const transactionAPI = {
-  getAll: () => ipcRenderer.invoke("transaction:get-all"),
-  getTop10: (is_expense) => ipcRenderer.invoke("transaction:get-top-10", is_expense),
+  getPaginated: (params) => ipcRenderer.invoke("transaction:get-paginated", params),
   create: (transaction) => ipcRenderer.invoke("transaction:create", transaction),
+  update: (public_id, transaction) => ipcRenderer.invoke("transaction:update", public_id, transaction),
   delete: (public_id) => ipcRenderer.invoke("transaction:delete", public_id),
 };
 
